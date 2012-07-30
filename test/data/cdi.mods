@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mods:mods ID="habr012607" xmlns:mods="http://www.loc.gov/mods/v3"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
+    <mods:titleInfo>
+        <mods:title>Guerrilla</mods:title>
+    </mods:titleInfo>
+    <mods:titleInfo type="alternative" displayLabel="First line:">
+        <mods:title>After so many lovely faces</mods:title>
+    </mods:titleInfo>
+    <mods:name type="personal">
+        <mods:namePart>Scully, James.</mods:namePart>
+        <mods:role>
+            <mods:roleTerm authority="marcrelator" type="text">creator</mods:roleTerm>
+        </mods:role>
+    </mods:name>
+    <mods:name type="corporate">
+        <mods:namePart>Curbstone Press</mods:namePart>
+        <mods:role>
+            <mods:roleTerm authority="marcrelator" type="text">creator</mods:roleTerm>
+        </mods:role>
+    </mods:name>
+    <mods:typeOfResource>text</mods:typeOfResource>
+    <mods:genre authority="aat">broadsides</mods:genre>
+    <mods:originInfo>
+        <mods:place>
+            <mods:placeTerm type="code" authority="marccountry">ctu</mods:placeTerm>
+        </mods:place>
+        <mods:place>
+            <mods:placeTerm type="text">Willimantic, Conn</mods:placeTerm>
+        </mods:place>
+        <mods:publisher>Curbstone Press</mods:publisher>
+        <mods:dateIssued encoding="w3cdtf" qualifier="questionable">1975</mods:dateIssued>
+        <mods:issuance>monographic</mods:issuance>
+    </mods:originInfo>
+    <mods:language>
+        <mods:languageTerm authority="iso639-2b" type="code">eng</mods:languageTerm>
+    </mods:language>
+    <mods:physicalDescription>
+        <mods:form authority="marcform">print</mods:form>
+        <mods:extent>1 broadside ; 18 x 6 cm.</mods:extent><mods:digitalOrigin>reformatted digital</mods:digitalOrigin>
+    </mods:physicalDescription>
+    <mods:note type="statement of responsibility">James Scully.</mods:note>
+    <mods:note>Bookmark printed in blue on ivory paper.</mods:note>
+    <mods:note>Poem in eleven two-line stanzas.</mods:note>
+    <mods:note>Logotype of press below poem.</mods:note>
+    <mods:note>"'Guerrilla' is from Santiago poems, available ... from Curbstone Press"--Colophon.</mods:note>
+    <mods:note>Suggested publication date from publication date of book.</mods:note>
+    <mods:subject>
+        <mods:hierarchicalGeographic>
+            <mods:country>United States</mods:country>
+            <mods:state>Connecticut</mods:state>
+            <mods:city>Willimantic</mods:city>
+        </mods:hierarchicalGeographic>
+    </mods:subject>
+    <mods:identifier type="local" displayLabel="Harris Broadsides no.">HB27847</mods:identifier><mods:relatedItem type="host" displayLabel="Collection"><mods:titleInfo><mods:title>Harris Broadsides</mods:title></mods:titleInfo><mods:identifier type="URI">http://dl.lib.brown.edu/harris</mods:identifier><mods:identifier type="COLID">58</mods:identifier></mods:relatedItem><mods:recordInfo>
+        <mods:recordContentSource authority="marcorg">RBN</mods:recordContentSource>
+        <mods:recordCreationDate encoding="marc">050525</mods:recordCreationDate>
+        <mods:recordIdentifier source="RPB">b36496339</mods:recordIdentifier>
+    </mods:recordInfo>    
+</mods:mods>

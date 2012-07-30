@@ -1,0 +1,136 @@
+<METS:mets
+xmlns:METS="http://www.loc.gov/METS/" 
+xmlns:mods="http://www.loc.gov/mods/v3" 
+xmlns:xlink="http://www.w3.org/1999/xlink" 
+xmlns:brownmix="http://dl.lib.brown.edu/md/brownmix/" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+xmlns:rights="http://cosimo.stanford.edu/sdr/metsrights/" 
+xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd 
+http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-0.xsd 
+http://dl.lib.brown.edu/md/brownmix/ http://dl.lib.brown.edu/md/brownmix/brownmix.xsd 
+http://cosimo.stanford.edu/sdr/metsrights/ http://cosimo.stanford.edu/sdr/metsrights.xsd"
+LABEL="Charge to the jury" OBJID="1227191038718750" TYPE="text.articles">
+<METS:metsHdr CREATEDATE="2008-11-20T00:00:00.001" LASTMODDATE="2008-11-20T00:00:00.001">
+<METS:agent ROLE="CREATOR">
+<METS:name>Brown University Library, Center for Digital Initiatives</METS:name>
+</METS:agent>
+</METS:metsHdr>
+<METS:dmdSec ID="DM1">
+<METS:mdWrap MDTYPE="MODS">
+<METS:xmlData>
+<mods:mods ID="arav000082" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd">
+<mods:titleInfo>
+<mods:title>Camp Grant Massacre</mods:title>
+<mods:nonSort>The</mods:nonSort>
+</mods:titleInfo>
+
+<mods:name type="personal">
+<mods:namePart>DeLong, Sidney R.</mods:namePart>
+<mods:role><mods:roleTerm type="text">creator</mods:roleTerm></mods:role>
+</mods:name>
+
+<mods:typeOfResource>text</mods:typeOfResource>
+
+<mods:genre authority="aat">books</mods:genre>
+
+<mods:originInfo>
+<mods:dateIssued encoding="w3cdtf" keyDate="yes">1903</mods:dateIssued>
+</mods:originInfo>
+
+<mods:language>
+<mods:languageTerm authority="iso639-2b" type="code">eng</mods:languageTerm>
+</mods:language>
+<mods:physicalDescription>
+<mods:extent>1 excerpt</mods:extent>
+<mods:digitalOrigin>reformatted digital</mods:digitalOrigin>
+</mods:physicalDescription>
+
+<mods:abstract>Excerpt from Sidney R. DeLong's The History of Arizona: From the Earliest Times Known to the People of Europe to 1903.</mods:abstract>
+
+<mods:note>From typescript of handwritten memoirs written by Andrew Hays Cargill.</mods:note>
+
+<mods:subject>
+<mods:topic>Camp Grant Massacre, Ariz., 1871</mods:topic>
+</mods:subject>
+
+<mods:relatedItem type="host" displayLabel="Published in:">
+<mods:titleInfo>
+<mods:title>history of Arizona from the earliest times known to the people of Europe to 1903</mods:title>
+<mods:nonSort>The</mods:nonSort>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart>DeLong, Sidney R.</mods:namePart>
+<mods:role><mods:roleTerm type="text">creator</mods:roleTerm></mods:role>
+</mods:name>
+<mods:originInfo>
+<mods:place>
+<mods:placeTerm type="code" authority="marccountry">cau</mods:placeTerm>
+<mods:placeTerm type="text">San Francisco</mods:placeTerm>
+</mods:place>
+<mods:publisher>Whitaker and Ray</mods:publisher>
+<mods:dateIssued encoding="w3cdtf" keyDate="yes">1903</mods:dateIssued>
+</mods:originInfo>
+</mods:relatedItem>
+
+
+<mods:relatedItem type="host" displayLabel="Collection:">
+<mods:titleInfo>
+<mods:title>Aravaipa</mods:title>
+</mods:titleInfo>
+<mods:identifier type="COLID">55</mods:identifier>
+<mods:identifier type="URI">http://dl.lib.brown.edu/aravaipa</mods:identifier>
+</mods:relatedItem>
+
+</mods:mods>
+</METS:xmlData>
+</METS:mdWrap>
+</METS:dmdSec>
+<METS:amdSec>
+<METS:rightsMD ID="RMD1">
+<METS:mdWrap MDTYPE="OTHER" LABEL="RIGHTSMD">
+<METS:xmlData>
+<rights:RightsDeclarationMD RIGHTSCATEGORY="PUBLIC DOMAIN">
+<rights:RightsDeclaration>
+This object is available for public use. Individuals interested in reproducing this object in a publication, web site or for any commercial purpose must first receive written permission from the Brown University Library. 
+</rights:RightsDeclaration> 
+<rights:RightsHolder>
+<rights:RightsHolderName>Brown University</rights:RightsHolderName> 
+<rights:RightsHolderContact>
+<rights:RightsHolderContactDesignation>Center for Digital Initiatives</rights:RightsHolderContactDesignation>
+<rights:RightsHolderContactAddress>Box A, Brown University, Providence, RI 02912</rights:RightsHolderContactAddress> 
+<rights:RightsHolderContactPhone PHONETYPE="FAX"></rights:RightsHolderContactPhone> 
+<rights:RightsHolderContactPhone PHONETYPE="BUSINESS"></rights:RightsHolderContactPhone>
+<rights:RightsHolderContactEmail>cdi@brown.edu</rights:RightsHolderContactEmail> 
+</rights:RightsHolderContact>
+</rights:RightsHolder>
+</rights:RightsDeclarationMD>
+</METS:xmlData>
+</METS:mdWrap>
+</METS:rightsMD>
+</METS:amdSec>
+<METS:fileSec>
+<METS:fileGrp USE="thumbnail">
+<METS:file ID="FID1" MIMETYPE="image/jpeg" SEQ="1" GROUPID="GID1" CHECKSUMTYPE="MD5" CHECKSUM="C373D2216EC4D6D20BCDD770A6556489">
+<METS:FLocat LOCTYPE="URL" xlink:href="http://dl.lib.brown.edu/jpegs/1227191039171875.jpg"/>
+</METS:file>
+</METS:fileGrp>
+<METS:fileGrp USE="teidoc">
+<METS:file ID="FID2" MIMETYPE="text/xml" SEQ="1" GROUPID="GID1" CHECKSUMTYPE="MD5" CHECKSUM="CC43816C10518485F90428AEE751C68B">
+<METS:FLocat LOCTYPE="URL" xlink:href="ara_cargill.xml"/>
+</METS:file>
+</METS:fileGrp>
+<METS:fileGrp USE="xslt">
+<METS:file ID="FID3" MIMETYPE="text/xml" SEQ="1" GROUPID="GID1" CHECKSUMTYPE="MD5" CHECKSUM="330B2F84F587C06AB06B7CB240363E76">
+<METS:FLocat LOCTYPE="URL" xlink:href="1226416901875000.xsl"/>
+</METS:file>
+</METS:fileGrp>
+</METS:fileSec>
+<METS:structMap TYPE="physical">
+<METS:div TYPE="volume" DMDID="DM1" ADMID="RMD1" LABEL="Cargill, Camp Grant Massacre" ID="div1">
+<METS:div ORDER="1" LABEL="xml File" TYPE="xmlfile" ID="div2" DMDID="DM1" ADMID="RMD1">
+<METS:fptr FILEID="FID2"/>
+</METS:div>
+</METS:div>
+</METS:structMap>
+</METS:mets>
