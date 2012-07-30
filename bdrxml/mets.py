@@ -26,6 +26,7 @@ class Common(xmlmap.XmlObject):
                        #For now we are assuming the METs will include a Mods.
                        'mods': MODS_NAMESPACE,
                        'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+                       'IR': IR_NAMESPACE,
                        }
     schema_location = xmlmap.StringField('@xsi:schemaLocation')
 
@@ -76,6 +77,7 @@ class FileSec(Common):
     
 
 class IR(Common):
+    ROOT_NS = IR_NAMESPACE
     ROOT_NAME = 'irData'
     depositor_name = SF('IR:deposit/IR:depositor/IR:name')
     depositor_email = SF('IR:deposit/IR:depositor/IR:email')
