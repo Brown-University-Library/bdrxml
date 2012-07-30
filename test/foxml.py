@@ -35,7 +35,8 @@ class BasicMakeTest(unittest.TestCase):
         r.model.append(m2)
         self.fox.rels_ext = r
         read_fox = load_xmlobject_from_string(self.fox.serialize(), Fox)
-        #TODO figure out why read_fox.rels_ext.model is empty []
+        self.assertTrue('info:fedora/bdr-cmodel:commonMetadata' in [m.name for m in read_fox.rels_ext.model])
+        self.assertTrue('info:fedora/bdr-cmodel:masterImage' in [m.name for m in read_fox.rels_ext.model])
 
 def suite():
     suite = unittest.makeSuite(BasicMakeTest, 'test')
