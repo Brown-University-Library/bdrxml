@@ -61,5 +61,4 @@ def make_mods():
     Helper that sets the XSD and returns Mods object.
     """
     m = Mods()
-    m.schema_location = 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd'
     return m
