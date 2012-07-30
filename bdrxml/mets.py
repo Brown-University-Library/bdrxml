@@ -101,5 +101,5 @@ def make_mets():
     Helper to initialize a BDR Mets.
     """
     m = BDRMets()
-    m.schema_location = 'http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd'
+    m.schema_location = 'http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd'
     return m
