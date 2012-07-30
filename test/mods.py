@@ -2,7 +2,7 @@ import os
 import unittest
 from lxml import etree
 from eulxml.xmlmap  import load_xmlobject_from_string
-from bdrxml.mods import Mods, make_mods, MODS_SCHEMA
+from bdrxml.mods import Mods, make_mods, MODS_SCHEMA, LocalTopic
 
 class ModsReadWrite(unittest.TestCase):
     def setUp(self):
@@ -17,6 +17,16 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(loaded.title, 'Sample title')
         self.assertEqual(loaded.publisher, 'BUL')
         self.assertTrue(MODS_SCHEMA in loaded.schema_location)
+
+    def test_subjects(self):
+        self.mods.title = "Sample"
+        local = ['sample', 'test']
+        for keyword in local:
+            subject = LocalTopic()
+            subject.topic = keyword
+            self.mods.local_topic.append(subject)
+        new_mods = load_xmlobject_from_string(self.mods.serialize(), Mods)
+        self.assertEqual(local, [n.topic for n in new_mods.local_topic])
         
 
 
