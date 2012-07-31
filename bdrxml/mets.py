@@ -22,13 +22,13 @@ class Common(xmlmap.XmlObject):
     ROOT_NAMESPACES = {
                        'METS': METS_NAMESPACE,
                        'rights': RIGHTS_NAMESPACE,
-                       'xlink': XLINK_NAMESPACE,
-                       #For now we are assuming the METs will include a Mods.
+                       #For now we are assuming the METS will include a MODS.
                        'mods': MODS_NAMESPACE,
-                       'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
                        'IR': IR_NAMESPACE,
+                       'xlink': XLINK_NAMESPACE,
+                       'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+                       'xs': 'http://www.w3.org/2001/XMLSchema',
                        }
-    schema_location = xmlmap.StringField('@xsi:schemaLocation')
 
 class Context(Common):
     ROOT_NS = RIGHTS_NAMESPACE
@@ -87,13 +87,24 @@ class IR(Common):
     collections_date = SF('IR:collections/IR:date')
     collection = SF('IR:collections/IR:collection')
 
+class MdWrap(Common):
+    type = SF('@MDTYPE')
+    xml = xmlmap.NodeField('METS:xmlData', xmlmap.XmlObject)
+    mods = xmlmap.NodeField('METS:xmlData/mods:mods', xmlmap.XmlObject)  
+
 class BDRMets(Common):
     """BDRMets class."""
-    pid = xmlmap.StringField('@OBJID')
-    mods = xmlmap.NodeField('METS:dmdSec[@ID="DM1"]/METS:mdWrap[@MDTYPE="MODS"]/METS:xmlData/mods:mods', Mods)
-    ir = xmlmap.NodeField('METS:dmdSec[@ID="DM2"]/METS:mdWrap[@MDTYPE="OTHER"][@OTHERMDTYPE="IR"]/METS:xmlData/IR:irData', IR)
-    rights = xmlmap.NodeField('METS:amdSec/METS:rightsMD[@ID="RMD1"]/METS:mdWrap[@LABEL="RIGHTSMD"][@MDTYPE="OTHER"]/METS:xmlData/rights:RightsDeclarationMD', Rights)
+    ROOT_NAME = 'mets'
+    XSD_SCHEMA = 'http://www.loc.gov/standards/mets/mets.xsd'
+    pid = xmlmap.StringField('METS:mets/@OBJID')
+    mdwrap = xmlmap.NodeField('METS:mets/METS:dmdSec[@ID="DM1"]/METS:mdWrap', MdWrap)
+    #mods = xmlmap.NodeField('METS:dmdSec[@ID="DM1"]/METS:mdWrap[@MDTYPE="MODS"]/METS:xmlData/mods:mods', Mods)
+    ir = xmlmap.NodeField('METS:mets/METS:dmdSec[@ID="DM2"]/METS:mdWrap[@MDTYPE="OTHER"][@OTHERMDTYPE="IR"]/METS:xmlData/IR:irData', IR)
+    rights = xmlmap.NodeField('METS:mets/METS:amdSec/METS:rightsMD[@ID="RMD1"]/METS:mdWrap[@LABEL="RIGHTSMD"][@MDTYPE="OTHER"]/METS:xmlData/rights:RightsDeclarationMD', Rights)
     filesec = xmlmap.NodeField('METS:mets/METS:fileSec', FileSec)
+    schema_location = SF('METS:mets/@xsi:schemaLocation', 'self')
+    #Hack for declaring the XSI again for use in
+    extra_namespace = SF('METS:mets/@XSI', 'self')
     
 
 def make_mets():
@@ -101,5 +112,6 @@ def make_mets():
     Helper to initialize a BDR Mets.
     """
     m = BDRMets()
-    m.schema_location = 'http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd'
+    m.extra_namespace = 'http://www.w3.org/2001/XMLSchema-instance'
+    m.schema_location = 'http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/standards/mods/v3/ http://www.loc.gov/standards/mods/v3/mods-3-3.xsd'
     return m

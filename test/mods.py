@@ -17,6 +17,8 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(loaded.title, 'Sample title')
         self.assertEqual(loaded.publisher, 'BUL')
         #self.assertTrue(MODS_SCHEMA in loaded.schema_location)
+        #self.mods.schema_location = 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-0.xsd'
+        #print self.mods.serialize(pretty=True)
 
     def test_subjects(self):
         self.mods.title = "Sample"

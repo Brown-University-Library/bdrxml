@@ -59,7 +59,6 @@ class Common(xmlmap.XmlObject):
     ROOT_NS = FOXNS
     ROOT_NAME = 'foxml'
     ROOT_NAMESPACES = {'foxml': FOXNS,
-                       'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
                        'rdf': RDFNS,
                        'oai_dc': 'http://www.openarchives.org/OAI/2.0/oai_dc/'}
     SCHEMA = 'info:fedora/fedora-system:def/foxml#'
@@ -71,12 +70,13 @@ class DatastreamCommon(xmlmap.XmlObject):
     ROOT_NS = FOXNS
     ROOT_NAMESPACES = {'foxml': FOXNS}
     
-class Content(DatastreamCommon):
+class Content(Common):
     """
     Content of a datastream.
     """
     ROOT_NAME = 'xmlContent'
     #<foxml:contentLocation REF="http://icarus.lib.virginia.edu/images/iva/archerd05small.jpg" TYPE="URL"/>
+
 
 class ContentLocation(DatastreamCommon):
     """
@@ -156,3 +156,14 @@ def make():
     #Create a basic BDR-ish FOXML document to get started. 
     doc = load_xmlobject_from_string(FOX, Fox)
     return doc
+
+
+def output(foxmlobj):
+  """
+  Helper and hacks to output the Foxml for the BDR.
+  """
+  foxstr = foxmlobj.serialize()
+  #Replace temp XSI holder with real namespace.  Fedora requires each
+  #datastream to have a separate declaration. 
+  out = foxstr.replace('XSI=', 'xmlns:xsi=')
+  return out

@@ -11,7 +11,6 @@ class Common(XmlObject):
                'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
                }
     ROOT_NS = MODS_NAMESPACE
-    XSD_SCHEMA = MODS_SCHEMA
 
 class Collection(Common):
     ROOT_NAME = 'relatedItem'
@@ -41,7 +40,6 @@ class LocalTopic(Common):
 class Mods(Common):
     """Map mods fields."""
     ROOT_NAME = 'mods'
-    schema_location = xmlmap.StringField('@xsi:schemaLocation')
     id = SF('@ID')
     title = SF('mods:titleInfo/mods:title')
     publisher = SF('mods:originInfo/mods:publisher')
@@ -54,12 +52,12 @@ class Mods(Common):
     corporate_name = xmlmap.NodeListField('mods:name[@type="corporate"]', CorporateName)
     created = SF('mods:originInfo/mods:dateCreated')
     local_topic = xmlmap.NodeListField('mods:subject', LocalTopic)
-    
+    schema_location = SF('mods:mods/@xsi:schemaLocation')
 
 def make_mods():
     """
     Helper that sets the XSD and returns Mods object.
     """
     m = Mods()
-    m.schema_location = 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd'
+    #m.schema_location = 'http://www.loc.gov/standards/mods/v3/ http://www.loc.gov/standards/mods/v3/mods-3-3.xsd'
     return m
