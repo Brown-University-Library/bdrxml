@@ -156,14 +156,3 @@ def make():
     #Create a basic BDR-ish FOXML document to get started. 
     doc = load_xmlobject_from_string(FOX, Fox)
     return doc
-
-
-def output(foxmlobj):
-  """
-  Helper and hacks to output the Foxml for the BDR.
-  """
-  foxstr = foxmlobj.serialize()
-  #Replace temp XSI holder with real namespace.  Fedora requires each
-  #datastream to have a separate declaration. 
-  out = foxstr.replace('XSI=', 'xmlns:xsi=')
-  return out
