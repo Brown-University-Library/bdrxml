@@ -1,7 +1,8 @@
 """
 Foxml creation.
 """
-#Default foxml from the reference exmample - http://fedora-commons.org/documentation/3.3.1/
+#Default foxml from the reference exmample - http://fedora-commons.org/documentation/3.3.1/ - http://fedora-commons.org/documentation/3.3.1/attachments/4718716/4915209.xml
+
 FOX = """
 <foxml:digitalObject VERSION="1.1" PID="demo:999" xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/definitions/1/0/foxml1-1.xsd" xmlns:foxml="info:fedora/fedora-system:def/foxml#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <foxml:objectProperties>
@@ -25,7 +26,7 @@ FOX = """
       <foxml:xmlContent>
         <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
                  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-                 xmlns:fedora="info:fedora/fedora-system:def/relations-external#"
+                 xmlns:rel="info:fedora/fedora-system:def/relations-external#"
                  xmlns:myns="http://www.nsdl.org/ontologies/relationships#"
                  xmlns:dc="http://purl.org/dc/elements/1.1/"
                  xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/">
