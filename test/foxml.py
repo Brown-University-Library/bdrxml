@@ -1,10 +1,15 @@
 import os
 import unittest
 from lxml import etree
-from eulxml.xmlmap  import load_xmlobject_from_string
+
+import eulxml
+from eulxml import xmlmap
+from eulxml.xmlmap import load_xmlobject_from_string
+
 import bdrxml
 from bdrxml.foxml import Fox, make
 from bdrxml.rels import RelsExt
+
 
 class BasicMakeTest(unittest.TestCase):
     def setUp(self):
@@ -20,7 +25,7 @@ class BasicMakeTest(unittest.TestCase):
                          read_fox.pid)
         #Rels-ext and DC
         #Add
-    
+        
     def test_multiple_cmodels(self):
         from bdrxml.rels import RelsExt, Cmodel
         #first model
@@ -37,10 +42,30 @@ class BasicMakeTest(unittest.TestCase):
         read_fox = load_xmlobject_from_string(self.fox.serialize(), Fox)
         self.assertTrue('info:fedora/bdr-cmodel:commonMetadata' in [m.name for m in read_fox.rels_ext.model])
         self.assertTrue('info:fedora/bdr-cmodel:masterImage' in [m.name for m in read_fox.rels_ext.model])
+        
+    def test_relsIsMemberOf(self):
+      import eulxml
+      from eulxml import xmlmap
+      from bdrxml.rels import RelsExt, MemberOf
+      r = RelsExt()
+      r.about = 'info:fedora/test:124'
+      ## add MemberOf to RelsExt
+      mo = MemberOf()
+      mo.name = 'info:fedora/test:master'
+      r.is_member_of.append(mo)
+      ## add RelsExt to fox-object
+      self.fox.rels_ext = r
+      ## test after round-trip
+      fox_object = xmlmap.load_xmlobject_from_string( self.fox.serialize(), Fox )
+      self.assertTrue( 'info:fedora/test:master' == fox_object.rels_ext.is_member_of[0].name )
+      self.assertTrue( '<rel:isMemberOf rdf:resource="info:fedora/test:master"/>' in fox_object.serialize() )
+
 
 def suite():
     suite = unittest.makeSuite(BasicMakeTest, 'test')
     return suite
 
+
 if __name__ == '__main__':
     unittest.main()
+    
