@@ -52,7 +52,7 @@ class Rights(Common):
     category = SF('@RIGHTSCATEGORY')
     holder = xmlmap.NodeField('rights:RightsHolder', Holder)
     #Can't call this context - it's a property inherited from the XMLMap
-    ctext = xmlmap.NodeListField('rights:Context', 'self')
+    ctext = xmlmap.NodeListField('rights:Context', Context)
 
 
 class File(Common):
