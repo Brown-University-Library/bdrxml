@@ -9,9 +9,9 @@ from eulxml import xmlmap
 from eulxml.xmlmap import StringField as SF
 
 from mods import Mods, MODS_NAMESPACE
+from rights import Rights, RIGHTS_NAMESPACE
 
 METS_NAMESPACE = 'http://www.loc.gov/METS/'
-RIGHTS_NAMESPACE = 'http://cosimo.stanford.edu/sdr/metsrights/'
 XLINK_NAMESPACE = 'http://www.w3.org/1999/xlink'
 IR_NAMESPACE = 'http://dl.lib.brown.edu/md/irdata'
 
@@ -29,31 +29,6 @@ class Common(xmlmap.XmlObject):
                        'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
                        'xs': 'http://www.w3.org/2001/XMLSchema',
                        }
-
-class Context(Common):
-    ROOT_NS = RIGHTS_NAMESPACE
-    ROOT_NAME = 'Context'
-    cclass = SF('@CONTEXTCLASS')
-    id = SF('@CONTEXTID')
-    delete = SF('rights:Permissions/@DELETE')
-    discover = SF('rights:Permissions/@DISCOVER')
-    display = SF('rights:Permissions/@DISPLAY')
-    modify = SF('rights:Permissions/@MODIFY')
-    usertype = SF('rights:UserName/@USERTYPE')
-    username = SF('rights:UserName')
-
-class Holder(Common):
-    ROOT_NAME = 'RightsHolder'
-    context_ids = SF('@CONTEXTIDS')
-    name = SF('rights:RightsHolderName')
-
-class Rights(Common):
-    ROOT_NAME = 'RightsDeclarationMD'
-    category = SF('@RIGHTSCATEGORY')
-    holder = xmlmap.NodeField('rights:RightsHolder', Holder)
-    #Can't call this context - it's a property inherited from the XMLMap
-    ctext = xmlmap.NodeListField('rights:Context', Context)
-
 
 class File(Common):
     ROOT_NAME = 'file'
@@ -98,7 +73,7 @@ class BDRMets(Common):
     XSD_SCHEMA = 'http://www.loc.gov/standards/mets/mets.xsd'
     pid = xmlmap.StringField('@OBJID')
     mdwrap = xmlmap.NodeField('METS:dmdSec[@ID="DM1"]/METS:mdWrap', MdWrap)
-    #mods = xmlmap.NodeField('METS:dmdSec[@ID="DM1"]/METS:mdWrap[@MDTYPE="MODS"]/METS:xmlData/mods:mods', Mods)
+    mods = xmlmap.NodeField('METS:dmdSec[@ID="DM1"]/METS:mdWrap[@MDTYPE="MODS"]/METS:xmlData/mods:mods', Mods)
     ir = xmlmap.NodeField('METS:dmdSec[@ID="DM2"]/METS:mdWrap[@MDTYPE="OTHER"][@OTHERMDTYPE="IR"]/METS:xmlData/IR:irData', IR)
     rights = xmlmap.NodeField('METS:amdSec/METS:rightsMD[@ID="RMD1"]/METS:mdWrap[@LABEL="RIGHTSMD"][@MDTYPE="OTHER"]/METS:xmlData/rights:RightsDeclarationMD', Rights)
     filesec = xmlmap.NodeField('METS:fileSec', FileSec)

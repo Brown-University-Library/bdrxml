@@ -14,10 +14,10 @@ class MetsReadWrite(unittest.TestCase):
         self.mets = load_xmlobject_from_file(os.path.join(BASE, 'data/cdi_mets.xml'),
                                              BDRMets)
         
-    # def test_read(self):
-    #     #print self.mets.serialize(pretty=True)
-    #     self.assertEqual(self.mets.rights.holder.name, "Brown University")
-    #     self.assertEqual(self.mets.mods.title, "Camp Grant Massacre")
+    def test_read(self):
+        #print self.mets.serialize(pretty=True)
+        self.assertEqual(self.mets.rights.holder.name, "Brown University")
+        self.assertEqual(self.mets.mods.title, "Camp Grant Massacre")
         
     # def test_write(self):
     #     mets = make_mets()
