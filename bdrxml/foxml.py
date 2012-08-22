@@ -122,7 +122,7 @@ class InlineRelsInt(DatastreamVersion):
     ROOT_NAMESPACES = {'foxml': FOXNS,
                        'rdf': RDFNS}
     content = NodeField('foxml:xmlContent/rdf:RDF', Content)
-    content_list = NodeListField('foxml:xmlContent', Content)
+    content_list = NodeListField('foxml:xmlContent/rdf:RDF', Content)
     
 class Datastream(xmlmap.XmlObject):
     """
