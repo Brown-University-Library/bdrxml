@@ -99,6 +99,7 @@ class DatastreamVersion(xmlmap.XmlObject):
     mimetype = SF('@MIMETYPE')
     label = SF('@LABEL')
     content = NodeField('foxml:xmlContent', Content)
+    # content_list = NodeListField('foxml:xmlContent', Content)
     content_location = NodeField('foxml:contentLocation', ContentLocation)
 
 class InlineMets(DatastreamVersion):
