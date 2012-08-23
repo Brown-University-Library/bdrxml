@@ -48,6 +48,9 @@ class FileSec(Common):
     ROOT_NAME = 'fileSec'
     filegrp = xmlmap.NodeListField('METS:fileGrp', FileGrp)
     
+class StructMap( Common ):
+    ROOT_NAME = 'structMap'
+    
 class MdWrap(Common):
     type = SF('@MDTYPE')
     xml = xmlmap.NodeField('METS:xmlData', xmlmap.XmlObject)
@@ -63,6 +66,7 @@ class BDRMets(Common):
     ir = xmlmap.NodeField('METS:dmdSec[@ID="DM2"]/METS:mdWrap[@MDTYPE="OTHER"][@OTHERMDTYPE="IR"]/METS:xmlData/ir:irData', IR)
     rights = xmlmap.NodeField('METS:amdSec/METS:rightsMD[@ID="RMD1"]/METS:mdWrap[@LABEL="RIGHTSMD"][@MDTYPE="OTHER"]/METS:xmlData/rights:RightsDeclarationMD', Rights)
     filesec = xmlmap.NodeField('METS:fileSec', FileSec)
+    structmap = xmlmap.NodeField( 'METS:structMap/METS:div', StructMap )  # not used but required for valid mets
     schema_location = SF('@xsi:schemaLocation', 'self')
 
 def make_mets():
