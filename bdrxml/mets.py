@@ -60,7 +60,7 @@ class BDRMets(Common):
     pid = xmlmap.StringField('@OBJID')
     mdwrap = xmlmap.NodeField('METS:dmdSec[@ID="DM1"]/METS:mdWrap', MdWrap)
     mods = xmlmap.NodeField('METS:dmdSec[@ID="DM1"]/METS:mdWrap[@MDTYPE="MODS"]/METS:xmlData/mods:mods', Mods)
-    ir = xmlmap.NodeField('METS:dmdSec[@ID="DM2"]/METS:mdWrap[@MDTYPE="OTHER"][@OTHERMDTYPE="IR"]/METS:xmlData/IR:irData', IR)
+    ir = xmlmap.NodeField('METS:dmdSec[@ID="DM2"]/METS:mdWrap[@MDTYPE="OTHER"][@OTHERMDTYPE="IR"]/METS:xmlData/ir:irData', IR)
     rights = xmlmap.NodeField('METS:amdSec/METS:rightsMD[@ID="RMD1"]/METS:mdWrap[@LABEL="RIGHTSMD"][@MDTYPE="OTHER"]/METS:xmlData/rights:RightsDeclarationMD', Rights)
     filesec = xmlmap.NodeField('METS:fileSec', FileSec)
     schema_location = SF('@xsi:schemaLocation', 'self')
