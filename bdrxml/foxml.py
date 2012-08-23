@@ -49,6 +49,9 @@ from eulxml.xmlmap import NodeField, NodeListField
 #Local xml maps
 from mets import BDRMets, METS_NAMESPACE
 from rels import RelsExt, RelsInt
+from rights import Rights, RIGHTS_NAMESPACE
+from irMetadata import IR, IR_NAMESPACE
+
 
 FOXNS = 'info:fedora/fedora-system:def/foxml#'
 RDFNS = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'
@@ -103,6 +106,26 @@ class DatastreamVersion(xmlmap.XmlObject):
     content = NodeField('foxml:xmlContent', Content)
     # content_list = NodeListField('foxml:xmlContent', Content)
     content_location = NodeField('foxml:contentLocation', ContentLocation)
+
+class InlineRights(DatastreamVersion):
+    """
+    Handles inline METS like the BDR.  Only deference is adding the mets namespace.
+    """
+    #Handle mets slightly differently
+    ROOT_NS = FOXNS
+    ROOT_NAMESPACES = {'foxml': FOXNS,
+                       'rights': RIGHTS_NAMESPACE}
+    content = NodeField('foxml:xmlContent/rights:RightsDeclarationMD', Content)
+
+class InlineIR(DatastreamVersion):
+    """
+    Handles inline METS like the BDR.  Only deference is adding the mets namespace.
+    """
+    #Handle mets slightly differently
+    ROOT_NS = FOXNS
+    ROOT_NAMESPACES = {'foxml': FOXNS,
+                       'ir': IR_NAMESPACE}
+    content = NodeField('foxml:xmlContent/ir:irData', Content)
 
 class InlineMets(DatastreamVersion):
     """
