@@ -50,7 +50,6 @@ class RightsReadWrite(unittest.TestCase):
         self.init_context("rights3")
         self.init_holder()
         rights_str = self.rights.serialize(pretty=True)
-        print rights_str
         loaded = load_xmlobject_from_string(rights_str, Rights)
         self.assertEqual(len(loaded.ctext), 3)
         self.assertEqual(loaded.holder.context_ids, 'rights1 rights2 rights3')

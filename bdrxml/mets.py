@@ -10,10 +10,11 @@ from eulxml.xmlmap import StringField as SF
 
 from mods import Mods, MODS_NAMESPACE
 from rights import Rights, RIGHTS_NAMESPACE
+from irMetadata import IR, IR_NAMESPACE
 
 METS_NAMESPACE = 'http://www.loc.gov/METS/'
 XLINK_NAMESPACE = 'http://www.w3.org/1999/xlink'
-IR_NAMESPACE = 'http://dl.lib.brown.edu/md/irdata'
+#IR_NAMESPACE = 'http://dl.lib.brown.edu/md/irdata'
 
 class Common(xmlmap.XmlObject):
     "METS class with namespace declaration common to all METS XmlObjects."
@@ -24,7 +25,7 @@ class Common(xmlmap.XmlObject):
                        'rights': RIGHTS_NAMESPACE,
                        #For now we are assuming the METS will include a MODS.
                        'mods': MODS_NAMESPACE,
-                       'IR': IR_NAMESPACE,
+                       'ir': IR_NAMESPACE,
                        'xlink': XLINK_NAMESPACE,
                        'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
                        'xs': 'http://www.w3.org/2001/XMLSchema',
@@ -51,16 +52,16 @@ class FileSec(Common):
     filegrp = xmlmap.NodeListField('METS:fileGrp', FileGrp)
     
 
-class IR(Common):
-    ROOT_NS = IR_NAMESPACE
-    ROOT_NAME = 'irData'
-    depositor_name = SF('IR:deposit/IR:depositor/IR:name')
-    depositor_email = SF('IR:deposit/IR:depositor/IR:email')
-    depositor_eppn = SF('IR:deposit/IR:depositor/IR:eppn')
-    date = SF('IR:deposit/IR:date')
-    filename = SF('IR:deposit/IR:filename')
-    collections_date = SF('IR:collections/IR:date')
-    collection = SF('IR:collections/IR:collection')
+#class IR(Common):
+    #ROOT_NS = IR_NAMESPACE
+    #ROOT_NAME = 'irData'
+    #depositor_name = SF('IR:deposit/IR:depositor/IR:name')
+    #depositor_email = SF('IR:deposit/IR:depositor/IR:email')
+    #depositor_eppn = SF('IR:deposit/IR:depositor/IR:eppn')
+    #date = SF('IR:deposit/IR:date')
+    #filename = SF('IR:deposit/IR:filename')
+    #collections_date = SF('IR:collections/IR:date')
+    #collection = SF('IR:collections/IR:collection')
 
 class MdWrap(Common):
     type = SF('@MDTYPE')

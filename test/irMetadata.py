@@ -17,7 +17,6 @@ class IRReadWrite(unittest.TestCase):
         self.ir.collection = '598'
 
         ir_str = self.ir.serializeDocument(pretty=True)
-        print ir_str
         loaded = load_xmlobject_from_string(ir_str, IR)
         self.assertEqual(loaded.collection, '598')
         

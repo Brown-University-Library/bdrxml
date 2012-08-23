@@ -18,7 +18,7 @@ class IR(XmlObject):
     ROOT_NS = IR_NAMESPACE
     ROOT_NAME = 'irData'
     XSD_SCHEMA = "http://dl.lib.brown.edu/md/irdata/ir.xsd"
-    xmlschema = xmlmap.loadSchema(XSD_SCHEMA)
+    #xmlschema = xmlmap.loadSchema(XSD_SCHEMA)
 
 
     #Fields
