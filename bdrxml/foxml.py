@@ -84,6 +84,8 @@ class ContentLocation(DatastreamCommon):
     For managed or externally reference datastreams.
     """
     ROOT = 'contentLocation'
+    #This can be a reference to a local file if Fedora is configured to ingest from local paths
+    #E.g. file:/tmp/photo.jpg
     href = SF('@REF')
     type = SF('@TYPE')
     
