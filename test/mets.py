@@ -19,32 +19,28 @@ class MetsReadWrite(unittest.TestCase):
         self.assertEqual(self.mets.rights.holder.name, "Brown University")
         self.assertEqual(self.mets.mods.title, "Camp Grant Massacre")
         
-    # def test_write(self):
-    #     mets = make_mets()
-    #     mods = load_xmlobject_from_file(os.path.join(BASE, 'data/cdi.mods'),
-    #                                     Mods)
-    #     mets.mods = mods
-    #     self.assertEqual(mets.mods.title, "Guerrilla")
-    #     mets.create_rights()
-    #     mets.rights.create_holder()
-    #     mets.rights.holder.name = "BUL"
-    #     self.assertEqual(mets.rights.holder.name, "BUL")
-
     def test_create(self):
         from bdrxml.foxml import make
         from bdrxml import mods
         from bdrxml.foxml import Datastream, DatastreamVersion, InlineMets
-        m = make_mets()
+        mets = make_mets()
+        mods_section = mods.make_mods()
+        mods_section.title = 'sample'
+        mets.create_mdwrap()
+        mets.mdwrap.id = 'MODS'
+        mets.mods = mods_section
+        #add ir
+        mets.create_ir()
+        mets.ir.filename = 'sample.txt'
+        #serialize
+        created_string = mets.serialize()
+        #load
+        loaded = load_xmlobject_from_string(created_string, BDRMets)
         
-
-        mods = mods.make_mods()
-        mods.title = 'sample'
-
-        m.create_mdwrap()
-        m.mdwrap.id = 'MODS'
-        m.xml = mods
+        self.assertEqual(loaded.mods.title, 'sample')
+        self.assertEqual(loaded.ir.filename, 'sample.txt')
         
-        #TO DO - finish.  Also test helper called by studio.  
+        #TO DO - finish.  Also test helper called by studio.
 
 
 
