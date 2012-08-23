@@ -2,11 +2,11 @@ import os
 import unittest
 from lxml import etree
 from eulxml.xmlmap  import load_xmlobject_from_string
-from bdrxml.irMetadata import IR, IR_NAMESPACE
+from bdrxml.irMetadata import IR, make_ir, IR_NAMESPACE
 
 class IRReadWrite(unittest.TestCase):
     def setUp(self):
-        self.ir = IR()
+        self.ir = make_ir()
 
     def test_WriteRead(self):
         self.ir.depositor_name = "Johnny"

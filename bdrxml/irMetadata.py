@@ -18,6 +18,7 @@ class IR(XmlObject):
     ROOT_NS = IR_NAMESPACE
     ROOT_NAME = 'irData'
     XSD_SCHEMA = "http://dl.lib.brown.edu/md/irdata/ir.xsd"
+    schema_location = SF('@xsi:schemaLocation', 'self')
     #xmlschema = xmlmap.loadSchema(XSD_SCHEMA)
 
 
@@ -29,3 +30,8 @@ class IR(XmlObject):
     filename = SF('ir:deposit/ir:filename')
     collections_date = SF('ir:collections/ir:date')
     collection = SF('ir:collections/ir:collection')
+
+def make_ir():
+    m = IR()
+    m.schema_location = IR.XSD_SCHEMA
+    return m

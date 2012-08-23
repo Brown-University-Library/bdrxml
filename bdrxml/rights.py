@@ -48,6 +48,9 @@ class Holder(Common):
 
 class Rights(Common):
     ROOT_NAME = 'RightsDeclarationMD'
+    XSD_SCHEMA = "http://cosimo.stanford.edu/sdr/metsrights.xsd"
+    schema_location = SF('@xsi:schemaLocation', 'self')
+    
     category = SF('@RIGHTSCATEGORY')
     holder = xmlmap.NodeField('rights:RightsHolder', Holder)
     #Can't call this context - it's a property inherited from the XMLMap
@@ -62,4 +65,5 @@ class Rights(Common):
 def make_rights():
     m = Rights()
     m.create_holder()
+    m.schema_location = Rights.XSD_SCHEMA
     return m
