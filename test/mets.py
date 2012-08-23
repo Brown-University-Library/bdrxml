@@ -20,28 +20,32 @@ class MetsReadWrite(unittest.TestCase):
         self.assertEqual(self.mets.mods.title, "Camp Grant Massacre")
         
     def test_create(self):
+        import bdrxml
         from bdrxml.foxml import make
         from bdrxml import mods
         from bdrxml.foxml import Datastream, DatastreamVersion, InlineMets
         mets = make_mets()
+        #mods
         mods_section = mods.make_mods()
         mods_section.title = 'sample'
         mets.create_mdwrap()
         mets.mdwrap.id = 'MODS'
         mets.mods = mods_section
-        #add ir
+        #ir
         mets.create_ir()
         mets.ir.filename = 'sample.txt'
+        #structMap
+        mets.create_structmap()  # not used but required for valid mets
         #serialize
         created_string = mets.serialize()
         #load
         loaded = load_xmlobject_from_string(created_string, BDRMets)
-        
+        #test
         self.assertEqual(loaded.mods.title, 'sample')
         self.assertEqual(loaded.ir.filename, 'sample.txt')
+        self.assertEqual( type(loaded.structmap), bdrxml.mets.StructMap )
         
         #TO DO - finish.  Also test helper called by studio.
-
 
 
 def suite():
