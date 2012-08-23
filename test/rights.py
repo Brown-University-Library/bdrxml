@@ -2,7 +2,7 @@ import os
 import unittest
 from lxml import etree
 from eulxml.xmlmap  import load_xmlobject_from_string
-from bdrxml.rights import Rights, make_rights, Context, Holder, RIGHTS_NAMESPACE
+from bdrxml.rights import Rights, make_rights, Context, make_context, Holder, RIGHTS_NAMESPACE
 
 
 class RightsReadWrite(unittest.TestCase):
@@ -11,22 +11,19 @@ class RightsReadWrite(unittest.TestCase):
         self.rights = make_rights()
 
     def init_holder(self):
-        #holder = Holder()
-        #holder.name="Johnny"
-        #holder.context_ids="rights1"
-        #self.rights.holder=holder
         self.rights.holder.name="Johnny"
     
     def init_context(self, ctx_name):
-        context = Context()
-        context.cclass = "REPOSITORY MGR"
-        context.usertype = "GROUP"
-        context.id = ctx_name
-        context.delete = 'y'
-        context.discover = 'true' 
-        context.display = 'true' 
-        context.modify = 'true' 
-        self.rights.add_ctext(context)
+        my_context = make_context()
+        my_context.cclass = "REPOSITORY MGR"
+        my_context.usertype = "GROUP"
+        my_context.username = "johnny@brown.edu"
+        my_context.id = ctx_name
+        my_context.delete = 'y'
+        #my_context.discover = 'true' 
+        #my_context.display = 'true' 
+        my_context.modify = 'true' 
+        self.rights.add_ctext(my_context)
     
     def test_holder(self):
         self.init_holder()
@@ -53,6 +50,7 @@ class RightsReadWrite(unittest.TestCase):
         self.init_context("rights3")
         self.init_holder()
         rights_str = self.rights.serialize(pretty=True)
+        print rights_str
         loaded = load_xmlobject_from_string(rights_str, Rights)
         self.assertEqual(len(loaded.ctext), 3)
         self.assertEqual(loaded.holder.context_ids, 'rights1 rights2 rights3')

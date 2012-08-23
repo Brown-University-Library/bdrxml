@@ -1,8 +1,6 @@
 """
 Making rightsMetadata for the BDR.
 
-There is minimal support for MODS included.  Should be separated out at some
-point.
 """
 
 from eulxml import xmlmap
@@ -27,11 +25,21 @@ class Context(Common):
     cclass = SF('@CONTEXTCLASS')
     id = SF('@CONTEXTID')
     delete = BF('rights:Permissions/@DELETE','true','false')
-    discover = SF('rights:Permissions/@DISCOVER')
-    display = SF('rights:Permissions/@DISPLAY')
-    modify = SF('rights:Permissions/@MODIFY')
+    discover = BF('rights:Permissions/@DISCOVER','true','false')
+    display = BF('rights:Permissions/@DISPLAY','true','false')
+    modify = BF('rights:Permissions/@MODIFY','true','false')
     usertype = SF('rights:UserName/@USERTYPE')
     username = SF('rights:UserName')
+
+
+def make_context():
+    c = Context()
+    c.delete = False
+    c.discover = False
+    c.display = False
+    c.modify = False
+    return c
+
 
 class Holder(Common):
     ROOT_NAME = 'RightsHolder'
@@ -53,6 +61,5 @@ class Rights(Common):
 
 def make_rights():
     m = Rights()
-    h = Holder()
-    m.holder=h
+    m.create_holder()
     return m
