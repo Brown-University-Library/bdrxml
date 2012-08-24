@@ -34,7 +34,7 @@ class File(Common):
     mimetype = SF('@MIMETYPE')
     seq = SF('@SEQ')
     groupid = SF('@GROUPID')
-    admid = SF('@TMD1')
+    admid = SF('@ADMID')
     href = SF('METS:FLocat/@xlink:href')
     loctype = SF('METS:FLocat/@LOCTYPE')
     

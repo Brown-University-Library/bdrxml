@@ -2,7 +2,8 @@ import os
 import unittest
 from lxml import etree
 from eulxml.xmlmap  import load_xmlobject_from_string, load_xmlobject_from_file
-from bdrxml.mets import BDRMets, make_mets
+# from bdrxml.mets import BDRMets, make_mets
+from bdrxml.mets import BDRMets, make_mets, File, FileGrp
 from bdrxml.mods import Mods, MODS_SCHEMA
 from eulxml import xmlmap
 
@@ -34,16 +35,32 @@ class MetsReadWrite(unittest.TestCase):
         #ir
         mets.create_ir()
         mets.ir.filename = 'sample.txt'
+        #filesec -> filegrp
+        mets.create_filesec()
+        fg = FileGrp()
+        fg.id = u'GID1'
+        fg.use = u'image-tiff'
+        fi = File()
+        fi.admid = u'TMD1'
+        fi.groupid = u'GRP1'
+        fi.id = u'FID1'
+        fi.MIMETYPE = u'image/tiff'
+        fi.loctype = u'URL'
+        fi.href = u'/the/path.tif'
+        fg.file.append( fi )
+        mets.filesec.filegrp.append( fg )
         #structMap
         mets.create_structmap()  # not used but required for valid mets
         #serialize
-        created_string = mets.serialize()
+        created_string = mets.serialize( pretty=True )
+        # print created_string
         #load
         loaded = load_xmlobject_from_string(created_string, BDRMets)
         #test
         self.assertEqual(loaded.mods.title, 'sample')
         self.assertEqual(loaded.ir.filename, 'sample.txt')
         self.assertEqual( type(loaded.structmap), bdrxml.mets.StructMap )
+        self.assertEqual( loaded.filesec.filegrp[0].file[0].node.items(), [('ADMID', 'TMD1'), ('GROUPID', 'GRP1'), ('ID', 'FID1')] )
         
         #TO DO - finish.  Also test helper called by studio.
 
