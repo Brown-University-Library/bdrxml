@@ -51,7 +51,7 @@ class RelsTest(unittest.TestCase):
     
 
 def suite():
-    suite = unittest.makeSuite(RelsReadWrite, 'test')
+    suite = unittest.makeSuite(RelsTest, 'test')
     return suite
 
 if __name__ == '__main__':
