@@ -11,5 +11,5 @@ def suite():
     test_suite.addTest(rels_test.suite())
     return test_suite
 
-runner = unittest.TextTestRunner()
+runner = unittest.TextTestRunner(verbosity=2)
 runner.run(suite())
