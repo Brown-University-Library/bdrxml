@@ -1,11 +1,8 @@
 import os
 import unittest
-from lxml import etree
 from eulxml.xmlmap  import load_xmlobject_from_string, load_xmlobject_from_file
-# from bdrxml.mets import BDRMets, make_mets
-from bdrxml.mets import BDRMets, make_mets, File, FileGrp
-from bdrxml.mods import Mods, MODS_SCHEMA
-from eulxml import xmlmap
+from bdrxml.mets import BDRMets, make_mets, File, FileGrp, StructMap
+from bdrxml.mods import make_mods
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 
@@ -21,13 +18,9 @@ class MetsReadWrite(unittest.TestCase):
         self.assertEqual(self.mets.mods.title, "Camp Grant Massacre")
         
     def test_create(self):
-        import bdrxml
-        from bdrxml.foxml import make
-        from bdrxml import mods
-        from bdrxml.foxml import Datastream, DatastreamVersion, InlineMets
         mets = make_mets()
         #mods
-        mods_section = mods.make_mods()
+        mods_section = make_mods()
         mods_section.title = 'sample'
         mets.create_mdwrap()
         mets.mdwrap.id = 'MODS'
@@ -59,7 +52,7 @@ class MetsReadWrite(unittest.TestCase):
         #test
         self.assertEqual(loaded.mods.title, 'sample')
         self.assertEqual(loaded.ir.filename, 'sample.txt')
-        self.assertEqual( type(loaded.structmap), bdrxml.mets.StructMap )
+        self.assertEqual( type(loaded.structmap), StructMap )
         self.assertEqual( loaded.filesec.filegrp[0].file[0].node.items(), [('ADMID', 'TMD1'), ('GROUPID', 'GRP1'), ('ID', 'FID1')] )
         
         #TO DO - finish.  Also test helper called by studio.

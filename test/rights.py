@@ -1,8 +1,6 @@
-import os
 import unittest
-from lxml import etree
 from eulxml.xmlmap  import load_xmlobject_from_string
-from bdrxml.rights import Rights, make_rights, Context, make_context, Holder, RIGHTS_NAMESPACE
+from bdrxml.rights import Rights, make_rights, make_context
 
 
 class RightsReadWrite(unittest.TestCase):
