@@ -1,12 +1,10 @@
 import unittest
 from lxml import etree
-
+from bdrxml import foxml, rels
 
 class RelsTest(unittest.TestCase):
     
     def test_multipleRelsInts(self):
-      from bdrxml import foxml, rels
-      from bdrxml import rels
       ## datastream
       rids = foxml.Datastream()
       rids.id = u'RELS-INT'

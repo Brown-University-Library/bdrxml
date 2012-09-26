@@ -1,6 +1,4 @@
-import os
 import unittest
-from lxml import etree
 from eulxml.xmlmap  import load_xmlobject_from_string
 from bdrxml.mods import Mods, make_mods, MODS_SCHEMA, LocalTopic
 
