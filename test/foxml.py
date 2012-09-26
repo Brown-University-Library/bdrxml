@@ -1,14 +1,9 @@
-import os
 import unittest
-from lxml import etree
 
-import eulxml
-from eulxml import xmlmap
 from eulxml.xmlmap import load_xmlobject_from_string
 
-import bdrxml
 from bdrxml.foxml import Fox, make
-from bdrxml.rels import RelsExt
+from bdrxml.rels import RelsExt, Cmodel, MemberOf
 
 
 class BasicMakeTest(unittest.TestCase):
@@ -27,7 +22,6 @@ class BasicMakeTest(unittest.TestCase):
         #Add
         
     def test_multiple_cmodels(self):
-        from bdrxml.rels import RelsExt, Cmodel
         #first model
         r = RelsExt()
         r.about = 'info:fedora/test:123' 
@@ -44,9 +38,6 @@ class BasicMakeTest(unittest.TestCase):
         self.assertTrue('info:fedora/bdr-cmodel:masterImage' in [m.name for m in read_fox.rels_ext.model])
         
     def test_relsIsMemberOf(self):
-      import eulxml
-      from eulxml import xmlmap
-      from bdrxml.rels import RelsExt, MemberOf
       r = RelsExt()
       r.about = 'info:fedora/test:124'
       ## add MemberOf to RelsExt
@@ -56,7 +47,7 @@ class BasicMakeTest(unittest.TestCase):
       ## add RelsExt to fox-object
       self.fox.rels_ext = r
       ## test after round-trip
-      fox_object = xmlmap.load_xmlobject_from_string( self.fox.serialize(), Fox )
+      fox_object = load_xmlobject_from_string( self.fox.serialize(), Fox )
       self.assertTrue( 'info:fedora/test:master' == fox_object.rels_ext.is_member_of[0].name )
       self.assertTrue( '<rel:isMemberOf rdf:resource="info:fedora/test:master"/>' in fox_object.serialize() )
       

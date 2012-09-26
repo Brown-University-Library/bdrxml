@@ -1,8 +1,6 @@
-import os
 import unittest
-from lxml import etree
 from eulxml.xmlmap  import load_xmlobject_from_string
-from bdrxml.irMetadata import IR, make_ir, IR_NAMESPACE
+from bdrxml.irMetadata import IR, make_ir
 
 class IRReadWrite(unittest.TestCase):
     def setUp(self):
