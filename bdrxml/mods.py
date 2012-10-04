@@ -67,6 +67,7 @@ class Mods(Common):
     #9 tableOfContents
     #10 targetAudience
     #11 note
+    note = SF('mods:note')
     #12 subject
     local_topic = xmlmap.NodeListField('mods:subject', LocalTopic)
     #13 classification

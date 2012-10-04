@@ -109,6 +109,7 @@ class ModsReadWrite(unittest.TestCase):
 
         self.assertEqual(loaded.typeOfResource, 'text')
         self.assertEqual(loaded.genre, 'theses')
+        self.assertEqual(loaded.note, 'Thesis (Ph.D.) -- Brown University (2008)')
 
     def test_round_trip(self):
         self.mods.title = "Sample title"
