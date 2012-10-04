@@ -38,22 +38,46 @@ class LocalTopic(Common):
     topic = SF('mods:topic[@type="local"]')
 
 class Mods(Common):
-    """Map mods fields."""
+    """Map mods fields.
+    
+    Fields documented at:
+    http://www.loc.gov/standards/mods/mods-outline.html
+    """
     ROOT_NAME = 'mods'
     id = SF('@ID')
+    schema_location = SF('mods:mods/@xsi:schemaLocation')
+    #1 titleInfo
     title = SF('mods:titleInfo/mods:title')
-    typeOfResource = SF('mods:typeOfResource')
-    genre = SF('mods:genre')
-    publisher = SF('mods:originInfo/mods:publisher')
-    created = SF('mods:originInfo/mods:dateCreated')
-    language_code = xmlmap.StringField('mods:language/mods:languageTerm[@type="code"]')
-    abstract = SF('mods:abstract')
-    extent = SF('mods:physicalDescription/mods:extent')
-    collection = xmlmap.NodeField('mods:relatedItem[@displayLabel="Collection"]', Collection)
+    #2 name
     personal_name = xmlmap.NodeListField('mods:name[@type="personal"]', PersonalName)
     corporate_name = xmlmap.NodeListField('mods:name[@type="corporate"]', CorporateName)
+    #3 typeOfResource
+    typeOfResource = SF('mods:typeOfResource')
+    #4 genre
+    genre = SF('mods:genre')
+    #5 originInfo
+    publisher = SF('mods:originInfo/mods:publisher')
+    created = SF('mods:originInfo/mods:dateCreated')
+    #6 language
+    language_code = xmlmap.StringField('mods:language/mods:languageTerm[@type="code"]')
+    #7 physicalDescription
+    extent = SF('mods:physicalDescription/mods:extent')
+    #8 abstract
+    abstract = SF('mods:abstract')
+    #9 tableOfContents
+    #10 targetAudience
+    #11 note
+    #12 subject
     local_topic = xmlmap.NodeListField('mods:subject', LocalTopic)
-    schema_location = SF('mods:mods/@xsi:schemaLocation')
+    #13 classification
+    #14 relatedItem
+    collection = xmlmap.NodeField('mods:relatedItem[@displayLabel="Collection"]', Collection)
+    #15 identifier
+    #16 location
+    #17 accessCondition
+    #18 part
+    #19 extension
+    #20 recordInfo
 
 def make_mods():
     """
