@@ -95,12 +95,18 @@ class ModsReadWrite(unittest.TestCase):
     def test_sample_mods(self):
         loaded = load_xmlobject_from_string(SAMPLE_MODS, Mods)
         self.assertEqual(loaded.title, 'Time Travels: Metalepsis and Modernist Poetry')
-        #test personal names
+
+        #test names
         personal_names = loaded.personal_name
         personal_name_list = ['Ben-Merre, David N.', 'Blasing, Mutlu', 'Katz, Tamar', 'Keach, William', 'Smith, Barbara']
         self.assertEqual(len(personal_names), 5)
         for i in range(5):
             self.assertTrue(personal_names[i].namePart in personal_name_list)
+        corporate_names = loaded.corporate_name
+        corporate_name_list = ['Brown University. English']
+        self.assertEqual(len(corporate_names), 1)
+        self.assertEqual(corporate_names[0].namePart, corporate_name_list[0])
+
         self.assertEqual(loaded.typeOfResource, 'text')
         self.assertEqual(loaded.genre, 'theses')
 
