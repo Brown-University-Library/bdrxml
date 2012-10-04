@@ -42,15 +42,16 @@ class Mods(Common):
     ROOT_NAME = 'mods'
     id = SF('@ID')
     title = SF('mods:titleInfo/mods:title')
+    typeOfResource = SF('mods:typeOfResource')
+    genre = SF('mods:genre')
     publisher = SF('mods:originInfo/mods:publisher')
+    created = SF('mods:originInfo/mods:dateCreated')
     language_code = xmlmap.StringField('mods:language/mods:languageTerm[@type="code"]')
     abstract = SF('mods:abstract')
     extent = SF('mods:physicalDescription/mods:extent')
     collection = xmlmap.NodeField('mods:relatedItem[@displayLabel="Collection"]', Collection)
-    genre = SF('mods:genre')
     personal_name = xmlmap.NodeListField('mods:name[@type="personal"]', PersonalName)
     corporate_name = xmlmap.NodeListField('mods:name[@type="corporate"]', CorporateName)
-    created = SF('mods:originInfo/mods:dateCreated')
     local_topic = xmlmap.NodeListField('mods:subject', LocalTopic)
     schema_location = SF('mods:mods/@xsi:schemaLocation')
 
