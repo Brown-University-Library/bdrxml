@@ -11,15 +11,13 @@ class RightsReadWrite(unittest.TestCase):
     def init_holder(self):
         self.rights.holder.name="Johnny"
     
-    def init_context(self, ctx_name):
+    def init_context(self, ctx_name, username="johnny@brown.edu"):
         my_context = make_context()
         my_context.cclass = "REPOSITORY MGR"
         my_context.usertype = "GROUP"
-        my_context.username = "johnny@brown.edu"
+        my_context.username =username
         my_context.id = ctx_name
         my_context.delete = 'y'
-        #my_context.discover = 'true' 
-        #my_context.display = 'true' 
         my_context.modify = 'true' 
         self.rights.add_ctext(my_context)
     
@@ -52,6 +50,18 @@ class RightsReadWrite(unittest.TestCase):
         self.assertEqual(len(loaded.ctext), 3)
         self.assertEqual(loaded.holder.context_ids, 'rights1 rights2 rights3')
 
+    def test_get_context_exception(self):
+        self.init_context("rights1")
+        self.init_holder()
+        with self.assertRaises(StopIteration):
+            tmp_ctext = self.rights.get_ctext_for("BOB")
+    def test_get_context(self):
+        self.init_context("rights1", 'jack@brown.edu')
+        self.init_context("rights2", 'jim@brown.edu')
+        self.init_context("rights3", 'johnny@brown.edu')
+        self.init_holder()
+        tmp_ctext = self.rights.get_ctext_for("johnny@brown.edu")
+        self.assertEqual(tmp_ctext.id, "rights3")
 
 def suite():
     suite = unittest.makeSuite(RightsReadWrite, 'test')

@@ -62,6 +62,15 @@ class Rights(Common):
         ctext_list = [str(ctx.id) for ctx in self.ctext]
         self.holder.context_ids = ' '.join(ctext_list)
 
+    def get_ctext_for(self, user_name):
+        return next((ctx for ctx in self.ctext if ctx.username == user_name))
+
+class RightsNoContextFoundException(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
 def make_rights():
     m = Rights()
     m.create_holder()
