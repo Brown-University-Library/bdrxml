@@ -17,7 +17,7 @@ class IR(XmlObject):
                }
     ROOT_NS = IR_NAMESPACE
     ROOT_NAME = 'irData'
-    XSD_SCHEMA = "http://dl.lib.brown.edu/md/irdata/ir.xsd"
+    XSD_SCHEMA = "http://dl.lib.brown.edu/md/irdata http://dl.lib.brown.edu/md/irdata/ir.xsd"
     schema_location = SF('@xsi:schemaLocation', 'self')
     #xmlschema = xmlmap.loadSchema(XSD_SCHEMA)
 

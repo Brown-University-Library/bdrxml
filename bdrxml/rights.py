@@ -24,12 +24,12 @@ class Context(Common):
     ROOT_NAME = 'Context'
     cclass = SF('@CONTEXTCLASS')
     id = SF('@CONTEXTID')
+    usertype = SF('rights:UserName/@USERTYPE')
+    username = SF('rights:UserName')
     delete = BF('rights:Permissions/@DELETE','true','false')
     discover = BF('rights:Permissions/@DISCOVER','true','false')
     display = BF('rights:Permissions/@DISPLAY','true','false')
     modify = BF('rights:Permissions/@MODIFY','true','false')
-    usertype = SF('rights:UserName/@USERTYPE')
-    username = SF('rights:UserName')
 
 
 def make_context():
@@ -48,7 +48,7 @@ class Holder(Common):
 
 class Rights(Common):
     ROOT_NAME = 'RightsDeclarationMD'
-    XSD_SCHEMA = "http://cosimo.stanford.edu/sdr/metsrights.xsd"
+    XSD_SCHEMA = "http://cosimo.stanford.edu/sdr/rights http://cosimo.stanford.edu/sdr/metsrights.xsd"
     schema_location = SF('@xsi:schemaLocation', 'self')
     
     category = SF('@RIGHTSCATEGORY')
