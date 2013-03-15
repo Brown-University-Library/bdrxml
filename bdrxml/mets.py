@@ -6,7 +6,7 @@ Making METS for the BDR.
 from eulxml import xmlmap
 from eulxml.xmlmap import StringField as SF
 
-from mods import Mods, MODS_NAMESPACE
+from mods import Mods, eulmods
 from rights import Rights, RIGHTS_NAMESPACE
 from irMetadata import IR, IR_NAMESPACE
 
@@ -21,7 +21,7 @@ class Common(xmlmap.XmlObject):
                        'METS': METS_NAMESPACE,
                        'rights': RIGHTS_NAMESPACE,
                        #For now we are assuming the METS will include a MODS.
-                       'mods': MODS_NAMESPACE,
+                       'mods': eulmods.MODS_NAMESPACE,
                        'ir': IR_NAMESPACE,
                        'xlink': XLINK_NAMESPACE,
                        'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
