@@ -1,6 +1,6 @@
 import unittest
 from eulxml.xmlmap  import load_xmlobject_from_string
-from bdrxml.mods import Mods, make_mods, MODS_SCHEMA, LocalTopic
+from bdrxml import mods
 
 #sample MODS from bdr:10 on DAXDEV
 SAMPLE_MODS = '''
@@ -90,47 +90,47 @@ SAMPLE_MODS = '''
 class ModsReadWrite(unittest.TestCase):
     def setUp(self):
         #basic fox
-        self.mods = make_mods()
+        self.mods = mods.make_mods()
         
     def test_sample_mods(self):
-        loaded = load_xmlobject_from_string(SAMPLE_MODS, Mods)
+        loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
+        self.assertEqual(loaded.id, 'etd100')
         self.assertEqual(loaded.title, 'Time Travels: Metalepsis and Modernist Poetry')
 
         #test names
-        personal_names = loaded.personal_name
-        personal_name_list = ['Ben-Merre, David N.', 'Blasing, Mutlu', 'Katz, Tamar', 'Keach, William', 'Smith, Barbara']
+        personal_names = [unicode(name) for name in loaded.names if name.type == 'personal']
         self.assertEqual(len(personal_names), 5)
+        personal_name_list = [u'Ben-Merre, David N.', u'Blasing, Mutlu', u'Katz, Tamar', u'Keach, William', u'Smith, Barbara']
         for i in range(5):
-            self.assertTrue(personal_names[i].namePart in personal_name_list)
-        corporate_names = loaded.corporate_name
-        corporate_name_list = ['Brown University. English']
+            self.assertTrue(personal_names[i] in personal_name_list)
+        corporate_names = [unicode(name) for name in loaded.names if name.type == 'corporate']
+        corporate_name_list = [u'Brown University. English']
         self.assertEqual(len(corporate_names), 1)
-        self.assertEqual(corporate_names[0].namePart, corporate_name_list[0])
+        self.assertEqual(corporate_names, corporate_name_list)
 
-        self.assertEqual(loaded.typeOfResource, 'text')
-        self.assertEqual(loaded.genre, 'theses')
-        self.assertEqual(loaded.note, 'Thesis (Ph.D.) -- Brown University (2008)')
+        self.assertEqual(loaded.resource_type, 'text')
+        self.assertEqual(loaded.genres[0].text, 'theses')
+        self.assertEqual(loaded.notes[0].text, 'Thesis (Ph.D.) -- Brown University (2008)')
 
     def test_round_trip(self):
         self.mods.title = "Sample title"
-        self.mods.publisher = "BUL"
+        self.mods.create_origin_info()
+        self.mods.origin_info.publisher = "BUL"
         mods_str = self.mods.serialize(pretty=False)
-        loaded = load_xmlobject_from_string(mods_str, Mods)
+        loaded = load_xmlobject_from_string(mods_str, mods.Mods)
         self.assertEqual(loaded.title, 'Sample title')
-        self.assertEqual(loaded.publisher, 'BUL')
+        self.assertEqual(loaded.origin_info.publisher, 'BUL')
         #self.assertTrue(MODS_SCHEMA in loaded.schema_location)
         #self.mods.schema_location = 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-0.xsd'
         #print self.mods.serialize(pretty=True)
 
     def test_subjects(self):
         self.mods.title = "Sample"
-        local = ['sample', 'test']
-        for keyword in local:
-            subject = LocalTopic()
-            subject.topic = keyword
-            self.mods.local_topic.append(subject)
-        new_mods = load_xmlobject_from_string(self.mods.serialize(), Mods)
-        self.assertEqual(local, [n.topic for n in new_mods.local_topic])
+        topics = ['sample', 'test']
+        for keyword in topics:
+            self.mods.subjects.append(mods.eulmods.Subject(topic=keyword))
+        new_mods = load_xmlobject_from_string(self.mods.serialize(), mods.Mods)
+        self.assertEqual(topics, [s.topic for s in new_mods.subjects])
 
 def suite():
     suite = unittest.makeSuite(ModsReadWrite, 'test')
