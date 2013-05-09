@@ -18,6 +18,17 @@ class IRReadWrite(unittest.TestCase):
         loaded = load_xmlobject_from_string(ir_str, IR)
         self.assertEqual(loaded.collection, '598')
         
+    def test_MultiCollection(self):
+        self.ir.depositor_name = "Johnny"
+        self.ir.depositor_email = "johnny@brown.edu"
+        self.ir.date = "2012-05-31"
+        self.ir.filename = "Multiple files"
+        self.ir.collections_date = "2012-05-31"
+        self.ir.collection_list = ['598', '618']
+
+        ir_str = self.ir.serializeDocument(pretty=True)
+        loaded = load_xmlobject_from_string(ir_str, IR)
+        self.assertEqual(loaded.collection_list, ['598', '618'])
 
 def suite():
     suite = unittest.makeSuite(IRReadWrite, 'test')

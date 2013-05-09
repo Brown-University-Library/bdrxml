@@ -6,6 +6,7 @@ Making irMetadata for the BDR.
 from eulxml import xmlmap
 from eulxml.xmlmap import XmlObject
 from eulxml.xmlmap import StringField as SF
+from eulxml.xmlmap import StringListField as SLF
 
 IR_NAMESPACE = 'http://dl.lib.brown.edu/md/irdata'
 XLINK_NAMESPACE = 'http://www.w3.org/1999/xlink'
@@ -29,7 +30,9 @@ class IR(XmlObject):
     date = SF('ir:deposit/ir:date')
     filename = SF('ir:deposit/ir:filename')
     collections_date = SF('ir:collections/ir:date')
-    collection = SF('ir:collections/ir:collection')
+    collection = SF('ir:collections/ir:collection', required="False")
+    collection_list = SLF('ir:collections/ir:collection',
+                            verbose_name="Collections")
 
 def make_ir():
     m = IR()
