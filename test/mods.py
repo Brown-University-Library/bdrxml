@@ -8,6 +8,9 @@ SAMPLE_MODS = '''
   <mods:titleInfo>
     <mods:title>Time Travels: Metalepsis and Modernist Poetry</mods:title>
   </mods:titleInfo>
+  <mods:titleInfo type="alternative" displayLabel="First line">
+    <mods:title>alternative title</mods:title>
+  </mods:titleInfo>
   <mods:name type="personal">
     <mods:namePart>Ben-Merre, David N.</mods:namePart>
     <mods:role>
@@ -96,6 +99,9 @@ class ModsReadWrite(unittest.TestCase):
         loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
         self.assertEqual(loaded.id, 'etd100')
         self.assertEqual(loaded.title, 'Time Travels: Metalepsis and Modernist Poetry')
+        self.assertEqual(loaded.title_info[1].title, 'alternative title')
+        self.assertEqual(loaded.title_info[1].type, 'alternative')
+        self.assertEqual(loaded.title_info[1].label, 'First line')
 
         #test names
         personal_names = [unicode(name) for name in loaded.names if name.type == 'personal']
