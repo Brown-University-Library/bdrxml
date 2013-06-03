@@ -1,6 +1,7 @@
 from eulxml.xmlmap import mods as eulmods
 from eulxml.xmlmap import StringField as SF
 
+MODS_NAMESPACE = eulmods.MODS_NAMESPACE
 
 class Mods(eulmods.MODSv34):
     """Map mods fields.
