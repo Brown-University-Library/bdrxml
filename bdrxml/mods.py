@@ -36,7 +36,7 @@ class Mods(eulmods.MODSv34):
     #override eulxml origin_info, because we need to support dateOther
     origin_info = NodeField('mods:originInfo', OriginInfo)
     #Add a commonly used related item
-    collection = xmlmap.NodeField('mods:relatedItem[@displayLabel="Collection"]', Collection)
+    collection = NodeField('mods:relatedItem[@displayLabel="Collection"]', Collection)
 
 
 def make_mods():
