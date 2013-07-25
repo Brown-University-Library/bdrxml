@@ -19,6 +19,10 @@ class OriginInfo(eulmods.OriginInfo):
         verbose_name='Date Other',
         help_text='Other Date')
 
+class Collection(eulmods.RelatedItem):
+    name = SF('mods:titleInfo/mods:title')
+    id = SF('mods:identifier[@type="COLID"]')
+
 
 class Mods(eulmods.MODSv34):
     """Map mods fields.
@@ -31,6 +35,8 @@ class Mods(eulmods.MODSv34):
     title_info = NodeListField('mods:titleInfo', TitleInfo)
     #override eulxml origin_info, because we need to support dateOther
     origin_info = NodeField('mods:originInfo', OriginInfo)
+    #Add a commonly used related item
+    collection = xmlmap.NodeField('mods:relatedItem[@displayLabel="Collection"]', Collection)
 
 
 def make_mods():
