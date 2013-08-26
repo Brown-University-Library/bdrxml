@@ -83,6 +83,14 @@ SAMPLE_MODS = '''
   <mods:subject authority="local">
     <mods:topic>Eliot</mods:topic>
   </mods:subject>
+  <mods:subject authority="local">
+    <mods:hierarchicalGeographic>
+      <mods:country>United States</mods:country>
+      <mods:state>Louisiana</mods:state>
+      <mods:city>New Orleans</mods:city>
+      <mods:citySection>Lower Ninth Ward</mods:citySection>
+    </mods:hierarchicalGeographic>
+  </mods:subject>
   <mods:recordInfo>
     <mods:recordContentSource authority="marcorg">RPB</mods:recordContentSource>
     <mods:recordCreationDate encoding="iso8601">20091218</mods:recordCreationDate>
@@ -137,6 +145,15 @@ class ModsReadWrite(unittest.TestCase):
             self.mods.subjects.append(mods.eulmods.Subject(topic=keyword))
         new_mods = load_xmlobject_from_string(self.mods.serialize(), mods.Mods)
         self.assertEqual(topics, [s.topic for s in new_mods.subjects])
+
+    def test_geographic_subjects(self):
+        loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
+        subject = loaded.subjects[-1]
+        self.assertEqual(subject.hierarchical_geographic.country, 'United States')
+        self.assertEqual(subject.hierarchical_geographic.state, 'Louisiana')
+        self.assertEqual(subject.hierarchical_geographic.city, 'New Orleans')
+        self.assertEqual(subject.hierarchical_geographic.city_section, 'Lower Ninth Ward')
+        
 
 def suite():
     suite = unittest.makeSuite(ModsReadWrite, 'test')

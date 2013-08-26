@@ -23,6 +23,21 @@ class Collection(eulmods.RelatedItem):
     name = SF('mods:titleInfo/mods:title')
     id = SF('mods:identifier[@type="COLID"]')
 
+class HierarchicalGeographic(eulmods.Common):
+    continent = SF('mods:continent')
+    country = SF('mods:country')
+    province = SF('mods:province')
+    region = SF('mods:region')
+    state = SF('mods:state')
+    territory = SF('mods:territory')
+    county = SF('mods:county')
+    city = SF('mods:city')
+    city_section = SF('mods:citySection')
+    island = SF('mods:island')
+    extraterrestrial_area = SF('mods:extraterrestrialArea')
+
+class Subject(eulmods.Subject):
+    hierarchical_geographic = NodeField('mods:hierarchicalGeographic', HierarchicalGeographic)
 
 class Mods(eulmods.MODSv34):
     """Map mods fields.
@@ -37,7 +52,7 @@ class Mods(eulmods.MODSv34):
     origin_info = NodeField('mods:originInfo', OriginInfo)
     #Add a commonly used related item
     collection = NodeField('mods:relatedItem[@displayLabel="Collection"]', Collection)
-
+    subjects = NodeListField('mods:subject', Subject)
 
 def make_mods():
     """
