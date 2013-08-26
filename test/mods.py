@@ -146,6 +146,18 @@ class ModsReadWrite(unittest.TestCase):
         new_mods = load_xmlobject_from_string(self.mods.serialize(), mods.Mods)
         self.assertEqual(topics, [s.topic for s in new_mods.subjects])
 
+    def test_create_hierarchical_geographic(self):
+        hg = mods.HierarchicalGeographic(
+                country='United States',
+                state='Louisiana',
+                city='New Orleans',
+                city_section='Lower Ninth Ward')
+        subject = mods.Subject(authority='local', hierarchical_geographic=hg)
+        self.assertEqual(subject.hierarchical_geographic.country, 'United States')
+        self.assertEqual(subject.hierarchical_geographic.state, 'Louisiana')
+        self.assertEqual(subject.hierarchical_geographic.city, 'New Orleans')
+        self.assertEqual(subject.hierarchical_geographic.city_section, 'Lower Ninth Ward')
+
     def test_geographic_subjects(self):
         loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
         subject = loaded.subjects[-1]

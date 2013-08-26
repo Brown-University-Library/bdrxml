@@ -24,6 +24,7 @@ class Collection(eulmods.RelatedItem):
     id = SF('mods:identifier[@type="COLID"]')
 
 class HierarchicalGeographic(eulmods.Common):
+    ROOT_NAME = 'hierarchicalGeographic'
     continent = SF('mods:continent')
     country = SF('mods:country')
     province = SF('mods:province')
