@@ -17,7 +17,7 @@ SAMPLE_MODS = '''
       <mods:roleTerm type="text">creator</mods:roleTerm>
     </mods:role>
   </mods:name>
-  <mods:originInfo>
+  <mods:originInfo displayLabel="date added">
     <mods:copyrightDate encoding="w3cdtf" keyDate="yes">2008</mods:copyrightDate>
   </mods:originInfo>
   <mods:physicalDescription>
@@ -110,6 +110,7 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(loaded.title_info[1].title, 'alternative title')
         self.assertEqual(loaded.title_info[1].type, 'alternative')
         self.assertEqual(loaded.title_info[1].label, 'First line')
+        self.assertEqual(loaded.origin_info.label, 'date added')
 
         #test names
         personal_names = [unicode(name) for name in loaded.names if name.type == 'personal']

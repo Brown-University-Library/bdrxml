@@ -15,9 +15,11 @@ class DateOther(eulmods.Date):
 
 
 class OriginInfo(eulmods.OriginInfo):
+    label = SF('@displayLabel')
     other = NodeListField('mods:dateOther', DateOther,
         verbose_name='Date Other',
         help_text='Other Date')
+
 
 class Collection(eulmods.RelatedItem):
     name = SF('mods:titleInfo/mods:title')
