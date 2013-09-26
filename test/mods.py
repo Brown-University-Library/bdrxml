@@ -135,17 +135,26 @@ class ModsReadWrite(unittest.TestCase):
         loaded = load_xmlobject_from_string(mods_str, mods.Mods)
         self.assertEqual(loaded.title, 'Sample title')
         self.assertEqual(loaded.origin_info.publisher, 'BUL')
-        #self.assertTrue(MODS_SCHEMA in loaded.schema_location)
-        #self.mods.schema_location = 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-0.xsd'
-        #print self.mods.serialize(pretty=True)
 
     def test_subjects(self):
         self.mods.title = "Sample"
         topics = ['sample', 'test']
         for keyword in topics:
-            self.mods.subjects.append(mods.eulmods.Subject(topic=keyword))
+            self.mods.subjects.append(mods.Subject(topic=keyword))
         new_mods = load_xmlobject_from_string(self.mods.serialize(), mods.Mods)
         self.assertEqual(topics, [s.topic for s in new_mods.subjects])
+
+    def test_create_dates(self):
+        other_date = mods.DateOther(type='random', date='2013-01-03')
+        create_date = mods.DateCreated(date='2012-12-12')
+        modified_date = mods.DateModified(date='2011-11-11')
+        origin_info = mods.OriginInfo()
+        origin_info.other.append(other_date)
+        origin_info.created.append(create_date)
+        origin_info.modified.append(modified_date)
+        self.assertEqual(origin_info.other[0].date, '2013-01-03')
+        self.assertEqual(origin_info.created[0].date, '2012-12-12')
+        self.assertEqual(origin_info.modified[0].date, '2011-11-11')
 
     def test_create_hierarchical_geographic(self):
         hg = mods.HierarchicalGeographic(
@@ -174,3 +183,4 @@ def suite():
 
 if __name__ == '__main__':
     unittest.main()
+
