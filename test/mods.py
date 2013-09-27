@@ -11,6 +11,8 @@ SAMPLE_MODS = '''
   <mods:titleInfo type="alternative" displayLabel="First line">
     <mods:title>alternative title</mods:title>
   </mods:titleInfo>
+  <mods:accessCondition href="http://creativecommons.org/publicdomain/zero/1.0/" type="use and reproduction">To the extent possible under law, the person who associated CC0 with this work has waived all copyright and related or neighboring rights to this work.</mods:accessCondition>
+  <mods:accessCondition href="http://i.creativecommons.org/p/zero/1.0/88x31.png" type="logo"></mods:accessCondition>
   <mods:name type="personal">
     <mods:namePart>Ben-Merre, David N.</mods:namePart>
     <mods:role>
@@ -192,6 +194,9 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['dateCreated'], '2008-02-03T00:00:00Z')
         self.assertEqual(index_data['dateModified'], '2008-05-06T00:00:00Z')
         self.assertEqual(index_data['dateModified_ssim'], ['invalid date', '2008-06-07'])
+        self.assertEqual(index_data['mods_access_condition_logo_ssim'], ['http://i.creativecommons.org/p/zero/1.0/88x31.png'])
+        self.assertEqual(index_data['mods_access_condition_use_text_tsim'], ['To the extent possible under law, the person who associated CC0 with this work has waived all copyright and related or neighboring rights to this work.'])
+        self.assertEqual(index_data['mods_access_condition_use_link_ssim'], ['http://creativecommons.org/publicdomain/zero/1.0/'])
 
 
 def suite():

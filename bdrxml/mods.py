@@ -87,7 +87,7 @@ class Mods(eulmods.MODSv34):
             ('mods:originInfo/mods:place/mods:placeTerm[@type="code"]', 'publication_code', 'm'),
             ('mods:identifier[@type="doi"]', 'mods_id_doi_ssi', 's'),
             ('mods:identifier[@type="METSID"]', 'mets_id', 's'),
-            ('mods:relatedItem[@type="host" and starts-with(@displayLabel,"Collection")]/mods:identifier[@type = "COLID"]', 'mods_collection_id')]
+            ('mods:relatedItem[@type="host" and starts-with(@displayLabel,"Collection")]/mods:identifier[@type = "COLID"]', 'mods_collection_id', 'm')]
         data = {}
         for mapper in mapping_info:
             element_list = self.node.xpath(mapper[0], namespaces=self.ROOT_NAMESPACES)
@@ -132,7 +132,7 @@ class Mods(eulmods.MODSv34):
         for related_item in related_item_els:
             type = related_item.get('type')
             label = related_item.get('displayLabel')
-            title_els = related_item.xpath('mods:titleInfo/mods:title', namespaces=self._ns)
+            title_els = related_item.xpath('mods:titleInfo/mods:title', namespaces=self.ROOT_NAMESPACES)
             titles = [title.text for title in title_els]
             if type == 'host' and label and label.startswith('Collection'):
                 if 'collection_title' in data:
@@ -151,7 +151,7 @@ class Mods(eulmods.MODSv34):
             for access_condition in access_condition_els:
                 type = access_condition.get('type')
                 href = access_condition.get('href') #should really be xlink:href
-                if type == 'use and repoduction':
+                if type == 'use and reproduction':
                     data = self._add_or_extend(data, 'mods_access_condition_use_text_tsim', [access_condition.text])
                     if href:
                         data = self._add_or_extend(data, 'mods_access_condition_use_link_ssim', [href])
@@ -214,7 +214,7 @@ class Mods(eulmods.MODSv34):
                 else:
                     #handle remaining dates
                     data = self._add_or_extend(data, '%s_ssim' % date_name, [date.text])
-                #special facets for dateOther
+                #some special facets handling for dateOther
                 if date_name == 'dateOther':
                     type = date.get('type')
                     if type == 'quarterSort':
