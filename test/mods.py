@@ -4,7 +4,7 @@ from bdrxml import mods
 
 #sample MODS from bdr:10 on DAXDEV
 SAMPLE_MODS = '''
-<mods:mods xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="etd100" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
+<mods:mods xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="id101" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
   <mods:titleInfo>
     <mods:title>Time Travels: Metalepsis and Modernist Poetry</mods:title>
   </mods:titleInfo>
@@ -18,7 +18,12 @@ SAMPLE_MODS = '''
     </mods:role>
   </mods:name>
   <mods:originInfo displayLabel="date added">
+    <mods:dateCreated encoding="w3cdtf" qualifier="questionable">2018-01</mods:dateCreated>
     <mods:copyrightDate encoding="w3cdtf" keyDate="yes">2008</mods:copyrightDate>
+    <mods:dateCreated encoding="w3cdtf" keyDate="yes">2008-02-03</mods:dateCreated>
+    <mods:dateModified encoding="w3cdtf" point="start">invalid date</mods:dateModified>
+    <mods:dateModified encoding="w3cdtf" point="start">2008-05-06</mods:dateModified>
+    <mods:dateModified encoding="w3cdtf" point="start">2008-06-07</mods:dateModified>
   </mods:originInfo>
   <mods:physicalDescription>
     <mods:extent>viii, 208 p.</mods:extent>
@@ -105,7 +110,7 @@ class ModsReadWrite(unittest.TestCase):
         
     def test_sample_mods(self):
         loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
-        self.assertEqual(loaded.id, 'etd100')
+        self.assertEqual(loaded.id, 'id101')
         self.assertEqual(loaded.title, 'Time Travels: Metalepsis and Modernist Poetry')
         self.assertEqual(loaded.title_info[1].title, 'alternative title')
         self.assertEqual(loaded.title_info[1].type, 'alternative')
@@ -175,7 +180,19 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(subject.hierarchical_geographic.state, 'Louisiana')
         self.assertEqual(subject.hierarchical_geographic.city, 'New Orleans')
         self.assertEqual(subject.hierarchical_geographic.city_section, 'Lower Ninth Ward')
-        
+
+    def test_index_data(self):
+        loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
+        index_data = loaded.index_data()
+        print index_data
+        self.assertEqual(index_data['primary_title'], 'Time Travels: Metalepsis and Modernist Poetry')
+        self.assertEqual(index_data['mods_title_alt'], ['alternative title'])
+        self.assertEqual(index_data['mods_id'], 'id101')
+        self.assertEqual(index_data['copyrightDate'], '2008-01-01T00:00:00Z')
+        self.assertEqual(index_data['dateCreated'], '2008-02-03T00:00:00Z')
+        self.assertEqual(index_data['dateModified'], '2008-05-06T00:00:00Z')
+        self.assertEqual(index_data['dateModified_ssim'], ['invalid date', '2008-06-07'])
+
 
 def suite():
     suite = unittest.makeSuite(ModsReadWrite, 'test')
