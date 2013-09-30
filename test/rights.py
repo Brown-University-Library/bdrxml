@@ -53,8 +53,8 @@ class RightsReadWrite(unittest.TestCase):
     def test_get_context_exception(self):
         self.init_context("rights1")
         self.init_holder()
-        with self.assertRaises(StopIteration):
-            tmp_ctext = self.rights.get_ctext_for("BOB")
+        self.assertRaises(StopIteration, self.rights.get_ctext_for, "BOB")
+
     def test_get_context(self):
         self.init_context("rights1", 'jack@brown.edu')
         self.init_context("rights2", 'jim@brown.edu')
