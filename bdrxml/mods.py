@@ -208,7 +208,7 @@ class Mods(eulmods.MODSv34):
         text = text.strip().lower().replace(u' ', u'_')
         #we can return str instead of unicode because we're generating a slug, not working with data
         #TODO use unicode normalize()
-        text = text.encode('ascii', errors='ignore')
+        text = text.encode('ascii', 'ignore')
         pattern = re.compile('\W')
         text = pattern.sub('', text)
         return text
