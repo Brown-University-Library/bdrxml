@@ -125,8 +125,13 @@ class Mods(eulmods.MODSv34):
                     data['other_titles'] = other_titles
         #handle notes
         for note in self.notes:
+            #add display label to text for note field
+            if note.label:
+                note_text = '%s: %s' % (note.label, note.text)
+            else:
+                note_text = note.text
             #add all notes to the note field
-            data = self._add_or_extend(data, 'note', [note.text])
+            data = self._add_or_extend(data, 'note', [note_text])
             if note.type:
                 data = self._add_or_extend(data, 'mods_note_%s_ssim' % self._slugify(note.type), [note.text])
             else:
@@ -195,8 +200,9 @@ class Mods(eulmods.MODSv34):
         return data
 
     def _slugify(self, text):
-        text = text.replace(u' ', u'_')
-        pattern = re.compile('[\W-]')
+        #very similar functionality to django's slugify function
+        text = text.strip().lower().replace(u' ', u'_')
+        pattern = re.compile('\W')
         text = pattern.sub('', text)
         return text
 

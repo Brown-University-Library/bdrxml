@@ -1,3 +1,4 @@
+# coding: utf-8
 import unittest
 from eulxml.xmlmap  import load_xmlobject_from_string
 from bdrxml import mods
@@ -6,7 +7,7 @@ from bdrxml import mods
 SAMPLE_MODS = u'''
 <mods:mods xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="id101" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
   <mods:titleInfo>
-    <mods:title>Time Travels: Metalepsis and Modernist Poetry</mods:title>
+    <mods:title>Poétry</mods:title>
   </mods:titleInfo>
   <mods:titleInfo type="alternative" displayLabel="First line">
     <mods:title>alternative title</mods:title>
@@ -31,9 +32,9 @@ SAMPLE_MODS = u'''
     <mods:extent>viii, 208 p.</mods:extent>
     <mods:digitalOrigin>born digital</mods:digitalOrigin>
   </mods:physicalDescription>
-  <mods:note>Thesis (Ph.D.)</mods:note>
-  <mods:note type="@#$%random type" displayLabel="discarded">random type note</mods:note>
-  <mods:note displayLabel="display @#$label">display label note</mods:note>
+  <mods:note>Thésis (Ph.D.)</mods:note>
+  <mods:note type="@#$%random Type" displayLabel="discarded">random type note</mods:note>
+  <mods:note displayLabel="Display @#$label">display label note</mods:note>
   <mods:name type="personal">
     <mods:namePart>Blake, Tim</mods:namePart>
     <mods:role>
@@ -115,7 +116,7 @@ class ModsReadWrite(unittest.TestCase):
     def test_sample_mods(self):
         loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
         self.assertEqual(loaded.id, 'id101')
-        self.assertEqual(loaded.title, 'Time Travels: Metalepsis and Modernist Poetry')
+        self.assertEqual(loaded.title, u'Poétry')
         self.assertEqual(loaded.title_info[1].title, 'alternative title')
         self.assertEqual(loaded.title_info[1].type, 'alternative')
         self.assertEqual(loaded.title_info[1].label, 'First line')
@@ -134,7 +135,7 @@ class ModsReadWrite(unittest.TestCase):
 
         self.assertEqual(loaded.resource_type, 'text')
         self.assertEqual(loaded.genres[0].text, 'theses')
-        self.assertEqual(loaded.notes[0].text, 'Thesis (Ph.D.)')
+        self.assertEqual(loaded.notes[0].text, u'Thésis (Ph.D.)')
 
     def test_round_trip(self):
         self.mods.title = "Sample title"
@@ -188,20 +189,19 @@ class ModsReadWrite(unittest.TestCase):
     def test_index_data(self):
         loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
         index_data = loaded.index_data()
-        print index_data
-        self.assertEqual(index_data['primary_title'], 'Time Travels: Metalepsis and Modernist Poetry')
-        self.assertEqual(index_data['mods_title_alt'], ['alternative title'])
+        self.assertEqual(index_data['primary_title'], u'Poétry')
+        self.assertEqual(index_data['mods_title_alt'], [u'alternative title'])
         self.assertEqual(index_data['mods_id'], 'id101')
         self.assertEqual(index_data['copyrightDate'], '2008-01-01T00:00:00Z')
         self.assertEqual(index_data['dateCreated'], '2008-02-03T00:00:00Z')
         self.assertEqual(index_data['dateModified'], '2008-05-06T00:00:00Z')
         self.assertEqual(index_data['dateModified_ssim'], ['invalid date', '2008-06-07'])
-        self.assertEqual(index_data['mods_access_condition_logo_ssim'], ['http://i.creativecommons.org/p/zero/1.0/88x31.png'])
-        self.assertEqual(index_data['mods_access_condition_use_text_tsim'], ['To the extent possible under law, the person who associated CC0 with this work has waived all copyright and related or neighboring rights to this work.'])
-        self.assertEqual(index_data['mods_access_condition_use_link_ssim'], ['http://creativecommons.org/publicdomain/zero/1.0/'])
-        self.assertEqual(index_data['note'], ['Thesis (Ph.D.)', 'random type note', 'display label note'])
-        self.assertEqual(index_data['mods_note_random_type_ssim'], ['random type note'])
-        self.assertEqual(index_data['mods_note_display_label_ssim'], ['display label note'])
+        self.assertEqual(index_data['mods_access_condition_logo_ssim'], [u'http://i.creativecommons.org/p/zero/1.0/88x31.png'])
+        self.assertEqual(index_data['mods_access_condition_use_text_tsim'], [u'To the extent possible under law, the person who associated CC0 with this work has waived all copyright and related or neighboring rights to this work.'])
+        self.assertEqual(index_data['mods_access_condition_use_link_ssim'], [u'http://creativecommons.org/publicdomain/zero/1.0/'])
+        self.assertEqual(index_data['note'], [u'Thésis (Ph.D.)', u'discarded: random type note', u'Display @#$label: display label note'])
+        self.assertEqual(index_data['mods_note_random_type_ssim'], [u'random type note'])
+        self.assertEqual(index_data['mods_note_display_label_ssim'], [u'display label note'])
 
 
 def suite():
