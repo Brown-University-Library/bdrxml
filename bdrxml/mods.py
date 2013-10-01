@@ -53,7 +53,8 @@ class Mods(eulmods.MODSv34):
     subjects = NodeListField('mods:subject', Subject)
 
     def index_data(self):
-        '''Generate dict of field:data pairs for sending to solr'''
+        '''Generate dict of field:data pairs for sending to solr
+        TODO: consider refactoring into a different class'''
         #(xpath to data we're looking for, solr field name, single or multi-valued)
         mapping_info = [
             ('mods:titleInfo[@type="alternative"]/mods:title', 'mods_title_alt', 'm'),
@@ -127,7 +128,10 @@ class Mods(eulmods.MODSv34):
         for note in self.notes:
             #add display label to text for note field
             if note.label:
-                note_text = '%s: %s' % (note.label, note.text)
+                if note.label.endswith(u':'):
+                    note_text = u'%s %s' % (note.label, note.text)
+                else:
+                    note_text = u'%s: %s' % (note.label, note.text)
             else:
                 note_text = note.text
             #add all notes to the note field
@@ -202,6 +206,9 @@ class Mods(eulmods.MODSv34):
     def _slugify(self, text):
         #very similar functionality to django's slugify function
         text = text.strip().lower().replace(u' ', u'_')
+        #we can return str instead of unicode because we're generating a slug, not working with data
+        #TODO use unicode normalize()
+        text = text.encode('ascii', errors='ignore')
         pattern = re.compile('\W')
         text = pattern.sub('', text)
         return text

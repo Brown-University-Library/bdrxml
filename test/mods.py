@@ -33,7 +33,7 @@ SAMPLE_MODS = u'''
     <mods:digitalOrigin>born digital</mods:digitalOrigin>
   </mods:physicalDescription>
   <mods:note>Thésis (Ph.D.)</mods:note>
-  <mods:note type="@#$%random Type" displayLabel="discarded">random type note</mods:note>
+  <mods:note type="@#$%random Type" displayLabel="discarded:">random type note</mods:note>
   <mods:note displayLabel="Display @#$label">display label note</mods:note>
   <mods:name type="personal">
     <mods:namePart>Blake, Tim</mods:namePart>
