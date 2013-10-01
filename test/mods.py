@@ -3,7 +3,7 @@ from eulxml.xmlmap  import load_xmlobject_from_string
 from bdrxml import mods
 
 #sample MODS from bdr:10 on DAXDEV
-SAMPLE_MODS = '''
+SAMPLE_MODS = u'''
 <mods:mods xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="id101" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
   <mods:titleInfo>
     <mods:title>Time Travels: Metalepsis and Modernist Poetry</mods:title>
@@ -14,7 +14,7 @@ SAMPLE_MODS = '''
   <mods:accessCondition href="http://creativecommons.org/publicdomain/zero/1.0/" type="use and reproduction">To the extent possible under law, the person who associated CC0 with this work has waived all copyright and related or neighboring rights to this work.</mods:accessCondition>
   <mods:accessCondition href="http://i.creativecommons.org/p/zero/1.0/88x31.png" type="logo"></mods:accessCondition>
   <mods:name type="personal">
-    <mods:namePart>Ben-Merre, David N.</mods:namePart>
+    <mods:namePart>Smith, Tom</mods:namePart>
     <mods:role>
       <mods:roleTerm type="text">creator</mods:roleTerm>
     </mods:role>
@@ -31,9 +31,11 @@ SAMPLE_MODS = '''
     <mods:extent>viii, 208 p.</mods:extent>
     <mods:digitalOrigin>born digital</mods:digitalOrigin>
   </mods:physicalDescription>
-  <mods:note>Thesis (Ph.D.) -- Brown University (2008)</mods:note>
+  <mods:note>Thesis (Ph.D.)</mods:note>
+  <mods:note type="@#$%random type" displayLabel="discarded">random type note</mods:note>
+  <mods:note displayLabel="display @#$label">display label note</mods:note>
   <mods:name type="personal">
-    <mods:namePart>Blasing, Mutlu</mods:namePart>
+    <mods:namePart>Blake, Tim</mods:namePart>
     <mods:role>
       <mods:roleTerm type="text">director</mods:roleTerm>
     </mods:role>
@@ -122,7 +124,7 @@ class ModsReadWrite(unittest.TestCase):
         #test names
         personal_names = [unicode(name) for name in loaded.names if name.type == 'personal']
         self.assertEqual(len(personal_names), 5)
-        personal_name_list = [u'Ben-Merre, David N.', u'Blasing, Mutlu', u'Katz, Tamar', u'Keach, William', u'Smith, Barbara']
+        personal_name_list = [u'Smith, Tom', u'Blake, Tim', u'Katz, Tamar', u'Keach, William', u'Smith, Barbara']
         for i in range(5):
             self.assertTrue(personal_names[i] in personal_name_list)
         corporate_names = [unicode(name) for name in loaded.names if name.type == 'corporate']
@@ -132,7 +134,7 @@ class ModsReadWrite(unittest.TestCase):
 
         self.assertEqual(loaded.resource_type, 'text')
         self.assertEqual(loaded.genres[0].text, 'theses')
-        self.assertEqual(loaded.notes[0].text, 'Thesis (Ph.D.) -- Brown University (2008)')
+        self.assertEqual(loaded.notes[0].text, 'Thesis (Ph.D.)')
 
     def test_round_trip(self):
         self.mods.title = "Sample title"
@@ -197,11 +199,15 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['mods_access_condition_logo_ssim'], ['http://i.creativecommons.org/p/zero/1.0/88x31.png'])
         self.assertEqual(index_data['mods_access_condition_use_text_tsim'], ['To the extent possible under law, the person who associated CC0 with this work has waived all copyright and related or neighboring rights to this work.'])
         self.assertEqual(index_data['mods_access_condition_use_link_ssim'], ['http://creativecommons.org/publicdomain/zero/1.0/'])
+        self.assertEqual(index_data['note'], ['Thesis (Ph.D.)', 'random type note', 'display label note'])
+        self.assertEqual(index_data['mods_note_random_type_ssim'], ['random type note'])
+        self.assertEqual(index_data['mods_note_display_label_ssim'], ['display label note'])
 
 
 def suite():
     suite = unittest.makeSuite(ModsReadWrite, 'test')
     return suite
+
 
 if __name__ == '__main__':
     unittest.main()

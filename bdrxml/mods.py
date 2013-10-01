@@ -81,7 +81,6 @@ class Mods(eulmods.MODSv34):
             ('mods:tableOfContents', 'other_title', 'm'),
             ('mods:typeOfResource', 'mods_type_of_resource', 'm'),
             ('mods:abstract', 'abstract', 'm'),
-            ('mods:note', 'note', 'm'),
             ('mods:originInfo/mods:publisher', 'publisher', 'm'),
             ('mods:originInfo/mods:place/mods:placeTerm[@type="text"]', 'publication_place', 'm'),
             ('mods:originInfo/mods:place/mods:placeTerm[@type="code"]', 'publication_code', 'm'),
@@ -124,6 +123,15 @@ class Mods(eulmods.MODSv34):
                     data['other_titles'].extend(other_titles)
                 else:
                     data['other_titles'] = other_titles
+        #handle notes
+        for note in self.notes:
+            #add all notes to the note field
+            data = self._add_or_extend(data, 'note', [note.text])
+            if note.type:
+                data = self._add_or_extend(data, 'mods_note_%s_ssim' % self._slugify(note.type), [note.text])
+            else:
+                if note.label:
+                    data = self._add_or_extend(data, 'mods_note_%s_ssim' % self._slugify(note.label), [note.text])
         #mods_id
         if self.id:
             data['mods_id'] = self.id
@@ -185,6 +193,12 @@ class Mods(eulmods.MODSv34):
         else:
             data[field_name] = data_list
         return data
+
+    def _slugify(self, text):
+        text = text.replace(u' ', u'_')
+        pattern = re.compile('[\W-]')
+        text = pattern.sub('', text)
+        return text
 
     def _get_solr_date(self, date):
         if re.match('\d{4}-\d{2}-\d{2}', date):
