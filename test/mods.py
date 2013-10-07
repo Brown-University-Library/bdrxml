@@ -34,7 +34,7 @@ SAMPLE_MODS = u'''
   </mods:physicalDescription>
   <mods:note>Thésis (Ph.D.)</mods:note>
   <mods:note type="@#$%random Type" displayLabel="discarded:">random type note</mods:note>
-  <mods:note displayLabel="Display @#$label">display label note</mods:note>
+  <mods:note displayLabel="Display @#$label?">display label note</mods:note>
   <mods:name type="personal">
     <mods:namePart>Blake, Tim</mods:namePart>
     <mods:role>
@@ -199,7 +199,7 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['mods_access_condition_logo_ssim'], [u'http://i.creativecommons.org/p/zero/1.0/88x31.png'])
         self.assertEqual(index_data['mods_access_condition_use_text_tsim'], [u'To the extent possible under law, the person who associated CC0 with this work has waived all copyright and related or neighboring rights to this work.'])
         self.assertEqual(index_data['mods_access_condition_use_link_ssim'], [u'http://creativecommons.org/publicdomain/zero/1.0/'])
-        self.assertEqual(index_data['note'], [u'Thésis (Ph.D.)', u'discarded: random type note', u'Display @#$label: display label note'])
+        self.assertEqual(index_data['note'], [u'Thésis (Ph.D.)', u'discarded: random type note', u'Display @#$label? display label note'])
         self.assertEqual(index_data['mods_note_random_type_ssim'], [u'random type note'])
         self.assertEqual(index_data['mods_note_display_label_ssim'], [u'display label note'])
 

@@ -128,7 +128,8 @@ class Mods(eulmods.MODSv34):
         for note in self.notes:
             #add display label to text for note field
             if note.label:
-                if note.label.endswith(u':'):
+                final_char = note.label.strip()[-1:]
+                if final_char in [u':', u'?', u'!']:
                     note_text = u'%s %s' % (note.label, note.text)
                 else:
                     note_text = u'%s: %s' % (note.label, note.text)
