@@ -120,7 +120,7 @@ class Mods(eulmods.MODSv34):
             #rest of primary_titles go into other_titles field
             if len(primary_titles) > 1:
                 other_titles = [title_info.title for title_info in primary_titles[1:]]
-                data = self._add_or_extend(data, 'other_titles', other_titles)
+                data = self._add_or_extend(data, 'other_title', other_titles)
         #handle notes
         for note in self.notes:
             #add display label to text for note field

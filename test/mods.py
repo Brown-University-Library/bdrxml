@@ -194,7 +194,7 @@ class ModsReadWrite(unittest.TestCase):
         loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
         index_data = loaded.index_data()
         self.assertEqual(index_data['primary_title'], u'Poétry')
-        self.assertEqual(index_data['other_titles'], [u'Other title'])
+        self.assertEqual(index_data['other_title'], [u'Other title'])
         self.assertEqual(index_data['mods_title_alt'], [u'alternative title'])
         self.assertEqual(index_data['mods_id'], 'id101')
         self.assertEqual(index_data['copyrightDate'], '2008-01-01T00:00:00Z')
