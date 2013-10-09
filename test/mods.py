@@ -27,6 +27,7 @@ SAMPLE_MODS = u'''
     <mods:dateCreated encoding="w3cdtf" qualifier="questionable">2018-01</mods:dateCreated>
     <mods:copyrightDate encoding="w3cdtf" keyDate="yes">2008</mods:copyrightDate>
     <mods:dateCreated encoding="w3cdtf" keyDate="yes">2008-02-03</mods:dateCreated>
+    <mods:dateModified encoding="w3cdtf">2008-06-07-2009-01-02</mods:dateModified>
     <mods:dateModified encoding="w3cdtf" point="start">invalid date</mods:dateModified>
     <mods:dateModified encoding="w3cdtf" point="start">2008-05-06</mods:dateModified>
     <mods:dateModified encoding="w3cdtf" point="start">2008-06-07</mods:dateModified>
@@ -200,7 +201,7 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['copyrightDate'], '2008-01-01T00:00:00Z')
         self.assertEqual(index_data['dateCreated'], '2008-02-03T00:00:00Z')
         self.assertEqual(index_data['dateModified'], '2008-05-06T00:00:00Z')
-        self.assertEqual(index_data['dateModified_ssim'], ['invalid date', '2008-06-07'])
+        self.assertEqual(index_data['dateModified_ssim'], ['2008-06-07-2009-01-02', 'invalid date', '2008-06-07'])
         self.assertEqual(index_data['mods_access_condition_logo_ssim'], [u'http://i.creativecommons.org/p/zero/1.0/88x31.png'])
         self.assertEqual(index_data['mods_access_condition_use_text_tsim'], [u'To the extent possible under law, the person who associated CC0 with this work has waived all copyright and related or neighboring rights to this work.'])
         self.assertEqual(index_data['mods_access_condition_use_link_ssim'], [u'http://creativecommons.org/publicdomain/zero/1.0/'])

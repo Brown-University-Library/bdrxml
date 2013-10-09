@@ -212,11 +212,11 @@ class Mods(eulmods.MODSv34):
         return text
 
     def _get_solr_date(self, date):
-        if re.match('\d{4}-\d{2}-\d{2}', date):
+        if re.match('^\d{4}-\d{2}-\d{2}$', date):
             date = date + 'T00:00:00Z'
-        elif re.match('\d{4}-\d{2}', date):
+        elif re.match('^\d{4}-\d{2}$', date):
             date = date + '-01T00:00:00Z'
-        elif re.match('\d{4}', date):
+        elif re.match('^\d{4}$', date):
             date = date + '-01-01T00:00:00Z'
         else:
             date = None
@@ -231,7 +231,7 @@ class Mods(eulmods.MODSv34):
             for date in dates_els:
                 if date_name not in data:
                     #see if we can get a valid date value to put in solr
-                    solr_date = self._get_solr_date(date.text)
+                    solr_date = self._get_solr_date(date.text.strip())
                     if solr_date:
                         data[date_name] = solr_date
                     else:
