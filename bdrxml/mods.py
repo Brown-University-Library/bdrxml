@@ -119,11 +119,8 @@ class Mods(eulmods.MODSv34):
                 data['nonsort'] = primary_titles[0].non_sort
             #rest of primary_titles go into other_titles field
             if len(primary_titles) > 1:
-                other_titles = [title_info.title for title_info in primary_titles]
-                if data['other_titles']:
-                    data['other_titles'].extend(other_titles)
-                else:
-                    data['other_titles'] = other_titles
+                other_titles = [title_info.title for title_info in primary_titles[1:]]
+                data = self._add_or_extend(data, 'other_titles', other_titles)
         #handle notes
         for note in self.notes:
             #add display label to text for note field
