@@ -113,8 +113,8 @@ class Builder(unittest.TestCase):
 
     def test_addreader(self):
         """If we add one reader then they should be the only identiry in the set of all_identities"""
-        self.builder.addReader('Joseph')
-        self.assertEqual(set(['Joseph']), self.builder.all_identities)
+        self.builder.addReader('johnny')
+        self.assertEqual(set(['johnny']), self.builder.all_identities)
 
     def test_add_reader_and_build(self):
         self.builder.addReader('jack@brown.edu')
@@ -124,8 +124,6 @@ class Builder(unittest.TestCase):
         rights = self.builder.build()
         rights_str = rights.serialize(pretty=True)
         self.assertEqual(rights_str, RIGHTS_WITH_USERS)
-        #self.assertTrue(rights_str)
-
 
 
 def suite():

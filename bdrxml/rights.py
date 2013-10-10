@@ -79,47 +79,47 @@ def make_rights():
 
 class RightsBuilder(object):
     """Builder class for BUL Rights Metadata"""
-    def __init__(self, discover=None, display=None, modify=None, delete=None, own=None):
+    def __init__(self, discoverers=None, readers=None, editors=None, deleters=None, owners=None):
         super(RightsBuilder, self).__init__()
-        self._discover = discover or set()
-        self._display = display or set()
-        self._modify = modify or set()
-        self._delete = delete or set()
-        self._own = own or set()
+        self._discoverers = discoverers or set()
+        self._readers = readers or set()
+        self._editors = editors or set()
+        self._deleters = deleters or set()
+        self._owners = owners or set()
     
     def addDiscoverer(self, identifier):
-        self._discover.add(identifier)
+        self._discoverers.add(identifier)
         return self
 
     def addReader(self, identifier):
-        self._display.add(identifier)
+        self._readers.add(identifier)
         return self
         
     def addEditor(self, identifier):
-        self._modify.add(identifier)
+        self._editors.add(identifier)
         return self
 
     def addDeleter(self, identifier):
-        self._delete.add(identifier)
+        self._deleters.add(identifier)
         return self
 
     def addOwner(self, identifier):
-        self._own.add(identifier)
+        self._owners.add(identifier)
         return self
     
     @property
     def all_identities(self):
-        return set(self._discover) | set(self._display) | set(self._modify) | set(self._delete) | set(self._own)
+        return set(self._discoverers) | set(self._readers) | set(self._editors) | set(self._deleters) | set(self._owners)
 
     def _build_context(self, identity):
         user_type = "USER" if "@" in identity else "GROUP"
 
         new_context = make_context()
         new_context.username = identity
-        new_context.discover = identity in self._discover | self._own
-        new_context.display = identity in self._display | self._own
-        new_context.modify = identity in self._modify | self._own
-        new_context.delete = identity in self._delete | self._own
+        new_context.discover = identity in self._discoverers | self._owners
+        new_context.display = identity in self._readers | self._owners
+        new_context.modify = identity in self._editors | self._owners
+        new_context.delete = identity in self._deleters | self._owners
         new_context.usertype = user_type
         return new_context
 
