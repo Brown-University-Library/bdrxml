@@ -1,6 +1,11 @@
 import unittest
 from eulxml.xmlmap  import load_xmlobject_from_string
-from bdrxml.rights import Rights, make_rights, make_context
+from bdrxml.rights import (
+    Rights, 
+    make_rights,
+    make_context,
+    RightsBuilder,
+)
 
 
 class RightsReadWrite(unittest.TestCase):
@@ -63,9 +68,71 @@ class RightsReadWrite(unittest.TestCase):
         tmp_ctext = self.rights.get_ctext_for("johnny@brown.edu")
         self.assertEqual(tmp_ctext.id, "rights3")
 
+EMPTY_RIGHTS_XML = """<rights:RightsDeclarationMD xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rights="http://cosimo.stanford.edu/sdr/metsrights/" xsi:schemaLocation="http://cosimo.stanford.edu/sdr/rights http://cosimo.stanford.edu/sdr/metsrights.xsd"><rights:RightsHolder/></rights:RightsDeclarationMD>"""
+
+RIGHTS_WITH_USERS = """<rights:RightsDeclarationMD xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rights="http://cosimo.stanford.edu/sdr/metsrights/" xsi:schemaLocation="http://cosimo.stanford.edu/sdr/rights http://cosimo.stanford.edu/sdr/metsrights.xsd">
+  <rights:RightsHolder CONTEXTIDS="rights000 rights001 rights002"/>
+  <rights:Context CONTEXTID="rights000">
+    <rights:Permissions DELETE="false" DISCOVER="true" DISPLAY="true" MODIFY="false"/>
+    <rights:UserName USERTYPE="USER">johnny@brown.edu</rights:UserName>
+  </rights:Context>
+  <rights:Context CONTEXTID="rights001">
+    <rights:Permissions DELETE="false" DISCOVER="false" DISPLAY="true" MODIFY="false"/>
+    <rights:UserName USERTYPE="USER">jack@brown.edu</rights:UserName>
+  </rights:Context>
+  <rights:Context CONTEXTID="rights002">
+    <rights:Permissions DELETE="false" DISCOVER="false" DISPLAY="false" MODIFY="true"/>
+    <rights:UserName USERTYPE="USER">jim@brown.edu</rights:UserName>
+  </rights:Context>
+</rights:RightsDeclarationMD>
+"""
+class Builder(unittest.TestCase):
+    """Test for the rights builder"""
+    def setUp(self):
+        self.builder = RightsBuilder()
+    
+    def test_basicBuild(self):
+        """If nothing has been added to the builder then the builder should serialize to the same as EMPTY_RIGHTS_XML"""
+        rights = self.builder.build()
+        rights_str = rights.serialize()
+        self.assertEqual(rights_str, EMPTY_RIGHTS_XML)
+
+    def test_empty(self):
+        """If no identities have been added then the result of all_identities should be an empty set"""
+        self.assertEqual(set([]), self.builder.all_identities)
+        
+    def test_addowner(self):
+        """If we add one owner then they should have access to all privleges"""
+        self.builder.addOwner('johnny')
+        rights = self.builder.build()
+        ctext = rights.ctext[0]
+        self.assertTrue(ctext.display)
+        self.assertTrue(ctext.discover)
+        self.assertTrue(ctext.modify)
+        self.assertTrue(ctext.delete)
+
+    def test_addreader(self):
+        """If we add one reader then they should be the only identiry in the set of all_identities"""
+        self.builder.addReader('Joseph')
+        self.assertEqual(set(['Joseph']), self.builder.all_identities)
+
+    def test_add_reader_and_build(self):
+        self.builder.addReader('jack@brown.edu')
+        self.builder.addReader('jack@brown.edu')
+        self.builder.addEditor('jim@brown.edu')
+        self.builder.addReader('johnny@brown.edu').addDiscoverer('johnny@brown.edu')
+        rights = self.builder.build()
+        rights_str = rights.serialize(pretty=True)
+        self.assertEqual(rights_str, RIGHTS_WITH_USERS)
+        #self.assertTrue(rights_str)
+
+
+
 def suite():
-    suite = unittest.makeSuite(RightsReadWrite, 'test')
-    return suite
+    suite1 = unittest.makeSuite(RightsReadWrite, 'test')
+    suite2 = unittest.makeSuite(Builder, 'test')
+    alltests = unittest.TestSuite((suite1, suite2))
+    return alltests
 
 if __name__ == '__main__':
     unittest.main()

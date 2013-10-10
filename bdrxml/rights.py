@@ -76,3 +76,59 @@ def make_rights():
     m.create_holder()
     m.schema_location = Rights.XSD_SCHEMA
     return m
+
+class RightsBuilder(object):
+    """Builder class for BUL Rights Metadata"""
+    def __init__(self, discover=None, display=None, modify=None, delete=None, own=None):
+        super(RightsBuilder, self).__init__()
+        self._discover = discover or set()
+        self._display = display or set()
+        self._modify = modify or set()
+        self._delete = delete or set()
+        self._own = own or set()
+    
+    def addDiscoverer(self, identifier):
+        self._discover.add(identifier)
+        return self
+
+    def addReader(self, identifier):
+        self._display.add(identifier)
+        return self
+        
+    def addEditor(self, identifier):
+        self._modify.add(identifier)
+        return self
+
+    def addDeleter(self, identifier):
+        self._delete.add(identifier)
+        return self
+
+    def addOwner(self, identifier):
+        self._own.add(identifier)
+        return self
+    
+    @property
+    def all_identities(self):
+        return set(self._discover) | set(self._display) | set(self._modify) | set(self._delete) | set(self._own)
+
+    def _build_context(self, identity):
+        user_type = "USER" if "@" in identity else "GROUP"
+
+        new_context = make_context()
+        new_context.username = identity
+        new_context.discover = identity in self._discover | self._own
+        new_context.display = identity in self._display | self._own
+        new_context.modify = identity in self._modify | self._own
+        new_context.delete = identity in self._delete | self._own
+        new_context.usertype = user_type
+        return new_context
+
+    def _build_contexts(self):
+        return [self._build_context(identity) for identity in self.all_identities]
+            
+    def build(self):
+        rights = make_rights()
+        for number, ctext in enumerate(self._build_contexts()):
+            ctext.id = "rights%03d" % number
+            rights.add_ctext(ctext)
+        return rights
