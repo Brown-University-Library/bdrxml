@@ -187,10 +187,13 @@ class Mods(eulmods.MODSv34):
             roles = [role.text for role in name.roles if role.type == 'text']
             data = self._add_or_extend(data, 'name', [nameparts[0]])
             if roles:
+                data = self._add_or_extend(data, 'contributor_display', ['%s (%s)' % (nameparts[0], roles[0])])
                 if roles[0] == 'creator':
                     data = self._add_or_extend(data, 'creator', [nameparts[0]])
                 else:
                     data = self._add_or_extend(data, 'contributor', [nameparts[0]])
+            else:
+                data = self._add_or_extend(data, 'contributor_display', ['%s' % nameparts[0]])
 
         return data
 

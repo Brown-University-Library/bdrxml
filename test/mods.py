@@ -40,28 +40,13 @@ SAMPLE_MODS = u'''
   <mods:note type="@#$%random Type" displayLabel="discarded:">random type note</mods:note>
   <mods:note displayLabel="Display @#$label?">display label note</mods:note>
   <mods:name type="personal">
-    <mods:namePart>Blake, Tim</mods:namePart>
+    <mods:namePart>Baker, Jim</mods:namePart>
     <mods:role>
       <mods:roleTerm type="text">director</mods:roleTerm>
     </mods:role>
   </mods:name>
   <mods:name type="personal">
-    <mods:namePart>Katz, Tamar</mods:namePart>
-    <mods:role>
-      <mods:roleTerm type="text">reader</mods:roleTerm>
-    </mods:role>
-  </mods:name>
-  <mods:name type="personal">
-    <mods:namePart>Keach, William</mods:namePart>
-    <mods:role>
-      <mods:roleTerm type="text">reader</mods:roleTerm>
-    </mods:role>
-  </mods:name>
-  <mods:name type="personal">
-    <mods:namePart>Smith, Barbara</mods:namePart>
-    <mods:role>
-      <mods:roleTerm type="text">reader</mods:roleTerm>
-    </mods:role>
+    <mods:namePart>Wilson, Jane</mods:namePart>
   </mods:name>
   <mods:name type="corporate">
     <mods:namePart>Brown University. English</mods:namePart>
@@ -129,9 +114,9 @@ class ModsReadWrite(unittest.TestCase):
 
         #test names
         personal_names = [unicode(name) for name in loaded.names if name.type == 'personal']
-        self.assertEqual(len(personal_names), 5)
-        personal_name_list = [u'Smith, Tom', u'Blake, Tim', u'Katz, Tamar', u'Keach, William', u'Smith, Barbara']
-        for i in range(5):
+        self.assertEqual(len(personal_names), 3)
+        personal_name_list = [u'Smith, Tom', u'Baker, Jim', u'Wilson, Jane']
+        for i in range(3):
             self.assertTrue(personal_names[i] in personal_name_list)
         corporate_names = [unicode(name) for name in loaded.names if name.type == 'corporate']
         corporate_name_list = [u'Brown University. English']
@@ -198,6 +183,8 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['other_title'], [u'Other title'])
         self.assertEqual(index_data['mods_title_alt'], [u'alternative title'])
         self.assertEqual(index_data['mods_id'], 'id101')
+        self.assertEqual(index_data['name'], ['Smith, Tom', 'Baker, Jim', 'Wilson, Jane', 'Brown University. English'])
+        self.assertEqual(index_data['contributor_display'], ['Smith, Tom (creator)', 'Baker, Jim (director)', 'Wilson, Jane', 'Brown University. English (sponsor)'])
         self.assertEqual(index_data['copyrightDate'], '2008-01-01T00:00:00Z')
         self.assertEqual(index_data['dateCreated'], '2008-02-03T00:00:00Z')
         self.assertEqual(index_data['dateModified'], '2008-05-06T00:00:00Z')
