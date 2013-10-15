@@ -6,7 +6,7 @@ Making METS for the BDR.
 from eulxml import xmlmap
 from eulxml.xmlmap import StringField as SF
 
-from mods import Mods, eulmods
+import mods
 from rights import Rights, RIGHTS_NAMESPACE
 from irMetadata import IR, IR_NAMESPACE
 
@@ -21,7 +21,7 @@ class Common(xmlmap.XmlObject):
                        'METS': METS_NAMESPACE,
                        'rights': RIGHTS_NAMESPACE,
                        #For now we are assuming the METS will include a MODS.
-                       'mods': eulmods.MODS_NAMESPACE,
+                       'mods': mods.MODS_NAMESPACE,
                        'ir': IR_NAMESPACE,
                        'xlink': XLINK_NAMESPACE,
                        'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
@@ -62,7 +62,7 @@ class BDRMets(Common):
     XSD_SCHEMA = 'http://www.loc.gov/standards/mets/mets.xsd'
     pid = xmlmap.StringField('@OBJID')
     mdwrap = xmlmap.NodeField('METS:dmdSec[@ID="DM1"]/METS:mdWrap', MdWrap)
-    mods = xmlmap.NodeField('METS:dmdSec[@ID="DM1"]/METS:mdWrap[@MDTYPE="MODS"]/METS:xmlData/mods:mods', Mods)
+    mods = xmlmap.NodeField('METS:dmdSec[@ID="DM1"]/METS:mdWrap[@MDTYPE="MODS"]/METS:xmlData/mods:mods', mods.Mods)
     ir = xmlmap.NodeField('METS:dmdSec[@ID="DM2"]/METS:mdWrap[@MDTYPE="OTHER"][@OTHERMDTYPE="IR"]/METS:xmlData/ir:irData', IR)
     rights = xmlmap.NodeField('METS:amdSec/METS:rightsMD[@ID="RMD1"]/METS:mdWrap[@LABEL="RIGHTSMD"][@MDTYPE="OTHER"]/METS:xmlData/rights:RightsDeclarationMD', Rights)
     filesec = xmlmap.NodeField('METS:fileSec', FileSec)

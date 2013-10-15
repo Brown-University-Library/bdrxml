@@ -1,25 +1,21 @@
 import re
-from eulxml.xmlmap import mods as eulmods
 from eulxml.xmlmap import StringField as SF
 from eulxml.xmlmap import NodeListField, NodeField
-#some imports here because users need to instantiate these classes to use Mods
-from eulxml.xmlmap.mods import MODS_NAMESPACE
-from eulxml.xmlmap.mods import DateCreated, DateIssued, DateCaptured, DateValid, DateModified, CopyrightDate, DateOther
-from eulxml.xmlmap.mods import RecordInfo, Note, Identifier, AccessCondition, NamePart, Role, Name, Genre
-from eulxml.xmlmap.mods import Language, LanguageTerm, Location, TitleInfo, Abstract, PhysicalDescription
-from eulxml.xmlmap.mods import Part, PartDetail, PartExtent, RelatedItem
+#import everything from eulxml.xmlmap.mods because clients have to use a lot of
+#   those classes, and we're just overriding a few of them here.
+from eulxml.xmlmap.mods import *
 
 
-class OriginInfo(eulmods.OriginInfo):
+class OriginInfo(OriginInfo):
     label = SF('@displayLabel')
 
 
-class Collection(eulmods.RelatedItem):
+class Collection(RelatedItem):
     name = SF('mods:titleInfo/mods:title')
     id = SF('mods:identifier[@type="COLID"]')
 
 
-class HierarchicalGeographic(eulmods.Common):
+class HierarchicalGeographic(Common):
     ROOT_NAME = 'hierarchicalGeographic'
     continent = SF('mods:continent')
     country = SF('mods:country')
@@ -34,12 +30,12 @@ class HierarchicalGeographic(eulmods.Common):
     extraterrestrial_area = SF('mods:extraterrestrialArea')
 
 
-class Subject(eulmods.Subject):
+class Subject(Subject):
     hierarchical_geographic = NodeField('mods:hierarchicalGeographic', HierarchicalGeographic)
 
 
-class Mods(eulmods.MODSv34):
-    """Map mods fields - just where we override eulmods.MODSv34
+class Mods(MODSv34):
+    """Map mods fields - just where we override MODSv34
     Fields documented at:
     http://www.loc.gov/standards/mods/mods-outline.html
     """
