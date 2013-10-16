@@ -9,5 +9,5 @@ install:
 # command to run tests, e.g. python setup.py test
 script:
   - python test.py
-  - coverage run test.py
+  - coverage run --source=bdrxml test.py
 after_success: coveralls
