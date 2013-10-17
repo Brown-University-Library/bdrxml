@@ -1,4 +1,5 @@
 import re
+import unicodedata
 from eulxml.xmlmap import StringField as SF
 from eulxml.xmlmap import NodeListField, NodeField
 #import everything from eulxml.xmlmap.mods because clients have to use a lot of
@@ -204,8 +205,7 @@ class Mods(MODSv34):
         #very similar functionality to django's slugify function
         text = text.strip().lower().replace(u' ', u'_')
         #we can return str instead of unicode because we're generating a slug, not working with data
-        #TODO use unicode normalize()
-        text = text.encode('ascii', 'ignore')
+        text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore')
         pattern = re.compile('\W')
         text = pattern.sub('', text)
         return text
