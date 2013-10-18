@@ -18,7 +18,11 @@ SAMPLE_MODS = u'''
   <mods:accessCondition href="http://creativecommons.org/publicdomain/zero/1.0/" type="use and reproduction">To the extent possible under law, the person who associated CC0 with this work has waived all copyright and related or neighboring rights to this work.</mods:accessCondition>
   <mods:accessCondition href="http://i.creativecommons.org/p/zero/1.0/88x31.png" type="logo"></mods:accessCondition>
   <mods:name type="personal">
+    <mods:namePart></mods:namePart>
+  </mods:name>
+  <mods:name type="personal">
     <mods:namePart>Smith, Tom</mods:namePart>
+    <mods:namePart type="date">1803 or 4-1860</mods:namePart>
     <mods:role>
       <mods:roleTerm type="text">creator</mods:roleTerm>
     </mods:role>
@@ -26,6 +30,7 @@ SAMPLE_MODS = u'''
   <mods:originInfo displayLabel="date added">
     <mods:dateCreated encoding="w3cdtf" qualifier="questionable">2018-01</mods:dateCreated>
     <mods:copyrightDate encoding="w3cdtf" keyDate="yes">2008</mods:copyrightDate>
+    <mods:dateCreated encoding="w3cdtf" keyDate="yes"></mods:dateCreated>
     <mods:dateCreated encoding="w3cdtf" keyDate="yes">2008-02-03</mods:dateCreated>
     <mods:dateModified encoding="w3cdtf">2008-06-07-2009-01-02</mods:dateModified>
     <mods:dateModified encoding="w3cdtf" point="start">invalid date</mods:dateModified>
@@ -113,7 +118,7 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(loaded.origin_info.label, 'date added')
 
         #test names
-        personal_names = [unicode(name) for name in loaded.names if name.type == 'personal']
+        personal_names = [unicode(name.name_parts[0].text) for name in loaded.names if name.type == 'personal' and name.name_parts[0].text]
         self.assertEqual(len(personal_names), 3)
         personal_name_list = [u'Smith, Tom', u'Baker, Jim', u'Wilson, Jane']
         for i in range(3):
