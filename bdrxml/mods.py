@@ -93,7 +93,7 @@ class Mods(MODSv34):
                     data = self._add_or_extend(data, mapper[1], [element.text for element in element_list])
                 else:
                     data[mapper[1]] = element_list[0].text
-        #dateCreated
+        #handle dates
         data = self._process_date(data, 'dateCreated')
         data = self._process_date(data, 'dateIssued')
         data = self._process_date(data, 'dateCaptured')
@@ -179,18 +179,22 @@ class Mods(MODSv34):
             else:
                 data = self._add_or_extend(data, 'identifier', [identifier.text])
         #names
-        for name in self.names:
-            nameparts = [np.text for np in name.name_parts if not np.type]
-            roles = [role.text for role in name.roles if role.type == 'text']
-            data = self._add_or_extend(data, 'name', [nameparts[0]])
-            if roles:
-                data = self._add_or_extend(data, 'contributor_display', ['%s (%s)' % (nameparts[0], roles[0])])
-                if roles[0] == 'creator':
-                    data = self._add_or_extend(data, 'creator', [nameparts[0]])
-                else:
-                    data = self._add_or_extend(data, 'contributor', [nameparts[0]])
-            else:
-                data = self._add_or_extend(data, 'contributor_display', ['%s' % nameparts[0]])
+        try:
+            for name in self.names:
+                nameparts = [np.text for np in name.name_parts if not np.type]
+                roles = [role.text for role in name.roles if role.type == 'text']
+                if nameparts and nameparts[0]:
+                    data = self._add_or_extend(data, 'name', [nameparts[0]])
+                    if roles and roles[0]:
+                        data = self._add_or_extend(data, 'contributor_display', ['%s (%s)' % (nameparts[0], roles[0])])
+                        if roles[0] == 'creator':
+                            data = self._add_or_extend(data, 'creator', [nameparts[0]])
+                        else:
+                            data = self._add_or_extend(data, 'contributor', [nameparts[0]])
+                    else:
+                        data = self._add_or_extend(data, 'contributor_display', ['%s' % nameparts[0]])
+        except Exception as e:
+            raise Exception(u'names: %s' % repr(e))
 
         return data
 
@@ -223,28 +227,33 @@ class Mods(MODSv34):
 
     def _process_date(self, data, date_name):
         #dates - actual date fields are single value, but we put other dates into a multi-value string fields
-        #for now, we'll ignore dates marked as questionable and end dates
-        date_xpath = 'mods:originInfo/mods:%s[not(@qualifier="questionable") and (not(@point) or @point!="end" or @keyDate="yes")]' % date_name
-        dates_els = self.node.xpath(date_xpath, namespaces=self.ROOT_NAMESPACES)
-        if dates_els:
-            for date in dates_els:
-                if date_name not in data:
-                    #see if we can get a valid date value to put in solr
-                    solr_date = self._get_solr_date(date.text.strip())
-                    if solr_date:
-                        data[date_name] = solr_date
-                    else:
-                        data = self._add_or_extend(data, '%s_ssim' % date_name, [date.text])
-                else:
-                    #handle remaining dates
-                    data = self._add_or_extend(data, '%s_ssim' % date_name, [date.text])
-                #some special facets handling for dateOther
-                if date_name == 'dateOther':
-                    type = date.get('type')
-                    if type == 'quarterSort':
-                        data = self._add_or_extend(data, 'mods_dateOther_quarter_facet', [date.text])
-                    elif type == 'yearSort':
-                        data = self._add_or_extend(data, 'mods_dateOther_year_facet', [date.text])
+        try:
+            #for now, we'll ignore dates marked as questionable and end dates
+            date_xpath = 'mods:originInfo/mods:%s[not(@qualifier="questionable") and (not(@point) or @point!="end" or @keyDate="yes")]' % date_name
+            dates_els = self.node.xpath(date_xpath, namespaces=self.ROOT_NAMESPACES)
+            if dates_els:
+                for date in dates_els:
+                    #make sure it's not an empty date element
+                    if date.text:
+                        if date_name not in data:
+                            #see if we can get a valid date value to put in solr
+                            solr_date = self._get_solr_date(date.text.strip())
+                            if solr_date:
+                                data[date_name] = solr_date
+                            else:
+                                data = self._add_or_extend(data, '%s_ssim' % date_name, [date.text])
+                        else:
+                            #handle remaining dates
+                            data = self._add_or_extend(data, '%s_ssim' % date_name, [date.text])
+                        #some special facets handling for dateOther
+                        if date_name == 'dateOther':
+                            type = date.get('type')
+                            if type == 'quarterSort':
+                                data = self._add_or_extend(data, 'mods_dateOther_quarter_facet', [date.text])
+                            elif type == 'yearSort':
+                                data = self._add_or_extend(data, 'mods_dateOther_year_facet', [date.text])
+        except Exception as e:
+            raise Exception(u'%s: %s' % (date_name, repr(e)))
         return data
 
 
