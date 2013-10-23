@@ -62,19 +62,19 @@ SAMPLE_MODS = u'''
   <mods:typeOfResource>text</mods:typeOfResource>
   <mods:genre authority="aat">theses</mods:genre>
   <mods:abstract>Poétry description...</mods:abstract>
-  <mods:subject authority="local">
+  <mods:subject displayLabel="Display Labél!">
     <mods:topic>modernism</mods:topic>
   </mods:subject>
-  <mods:subject authority="local">
+  <mods:subject>
     <mods:topic>metalepsis</mods:topic>
   </mods:subject>
-  <mods:subject authority="local">
+  <mods:subject displayLabel="Display Label:">
     <mods:topic>Yeats</mods:topic>
   </mods:subject>
   <mods:subject authority="local">
     <mods:topic>Stevens</mods:topic>
   </mods:subject>
-  <mods:subject authority="local">
+  <mods:subject>
     <mods:topic>Merrill</mods:topic>
   </mods:subject>
   <mods:subject authority="local">
@@ -194,7 +194,10 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['note'], [u'Thésis (Ph.D.)', u'discarded: random type note', u'Display @#$label? display label note'])
         self.assertEqual(index_data['other_title'], [u'Other title'])
         self.assertEqual(index_data['primary_title'], u'Poétry')
-        self.assertEqual(index_data['keyword'], [u'modernism', u'metalepsis', u'Yeats', u'Stevens', u'Merrill', u'Eliot'])
+        self.assertEqual(index_data['keyword'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Stevens', u'Merrill', u'Eliot'])
+        self.assertEqual(index_data['mods_subject_ssim'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Stevens', u'Merrill', u'Eliot'])
+        self.assertEqual(index_data['mods_subject_display_label_ssim'], [u'modernism', u'Yeats'])
+        self.assertEqual(index_data['mods_subject_local_ssim'], [u'Stevens', u'Eliot'])
 
 
 def suite():
