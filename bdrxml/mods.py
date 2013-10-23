@@ -32,6 +32,7 @@ class HierarchicalGeographic(Common):
 
 
 class Subject(Subject):
+    label = SF('@displayLabel')
     hierarchical_geographic = NodeField('mods:hierarchicalGeographic', HierarchicalGeographic)
 
 
@@ -75,7 +76,6 @@ class Mods(MODSv34):
             ('mods:subject/mods:hierarchicalGeographic/mods:citySection', 'mods_hierarchical_geographic_city_section_ssim', 'm'),
             ('mods:subject/mods:hierarchicalGeographic/mods:island', 'mods_hierarchical_geographic_island_ssim', 'm'),
             ('mods:subject/mods:hierarchicalGeographic/mods:area', 'mods_hierarchical_geographic_area_ssim', 'm'),
-            ('mods:subject/mods:topic', 'keyword', 'm'),
             ('mods:tableOfContents', 'other_title', 'm'),
             ('mods:typeOfResource', 'mods_type_of_resource', 'm'),
             ('mods:abstract', 'abstract', 'm'),
@@ -118,6 +118,26 @@ class Mods(MODSv34):
             if len(primary_titles) > 1:
                 other_titles = [title_info.title for title_info in primary_titles[1:]]
                 data = self._add_or_extend(data, 'other_title', other_titles)
+        #handle subject topics
+        topic_subjects = [subject for subject in self.subjects if subject.topic]
+        for subject in topic_subjects:
+            #add display label to text for general subjects field
+            if subject.label:
+                final_char = subject.label.strip()[-1:]
+                if final_char in [u':', u'?', u'!']:
+                    subj_text = u'%s %s' % (subject.label, subject.topic)
+                else:
+                    subj_text = u'%s: %s' % (subject.label, subject.topic)
+            else:
+                subj_text = subject.topic
+            #add all subjects to the keyword & mods_subject_ssim fields
+            data = self._add_or_extend(data, 'keyword', [subj_text])
+            data = self._add_or_extend(data, 'mods_subject_ssim', [subj_text])
+            if subject.authority:
+                data = self._add_or_extend(data, 'mods_subject_%s_ssim' % self._slugify(subject.authority), [subject.topic])
+            else:
+                if subject.label:
+                    data = self._add_or_extend(data, 'mods_subject_%s_ssim' % self._slugify(subject.label), [subject.topic])
         #handle notes
         for note in self.notes:
             #add display label to text for note field
