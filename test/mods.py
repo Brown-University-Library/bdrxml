@@ -61,14 +61,7 @@ SAMPLE_MODS = u'''
   </mods:name>
   <mods:typeOfResource>text</mods:typeOfResource>
   <mods:genre authority="aat">theses</mods:genre>
-  <mods:abstract>In Time Travels: Metalepsis and Modernist Poetry, I examine how modern notions of time play out rhetorically in the work of Wallace Stevens, W. B. Yeats, James Merrill, and T. S.
-      Eliot. I focus not so much on the relationships of literature to cosmological or subjective time but, instead, focus on how literary forms alter how we&apos;ve come to understand cultures of
-      temporality, such as what we mean by revision, by a literary memory, or by a lyric subject. The central trope I focus on is metalepsis. Unlike most other tropes, which are generally confined to
-      a kind of conceptual space, metaleptic narratives rework presumptions of causality, illogically take what comes later or after and substitute them for what comes before. There is both a positing
-      and a negating aspect to this trope. On the one hand, metaleptic narratives assume that history is meaningful?that it is part of some larger picture. But, on the other hand, because of its
-      anachronistic nature, it always seems to insist that we question the very same meaningful history that it posits. I turn to this trope, because it helps figure an important paradoxical
-      relationship between the ways we talk about history and the ways we talk about forms, as well as because it helps figure a central paradox of modernism: the historical condition of being outside
-      the historical.</mods:abstract>
+  <mods:abstract>Poétry description...</mods:abstract>
   <mods:subject authority="local">
     <mods:topic>modernism</mods:topic>
   </mods:subject>
@@ -184,11 +177,7 @@ class ModsReadWrite(unittest.TestCase):
     def test_index_data(self):
         loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
         index_data = loaded.index_data()
-        self.assertEqual(index_data['primary_title'], u'Poétry')
-        self.assertEqual(index_data['other_title'], [u'Other title'])
-        self.assertEqual(index_data['mods_title_alt'], [u'alternative title'])
-        self.assertEqual(index_data['mods_id'], 'id101')
-        self.assertEqual(index_data['name'], ['Smith, Tom', 'Baker, Jim', 'Wilson, Jane', 'Brown University. English'])
+        self.assertEqual(index_data['abstract'], [u'Poétry description...'])
         self.assertEqual(index_data['contributor_display'], ['Smith, Tom (creator)', 'Baker, Jim (director)', 'Wilson, Jane', 'Brown University. English (sponsor)'])
         self.assertEqual(index_data['copyrightDate'], '2008-01-01T00:00:00Z')
         self.assertEqual(index_data['dateCreated'], '2008-02-03T00:00:00Z')
@@ -197,9 +186,15 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['mods_access_condition_logo_ssim'], [u'http://i.creativecommons.org/p/zero/1.0/88x31.png'])
         self.assertEqual(index_data['mods_access_condition_use_text_tsim'], [u'To the extent possible under law, the person who associated CC0 with this work has waived all copyright and related or neighboring rights to this work.'])
         self.assertEqual(index_data['mods_access_condition_use_link_ssim'], [u'http://creativecommons.org/publicdomain/zero/1.0/'])
-        self.assertEqual(index_data['note'], [u'Thésis (Ph.D.)', u'discarded: random type note', u'Display @#$label? display label note'])
+        self.assertEqual(index_data['mods_id'], 'id101')
         self.assertEqual(index_data['mods_note_random_type_ssim'], [u'random type note'])
         self.assertEqual(index_data['mods_note_display_label_ssim'], [u'display label note'])
+        self.assertEqual(index_data['mods_title_alt'], [u'alternative title'])
+        self.assertEqual(index_data['name'], ['Smith, Tom', 'Baker, Jim', 'Wilson, Jane', 'Brown University. English'])
+        self.assertEqual(index_data['note'], [u'Thésis (Ph.D.)', u'discarded: random type note', u'Display @#$label? display label note'])
+        self.assertEqual(index_data['other_title'], [u'Other title'])
+        self.assertEqual(index_data['primary_title'], u'Poétry')
+        self.assertEqual(index_data['keyword'], [u'modernism', u'metalepsis', u'Yeats', u'Stevens', u'Merrill', u'Eliot'])
 
 
 def suite():
