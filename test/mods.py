@@ -60,7 +60,10 @@ SAMPLE_MODS = u'''
     </mods:role>
   </mods:name>
   <mods:typeOfResource>text</mods:typeOfResource>
-  <mods:genre authority="aat">theses</mods:genre>
+  <mods:genre authority="aat"></mods:genre>
+  <mods:genre authority="aat">aat theses</mods:genre>
+  <mods:genre authority="bdr">bdr theses</mods:genre>
+  <mods:genre authority="local">local theses</mods:genre>
   <mods:abstract>Poétry description...</mods:abstract>
   <mods:subject displayLabel="Display Labél!">
     <mods:topic>modernism</mods:topic>
@@ -122,7 +125,7 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(corporate_names, corporate_name_list)
 
         self.assertEqual(loaded.resource_type, 'text')
-        self.assertEqual(loaded.genres[0].text, 'theses')
+        self.assertEqual(loaded.genres[1].text, 'aat theses')
         self.assertEqual(loaded.notes[0].text, u'Thésis (Ph.D.)')
 
     def test_round_trip(self):
@@ -183,6 +186,10 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['dateCreated'], '2008-02-03T00:00:00Z')
         self.assertEqual(index_data['dateModified'], '2008-05-06T00:00:00Z')
         self.assertEqual(index_data['dateModified_ssim'], ['2008-06-07-2009-01-02', 'invalid date', '2008-06-07'])
+        self.assertEqual(index_data['genre'], [u'aat theses', u'bdr theses', u'local theses'])
+        self.assertEqual(index_data['mods_genre_aat_ssim'], [u'aat theses'])
+        self.assertEqual(index_data['mods_genre_bdr_ssim'], [u'bdr theses'])
+        self.assertEqual(index_data['mods_genre_local_ssim'], [u'local theses'])
         self.assertEqual(index_data['mods_access_condition_logo_ssim'], [u'http://i.creativecommons.org/p/zero/1.0/88x31.png'])
         self.assertEqual(index_data['mods_access_condition_use_text_tsim'], [u'To the extent possible under law, the person who associated CC0 with this work has waived all copyright and related or neighboring rights to this work.'])
         self.assertEqual(index_data['mods_access_condition_use_link_ssim'], [u'http://creativecommons.org/publicdomain/zero/1.0/'])
