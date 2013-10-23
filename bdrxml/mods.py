@@ -56,9 +56,6 @@ class Mods(MODSv34):
         #(xpath to data we're looking for, solr field name, single or multi-valued)
         mapping_info = [
             ('mods:titleInfo[@type="alternative"]/mods:title', 'mods_title_alt', 'm'),
-            ('mods:genre[@authority="bdr"]', 'genre_bdr', 'm'),
-            ('mods:genre[@authority="aat"]', 'genre_aat', 'm'),
-            ('mods:genre[@authority="local"]', 'genre_local', 'm'),
             ('mods:subject/mods:titleInfo/mods:title', 'other_title', 'm'),
             ('mods:subject/mods:name/mods:namePart[not(@type)]', 'subject', 'm'),
             ('mods:subject/mods:name/mods:role/mods:roleTerm[@type="text"]', 'subject', 'm'),
@@ -156,6 +153,13 @@ class Mods(MODSv34):
             else:
                 if note.label:
                     data = self._add_or_extend(data, 'mods_note_%s_ssim' % self._slugify(note.label), [note.text])
+        #GENRES
+        for genre in self.genres:
+            if genre.text:
+                data = self._add_or_extend(data, 'genre', [genre.text])
+                if genre.authority:
+                    genre_field_name = u'mods_genre_%s_ssim' % self._slugify(genre.authority)
+                    data = self._add_or_extend(data, genre_field_name, [genre.text])
         #mods_id
         if self.id:
             data['mods_id'] = self.id
