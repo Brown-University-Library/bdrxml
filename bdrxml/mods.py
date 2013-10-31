@@ -207,16 +207,21 @@ class Mods(MODSv34):
             for name in self.names:
                 nameparts = [np.text for np in name.name_parts if not np.type]
                 roles = [role.text for role in name.roles if role.type == 'text']
+                dates = [np.text for np in name.name_parts if np.type == 'date']
                 if nameparts and nameparts[0]:
                     data = self._add_or_extend(data, 'name', [nameparts[0]])
+                    if dates and dates[0]:
+                        date = u', %s' % dates[0]
+                    else:
+                        date = u''
                     if roles and roles[0]:
-                        data = self._add_or_extend(data, 'contributor_display', ['%s (%s)' % (nameparts[0], roles[0])])
+                        data = self._add_or_extend(data, 'contributor_display', ['%s%s (%s)' % (nameparts[0], date, roles[0])])
                         if roles[0] == 'creator':
                             data = self._add_or_extend(data, 'creator', [nameparts[0]])
                         else:
                             data = self._add_or_extend(data, 'contributor', [nameparts[0]])
                     else:
-                        data = self._add_or_extend(data, 'contributor_display', ['%s' % nameparts[0]])
+                        data = self._add_or_extend(data, 'contributor_display', ['%s%s' % (nameparts[0], date)])
         except Exception as e:
             raise Exception(u'names: %s' % repr(e))
 

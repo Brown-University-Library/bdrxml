@@ -36,6 +36,7 @@ SAMPLE_MODS = u'''
     <mods:dateModified encoding="w3cdtf" point="start">invalid date</mods:dateModified>
     <mods:dateModified encoding="w3cdtf" point="start">2008-05-06</mods:dateModified>
     <mods:dateModified encoding="w3cdtf" point="start">2008-06-07</mods:dateModified>
+    <mods:dateOther encoding="w3cdtf" point="start">2009-10-11</mods:dateOther>
   </mods:originInfo>
   <mods:physicalDescription>
     <mods:extent>viii, 208 p.</mods:extent>
@@ -46,6 +47,7 @@ SAMPLE_MODS = u'''
   <mods:note displayLabel="Display @#$label?">display label note</mods:note>
   <mods:name type="personal">
     <mods:namePart>Baker, Jim</mods:namePart>
+    <mods:namePart type="date">1718-1762</mods:namePart>
     <mods:role>
       <mods:roleTerm type="text">director</mods:roleTerm>
     </mods:role>
@@ -181,7 +183,7 @@ class ModsReadWrite(unittest.TestCase):
         loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
         index_data = loaded.index_data()
         self.assertEqual(index_data['abstract'], [u'Poétry description...'])
-        self.assertEqual(index_data['contributor_display'], ['Smith, Tom (creator)', 'Baker, Jim (director)', 'Wilson, Jane', 'Brown University. English (sponsor)'])
+        self.assertEqual(index_data['contributor_display'], ['Smith, Tom, 1803 or 4-1860 (creator)', 'Baker, Jim, 1718-1762 (director)', 'Wilson, Jane', 'Brown University. English (sponsor)'])
         self.assertEqual(index_data['copyrightDate'], '2008-01-01T00:00:00Z')
         self.assertEqual(index_data['dateCreated'], '2008-02-03T00:00:00Z')
         self.assertEqual(index_data['dateModified'], '2008-05-06T00:00:00Z')
