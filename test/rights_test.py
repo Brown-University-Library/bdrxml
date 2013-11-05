@@ -5,7 +5,50 @@ from bdrxml.rights import (
     make_rights,
     make_context,
     RightsBuilder,
+    HydraRights,
 )
+
+class HydraRightsReadWrite(unittest.TestCase):
+    FIXTURE = """<?xml version="1.0" encoding="UTF-8"?>
+<rightsMetadata xmlns="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1" version="0.1">
+    <access type="discover">
+        <machine>
+            <group>group2</group>
+        </machine>
+    </access>
+    <access type="read">
+        <machine>
+            <group>group3</group>
+            <group>group9</group>
+            <group>group8</group>
+            <person>user3</person>
+        </machine>
+    </access>
+    <access type="edit">
+        <machine>
+            <person>bob1</person>
+            <person>sally2</person>
+        </machine>
+    </access>
+</rightsMetadata>"""
+
+    def setUp(self):
+        self.rights = load_xmlobject_from_string(self.FIXTURE, HydraRights)
+
+    def test_read_access(self):
+        self.assertEqual( ['group3', 'group9', 'group8'], self.rights.read_access_group )
+        
+    def test_edit_access(self):
+        self.assertEqual( ['bob1', 'sally2'], self.rights.edit_access_person )
+    
+    def test_add_discover_access(self):
+        self.rights.discover_access_group = ['newGroup1', 'newGroup2']
+        print self.rights.serialize(pretty=True)
+
+    def test_add_delete_access_person(self):
+        self.rights.delete_access_person = ['johnny1']
+        print self.rights.serialize(pretty=True)
+
 
 
 class RightsReadWrite(unittest.TestCase):
@@ -67,6 +110,17 @@ class RightsReadWrite(unittest.TestCase):
         self.init_holder()
         tmp_ctext = self.rights.get_ctext_for("johnny@brown.edu")
         self.assertEqual(tmp_ctext.id, "rights3")
+    
+    def test_get_index(self):
+        self.init_context("rights1", 'jack@brown.edu')
+        self.init_context("rights2", 'jim@brown.edu')
+        self.init_context("rights3", 'johnny@brown.edu')
+        self.assertEqual( 
+            {'discover': [],
+            'display': [],
+            'modify': [ 'jack@brown.edu', 'jim@brown.edu', 'johnny@brown.edu'],
+            'delete': [ 'jack@brown.edu', 'jim@brown.edu', 'johnny@brown.edu'],},self.rights.index_data())
+
 
 EMPTY_RIGHTS_XML = """<rights:RightsDeclarationMD xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rights="http://cosimo.stanford.edu/sdr/metsrights/" xsi:schemaLocation="http://cosimo.stanford.edu/sdr/rights http://cosimo.stanford.edu/sdr/metsrights.xsd"><rights:RightsHolder/></rights:RightsDeclarationMD>"""
 
@@ -129,7 +183,8 @@ class Builder(unittest.TestCase):
 def suite():
     suite1 = unittest.makeSuite(RightsReadWrite, 'test')
     suite2 = unittest.makeSuite(Builder, 'test')
-    alltests = unittest.TestSuite((suite1, suite2))
+    suite3 = unittest.makeSuite(HydraRightsReadWrite, 'test')
+    alltests = unittest.TestSuite((suite1, suite2, suite3))
     return alltests
 
 if __name__ == '__main__':

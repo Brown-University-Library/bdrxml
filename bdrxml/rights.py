@@ -11,6 +11,24 @@ from eulxml.xmlmap import SimpleBooleanField as BF
 RIGHTS_NAMESPACE = 'http://cosimo.stanford.edu/sdr/metsrights/'
 XLINK_NAMESPACE = 'http://www.w3.org/1999/xlink'
 
+class HydraRights(XmlObject):
+    ROOT_NAMESPACES = {
+               'hydra': 'http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1',
+    }
+    ROOT_NAME = 'rightsMetadata'
+
+    read_access_group = SFL('hydra:access[@type="read"]/hydra:machine/hydra:group')
+    read_access_person = SFL('hydra:access[@type="read"]/hydra:machine/hydra:person')
+    edit_access_group = SFL('hydra:access[@type="edit"]/hydra:machine/hydra:group')
+    edit_access_person = SFL('hydra:access[@type="edit"]/hydra:machine/hydra:person')
+    discover_access_group = SFL('hydra:access[@type="discover"]/hydra:machine/hydra:group')
+    discover_access_person = SFL('hydra:access[@type="discover"]/hydra:machine/hydra:person')
+    delete_access_group = SFL('hydra:access[@type="delete"]/hydra:machine/hydra:group')
+    delete_access_person = SFL('hydra:access[@type="delete"]/hydra:machine/hydra:person')
+
+
+
+
 class Common(XmlObject):
     ROOT_NAMESPACES = {
                'rights': RIGHTS_NAMESPACE,
@@ -64,6 +82,14 @@ class Rights(Common):
 
     def get_ctext_for(self, user_name):
         return next((ctx for ctx in self.ctext if ctx.username == user_name))
+
+    def index_data(self):
+        return {
+            'discover': [ctx.username for ctx in self.ctext if ctx.discover],
+            'display': [ctx.username for ctx in self.ctext if ctx.display],
+            'modify': [ctx.username for ctx in self.ctext if ctx.modify],
+            'delete': [ctx.username for ctx in self.ctext if ctx.delete],
+        }
 
 class RightsNoContextFoundException(Exception):
     def __init__(self, value):
