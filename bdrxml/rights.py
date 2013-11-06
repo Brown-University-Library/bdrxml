@@ -27,6 +27,18 @@ class HydraRights(XmlObject):
     delete_access_person = SFL('hydra:access[@type="delete"]/hydra:machine/hydra:person')
 
 
+    def index_data(self):
+        return {
+            'read_access_group_ssim': self.read_access_group,
+            'read_access_person_ssim': self.read_access_person,
+            'edit_access_group_ssim': self.edit_access_group,
+            'edit_access_person_ssim': self.edit_access_person,
+            'discover_access_group_ssim': self.discover_access_group,
+            'discover_access_person_ssim': self.discover_access_person,
+            'delete_access_group_ssim': self.delete_access_group,
+            'delete_access_person_ssim': self.delete_access_person,
+        }
+
 
 
 class Common(XmlObject):
@@ -91,6 +103,17 @@ class Rights(Common):
             'delete': [ctx.username for ctx in self.ctext if ctx.delete],
         }
 
+    def get_builder(self):
+        index = self.get_index()
+        return RightsBuilder(
+            discoverers = set(index['discover']),
+            readers = set(index['display']),
+            editors = set(index['modify'])
+        )
+
+    def index_data_hydra(self):
+        return self.get_builder().build_hydra().index_data()
+
 class RightsNoContextFoundException(Exception):
     def __init__(self, value):
         self.value = value
@@ -137,24 +160,96 @@ class RightsBuilder(object):
     def all_identities(self):
         return set(self._discoverers) | set(self._readers) | set(self._editors) | set(self._deleters) | set(self._owners)
 
-    def _build_context(self, identity):
-        user_type = "USER" if "@" in identity else "GROUP"
+            
+    def build(self):
+        return self.build_bdr()
+
+    def build_bdr(self):
+        return BDRRightsBuilder(self).build()
+
+    def build_hydra(self):
+        return HydraRightsBuilder(self).build()
+
+class BDRRightsBuilder(object):
+    """docstring for BDRRightsBuilder"""
+    def __init__(self, base_builder):
+        super(BDRRightsBuilder, self).__init__()
+        self.base_builder = base_builder
+        
+    def _is_person(self, identity):
+        return '@' in identity
+
+    def _build_bdr_context(self, identity=None):
+        user_type = "USER" if self._is_person(identity) else "GROUP"
 
         new_context = make_context()
         new_context.username = identity
-        new_context.discover = identity in self._discoverers | self._owners
-        new_context.display = identity in self._readers | self._owners
-        new_context.modify = identity in self._editors | self._owners
-        new_context.delete = identity in self._deleters | self._owners
+        new_context.discover = identity in self.base_builder._discoverers | self.base_builder._owners
+        new_context.display = identity in self.base_builder._readers | self.base_builder._owners
+        new_context.modify = identity in self.base_builder._editors | self.base_builder._owners
+        new_context.delete = identity in self.base_builder._deleters | self.base_builder._owners
         new_context.usertype = user_type
         return new_context
 
     def _build_contexts(self):
-        return [self._build_context(identity) for identity in self.all_identities]
-            
+        return [self._build_bdr_context(identity) for identity in self.base_builder.all_identities]
+
     def build(self):
         rights = make_rights()
         for number, ctext in enumerate(self._build_contexts()):
             ctext.id = "rights%03d" % number
             rights.add_ctext(ctext)
         return rights
+    
+
+class HydraRightsBuilder(object):
+    """docstring for HydraRightsBuilder"""
+    def __init__(self, base_builder):
+        super(HydraRightsBuilder, self).__init__()
+        self.base_builder = base_builder
+
+    def _is_person(self, identity):
+        return '@' in identity
+        
+    def _partition_users_groups(self, identity_list):
+        people = [ identity for identity in identity_list if self._is_person(identity) ]
+        groups = [ identity for identity in identity_list if not self._is_person(identity) ]
+        return people, groups
+
+    def build(self):
+        rights = HydraRights()
+
+        groups, people = self._partition_users_groups(self.base_builder._readers | self.base_builder._owners)
+        rights.read_access_group = groups
+        rights.read_access_person = people
+
+        groups, people = self._partition_users_groups(self.base_builder._editors | self.base_builder._owners)
+        rights.edit_access_group = groups
+        rights.edit_access_person = people
+
+        groups, people = self._partition_users_groups(self.base_builder._discoverers | self.base_builder._owners)
+        rights.discover_access_group = groups
+        rights.discover_access_person = people
+
+        groups, people = self._partition_users_groups(self.base_builder._deleters | self.base_builder._owners)
+        rights.delete_access_group = groups
+        rights.delete_access_person = people
+
+        
+
+        return rights
+
+
+
+class HydraRightsSerializer(object):
+    """docstring for HydraRightsBuilder"""
+    def __init__(self, builder = None):
+        super(HydraRightsSerializer, self).__init__()
+        self.builder = builder
+
+    def serialize(self):
+        """Take a rights builder object and serialize it using hydra rights"""
+        
+        # TODO: write code...
+        
+

@@ -123,6 +123,7 @@ class RightsReadWrite(unittest.TestCase):
 
 
 EMPTY_RIGHTS_XML = """<rights:RightsDeclarationMD xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rights="http://cosimo.stanford.edu/sdr/metsrights/" xsi:schemaLocation="http://cosimo.stanford.edu/sdr/rights http://cosimo.stanford.edu/sdr/metsrights.xsd"><rights:RightsHolder/></rights:RightsDeclarationMD>"""
+EMPTY_HYDRA_RIGHTS_XML = """<rightsMetadata xmlns:hydra="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1"/>"""
 
 RIGHTS_WITH_USERS = """<rights:RightsDeclarationMD xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rights="http://cosimo.stanford.edu/sdr/metsrights/" xsi:schemaLocation="http://cosimo.stanford.edu/sdr/rights http://cosimo.stanford.edu/sdr/metsrights.xsd">
   <rights:RightsHolder CONTEXTIDS="rights000 rights001 rights002"/>
@@ -150,6 +151,12 @@ class Builder(unittest.TestCase):
         rights = self.builder.build()
         rights_str = rights.serialize()
         self.assertEqual(rights_str, EMPTY_RIGHTS_XML)
+
+    def test_hydraBuild(self):
+        """If nothing has been added to the builder then the builder should serialize to the same as EMPTY_RIGHTS_XML"""
+        rights = self.builder.build_hydra()
+        rights_str = rights.serialize()
+        self.assertEqual(rights_str, EMPTY_HYDRA_RIGHTS_XML)
 
     def test_empty(self):
         """If no identities have been added then the result of all_identities should be an empty set"""
