@@ -48,6 +48,27 @@ class HydraRightsReadWrite(unittest.TestCase):
     def test_add_delete_access_person(self):
         self.rights.delete_access_person = ['johnny1']
         print self.rights.serialize(pretty=True)
+    
+    def test_index_data(self):
+        self.assertEqual({
+            'read_access_group_ssim': sorted(['group3', 'group9', 'group8']),
+            'read_access_person_ssim': sorted(['user3',]),
+            'edit_access_group_ssim': sorted([]),
+            'edit_access_person_ssim': sorted(['bob1','sally2']),
+            'discover_access_group_ssim': sorted(['group2']),
+            'discover_access_person_ssim': sorted([]),
+            'delete_access_group_ssim': sorted([]),
+            'delete_access_person_ssim': sorted([]),
+        }, self.rights.index_data())
+
+    def test_index_data_bdr(self):
+        self.assertEqual({
+            'discover': sorted(['group2']),
+            'display': sorted(['group3', 'group8', 'group9','user3', ]),
+            'modify': sorted(['bob1','sally2']),
+            'delete': sorted([]),
+        }, self.rights.index_data_bdr())
+
 
 
 
@@ -111,48 +132,91 @@ class RightsReadWrite(unittest.TestCase):
         tmp_ctext = self.rights.get_ctext_for("johnny@brown.edu")
         self.assertEqual(tmp_ctext.id, "rights3")
     
-    def test_get_index(self):
+    def test_index_data(self):
         self.init_context("rights1", 'jack@brown.edu')
         self.init_context("rights2", 'jim@brown.edu')
         self.init_context("rights3", 'johnny@brown.edu')
-        self.assertEqual( 
-            {'discover': [],
+        self.assertEqual( {
+            'discover': [],
             'display': [],
             'modify': [ 'jack@brown.edu', 'jim@brown.edu', 'johnny@brown.edu'],
-            'delete': [ 'jack@brown.edu', 'jim@brown.edu', 'johnny@brown.edu'],},self.rights.index_data())
+            'delete': [ 'jack@brown.edu', 'jim@brown.edu', 'johnny@brown.edu'],
+            },self.rights.index_data())
 
+    def test_index_data_hydra(self):
+        # TODO: write code...
+        self.init_context("rights1", 'jack@brown.edu')
+        self.init_context("rights2", 'jim@brown.edu')
+        self.init_context("rights3", 'johnny@brown.edu')
+        self.init_context("rights4", 'BROWN:GROUP')
+        self.assertEqual({
+            'read_access_group_ssim': sorted([]),
+            'read_access_person_ssim': sorted([]),
+            'edit_access_group_ssim': sorted(['BROWN:GROUP',]),
+            'edit_access_person_ssim': sorted([ 'jack@brown.edu', 'jim@brown.edu', 'johnny@brown.edu']),
+            'discover_access_group_ssim': sorted([]),
+            'discover_access_person_ssim': sorted([]),
+            'delete_access_group_ssim': sorted(['BROWN:GROUP']),
+            'delete_access_person_ssim': sorted([ 'jack@brown.edu', 'jim@brown.edu', 'johnny@brown.edu',]),
+        }, self.rights.index_data_hydra())
 
 EMPTY_RIGHTS_XML = """<rights:RightsDeclarationMD xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rights="http://cosimo.stanford.edu/sdr/metsrights/" xsi:schemaLocation="http://cosimo.stanford.edu/sdr/rights http://cosimo.stanford.edu/sdr/metsrights.xsd"><rights:RightsHolder/></rights:RightsDeclarationMD>"""
 EMPTY_HYDRA_RIGHTS_XML = """<rightsMetadata xmlns:hydra="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1"/>"""
 
 RIGHTS_WITH_USERS = """<rights:RightsDeclarationMD xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rights="http://cosimo.stanford.edu/sdr/metsrights/" xsi:schemaLocation="http://cosimo.stanford.edu/sdr/rights http://cosimo.stanford.edu/sdr/metsrights.xsd">
-  <rights:RightsHolder CONTEXTIDS="rights000 rights001 rights002"/>
+  <rights:RightsHolder CONTEXTIDS="rights000 rights001 rights002 rights003"/>
   <rights:Context CONTEXTID="rights000">
     <rights:Permissions DELETE="false" DISCOVER="true" DISPLAY="true" MODIFY="false"/>
-    <rights:UserName USERTYPE="USER">johnny@brown.edu</rights:UserName>
+    <rights:UserName USERTYPE="INDIVIDUAL">johnny@brown.edu</rights:UserName>
   </rights:Context>
   <rights:Context CONTEXTID="rights001">
     <rights:Permissions DELETE="false" DISCOVER="false" DISPLAY="true" MODIFY="false"/>
-    <rights:UserName USERTYPE="USER">jack@brown.edu</rights:UserName>
+    <rights:UserName USERTYPE="GROUP">BROWN:GROUP</rights:UserName>
   </rights:Context>
   <rights:Context CONTEXTID="rights002">
+    <rights:Permissions DELETE="false" DISCOVER="false" DISPLAY="true" MODIFY="false"/>
+    <rights:UserName USERTYPE="INDIVIDUAL">jack@brown.edu</rights:UserName>
+  </rights:Context>
+  <rights:Context CONTEXTID="rights003">
     <rights:Permissions DELETE="false" DISCOVER="false" DISPLAY="false" MODIFY="true"/>
-    <rights:UserName USERTYPE="USER">jim@brown.edu</rights:UserName>
+    <rights:UserName USERTYPE="INDIVIDUAL">jim@brown.edu</rights:UserName>
   </rights:Context>
 </rights:RightsDeclarationMD>
 """
+
+HYDRA_RIGHTS_WITH_USERS = """<rightsMetadata xmlns:hydra="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1">
+  <hydra:access type="read">
+    <hydra:machine>
+      <hydra:group>BROWN:GROUP</hydra:group>
+      <hydra:person>johnny@brown.edu</hydra:person>
+      <hydra:person>jack@brown.edu</hydra:person>
+    </hydra:machine>
+  </hydra:access>
+  <hydra:access type="edit">
+    <hydra:machine>
+      <hydra:person>jim@brown.edu</hydra:person>
+    </hydra:machine>
+  </hydra:access>
+  <hydra:access type="discover">
+    <hydra:machine>
+      <hydra:person>johnny@brown.edu</hydra:person>
+    </hydra:machine>
+  </hydra:access>
+</rightsMetadata>
+"""
+
 class Builder(unittest.TestCase):
     """Test for the rights builder"""
     def setUp(self):
         self.builder = RightsBuilder()
     
-    def test_basicBuild(self):
+    def test_empty_bdrBuild(self):
         """If nothing has been added to the builder then the builder should serialize to the same as EMPTY_RIGHTS_XML"""
         rights = self.builder.build()
         rights_str = rights.serialize()
         self.assertEqual(rights_str, EMPTY_RIGHTS_XML)
 
-    def test_hydraBuild(self):
+    def test_empty_hydraBuild(self):
         """If nothing has been added to the builder then the builder should serialize to the same as EMPTY_RIGHTS_XML"""
         rights = self.builder.build_hydra()
         rights_str = rights.serialize()
@@ -177,14 +241,46 @@ class Builder(unittest.TestCase):
         self.builder.addReader('johnny')
         self.assertEqual(set(['johnny']), self.builder.all_identities)
 
-    def test_add_reader_and_build(self):
+    def test_add_users_and_build(self):
+        self.builder.addReader('jack@brown.edu').addReader('BROWN:GROUP')
         self.builder.addReader('jack@brown.edu')
         self.builder.addReader('jack@brown.edu')
         self.builder.addEditor('jim@brown.edu')
         self.builder.addReader('johnny@brown.edu').addDiscoverer('johnny@brown.edu')
         rights = self.builder.build()
         rights_str = rights.serialize(pretty=True)
+        print rights_str
         self.assertEqual(rights_str, RIGHTS_WITH_USERS)
+        
+    def test_add_users_and_build_hydra(self):
+        self.builder.addReader('jack@brown.edu').addReader('BROWN:GROUP')
+        self.builder.addReader('jack@brown.edu')
+        self.builder.addEditor('jim@brown.edu')
+        self.builder.addReader('johnny@brown.edu').addDiscoverer('johnny@brown.edu')
+        rights = self.builder.build_hydra()
+        rights_str = rights.serialize(pretty=True)
+        self.assertEqual(rights_str, HYDRA_RIGHTS_WITH_USERS)
+
+    
+    def test_getting_builder_back_from_bdr_rights(self):
+        self.builder.addReader('jack@brown.edu').addReader('BROWN:GROUP')
+        self.builder.addReader('jack@brown.edu')
+        self.builder.addEditor('jim@brown.edu')
+        self.builder.addReader('johnny@brown.edu').addDiscoverer('johnny@brown.edu')
+        rights = self.builder.build()
+        new_builder = rights.get_builder()
+        self.assertEqual(new_builder, self.builder)
+
+    def test_getting_builder_back_from_hydra_rights(self):
+        self.builder.addReader('jack@brown.edu').addReader('BROWN:GROUP')
+        self.builder.addReader('jack@brown.edu')
+        self.builder.addEditor('jim@brown.edu')
+        self.builder.addReader('johnny@brown.edu').addDiscoverer('johnny@brown.edu')
+        rights = self.builder.build_hydra()
+        new_builder = rights.get_builder()
+        self.assertEqual(new_builder, self.builder)
+
+
 
 
 def suite():

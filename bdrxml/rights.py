@@ -8,6 +8,7 @@ from eulxml.xmlmap import XmlObject
 from eulxml.xmlmap import StringField as SF
 from eulxml.xmlmap import StringListField as SFL
 from eulxml.xmlmap import SimpleBooleanField as BF
+from itertools import chain
 RIGHTS_NAMESPACE = 'http://cosimo.stanford.edu/sdr/metsrights/'
 XLINK_NAMESPACE = 'http://www.w3.org/1999/xlink'
 
@@ -17,28 +18,42 @@ class HydraRights(XmlObject):
     }
     ROOT_NAME = 'rightsMetadata'
 
+    discover_access_group = SFL('hydra:access[@type="discover"]/hydra:machine/hydra:group')
+    discover_access_person = SFL('hydra:access[@type="discover"]/hydra:machine/hydra:person')
     read_access_group = SFL('hydra:access[@type="read"]/hydra:machine/hydra:group')
     read_access_person = SFL('hydra:access[@type="read"]/hydra:machine/hydra:person')
     edit_access_group = SFL('hydra:access[@type="edit"]/hydra:machine/hydra:group')
     edit_access_person = SFL('hydra:access[@type="edit"]/hydra:machine/hydra:person')
-    discover_access_group = SFL('hydra:access[@type="discover"]/hydra:machine/hydra:group')
-    discover_access_person = SFL('hydra:access[@type="discover"]/hydra:machine/hydra:person')
     delete_access_group = SFL('hydra:access[@type="delete"]/hydra:machine/hydra:group')
     delete_access_person = SFL('hydra:access[@type="delete"]/hydra:machine/hydra:person')
 
 
     def index_data(self):
         return {
-            'read_access_group_ssim': self.read_access_group,
-            'read_access_person_ssim': self.read_access_person,
-            'edit_access_group_ssim': self.edit_access_group,
-            'edit_access_person_ssim': self.edit_access_person,
-            'discover_access_group_ssim': self.discover_access_group,
-            'discover_access_person_ssim': self.discover_access_person,
-            'delete_access_group_ssim': self.delete_access_group,
-            'delete_access_person_ssim': self.delete_access_person,
+            'discover_access_group_ssim': sorted(self.discover_access_group),
+            'discover_access_person_ssim': sorted(self.discover_access_person),
+            'read_access_group_ssim': sorted(self.read_access_group),
+            'read_access_person_ssim': sorted(self.read_access_person),
+            'edit_access_group_ssim': sorted(self.edit_access_group),
+            'edit_access_person_ssim': sorted(self.edit_access_person),
+            'delete_access_group_ssim': sorted(self.delete_access_group),
+            'delete_access_person_ssim': sorted(self.delete_access_person),
         }
 
+    def index_data_bdr(self):
+        return self.get_builder().build_bdr().index_data()
+
+    def index_data_hydra(self):
+        return self.index_data()
+
+
+    def get_builder(self):
+        return RightsBuilder(
+            discoverers = set(chain(self.discover_access_person, self.discover_access_group)),
+            readers = set(chain(self.read_access_person, self.read_access_group)),
+            editors = set(chain(self.edit_access_person, self.edit_access_group)),
+            deleters = set(chain(self.delete_access_person, self.delete_access_group))
+        )
 
 
 class Common(XmlObject):
@@ -97,19 +112,23 @@ class Rights(Common):
 
     def index_data(self):
         return {
-            'discover': [ctx.username for ctx in self.ctext if ctx.discover],
-            'display': [ctx.username for ctx in self.ctext if ctx.display],
-            'modify': [ctx.username for ctx in self.ctext if ctx.modify],
-            'delete': [ctx.username for ctx in self.ctext if ctx.delete],
+            'discover': sorted([ctx.username for ctx in self.ctext if ctx.discover]),
+            'display': sorted([ctx.username for ctx in self.ctext if ctx.display]),
+            'modify': sorted([ctx.username for ctx in self.ctext if ctx.modify]),
+            'delete': sorted([ctx.username for ctx in self.ctext if ctx.delete]),
         }
 
     def get_builder(self):
-        index = self.get_index()
+        index = self.index_data()
         return RightsBuilder(
             discoverers = set(index['discover']),
             readers = set(index['display']),
-            editors = set(index['modify'])
+            editors = set(index['modify']),
+            deleters = set(index['delete'])
         )
+
+    def index_data_bdr(self):
+        return self.index_data()
 
     def index_data_hydra(self):
         return self.get_builder().build_hydra().index_data()
@@ -135,6 +154,8 @@ class RightsBuilder(object):
         self._editors = editors or set()
         self._deleters = deleters or set()
         self._owners = owners or set()
+        for identity in self._owners:
+            self.addOwner(identity)
     
     def addDiscoverer(self, identifier):
         self._discoverers.add(identifier)
@@ -153,14 +174,29 @@ class RightsBuilder(object):
         return self
 
     def addOwner(self, identifier):
-        self._owners.add(identifier)
+        self.addDiscoverer(identifier)
+        self.addReader(identifier)
+        self.addEditor(identifier)
+        self.addDeleter(identifier)
         return self
     
     @property
     def all_identities(self):
         return set(self._discoverers) | set(self._readers) | set(self._editors) | set(self._deleters) | set(self._owners)
 
-            
+    def __eq__(self, other):
+        _NOTFOUND = object()
+        for attr in ['_readers', '_editors', '_deleters', '_discoverers']:
+            v1, v2 = [getattr(obj, attr, _NOTFOUND) for obj in [self, other]]
+            print "+++++Attribute %s" % attr
+            print v1
+            print v2
+            if v1 is _NOTFOUND or v2 is _NOTFOUND:
+                return False
+            elif v1 != v2:
+                return False
+        return True
+
     def build(self):
         return self.build_bdr()
 
@@ -180,7 +216,7 @@ class BDRRightsBuilder(object):
         return '@' in identity
 
     def _build_bdr_context(self, identity=None):
-        user_type = "USER" if self._is_person(identity) else "GROUP"
+        user_type = "INDIVIDUAL" if self._is_person(identity) else "GROUP"
 
         new_context = make_context()
         new_context.username = identity
@@ -214,7 +250,7 @@ class HydraRightsBuilder(object):
     def _partition_users_groups(self, identity_list):
         people = [ identity for identity in identity_list if self._is_person(identity) ]
         groups = [ identity for identity in identity_list if not self._is_person(identity) ]
-        return people, groups
+        return groups, people
 
     def build(self):
         rights = HydraRights()
