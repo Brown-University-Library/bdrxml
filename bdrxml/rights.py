@@ -1,5 +1,5 @@
 """
-Making rightsMetadata for the BDR.
+Making rightsMetadata for the BDR and Hydra.
 
 """
 
@@ -48,6 +48,7 @@ class HydraRights(XmlObject):
 
 
     def get_builder(self):
+        """Creates a RightsBuilder based on the information stored in the this HydraRights object"""
         return RightsBuilder(
             discoverers = set(chain(self.discover_access_person, self.discover_access_group)),
             readers = set(chain(self.read_access_person, self.read_access_group)),
@@ -78,6 +79,7 @@ class Context(Common):
 
 
 def make_context():
+    """Creates and empty context and explicitly assigns all permissions to false"""
     c = Context()
     c.delete = False
     c.discover = False
@@ -133,20 +135,17 @@ class Rights(Common):
     def index_data_hydra(self):
         return self.get_builder().build_hydra().index_data()
 
-class RightsNoContextFoundException(Exception):
-    def __init__(self, value):
-        self.value = value
-    def __str__(self):
-        return repr(self.value)
 
 def make_rights():
+    """Create a basic BDR rights object and instantiates a holder node."""
     m = Rights()
     m.create_holder()
     m.schema_location = Rights.XSD_SCHEMA
     return m
 
+
 class RightsBuilder(object):
-    """Builder class for BUL Rights Metadata"""
+    """Base builder class for object rights.  Can build BDR Rights or Hydra Rights"""
     def __init__(self, discoverers=None, readers=None, editors=None, deleters=None, owners=None):
         super(RightsBuilder, self).__init__()
         self._discoverers = discoverers or set()
@@ -185,12 +184,10 @@ class RightsBuilder(object):
         return set(self._discoverers) | set(self._readers) | set(self._editors) | set(self._deleters) | set(self._owners)
 
     def __eq__(self, other):
+        """Custom equality operator."""
         _NOTFOUND = object()
         for attr in ['_readers', '_editors', '_deleters', '_discoverers']:
             v1, v2 = [getattr(obj, attr, _NOTFOUND) for obj in [self, other]]
-            print "+++++Attribute %s" % attr
-            print v1
-            print v2
             if v1 is _NOTFOUND or v2 is _NOTFOUND:
                 return False
             elif v1 != v2:
@@ -198,13 +195,17 @@ class RightsBuilder(object):
         return True
 
     def build(self):
+        """Default Build.  Currently creates a BDR Rights object"""
         return self.build_bdr()
 
     def build_bdr(self):
+        """Build a BDR Rights Object"""
         return BDRRightsBuilder(self).build()
 
     def build_hydra(self):
+        """Build a Hydra compliant Rights object"""
         return HydraRightsBuilder(self).build()
+
 
 class BDRRightsBuilder(object):
     """docstring for BDRRightsBuilder"""
@@ -212,11 +213,11 @@ class BDRRightsBuilder(object):
         super(BDRRightsBuilder, self).__init__()
         self.base_builder = base_builder
         
-    def _is_person(self, identity):
+    def _identity_is_person(self, identity):
         return '@' in identity
 
     def _build_bdr_context(self, identity=None):
-        user_type = "INDIVIDUAL" if self._is_person(identity) else "GROUP"
+        user_type = "INDIVIDUAL" if self._identity_is_person(identity) else "GROUP"
 
         new_context = make_context()
         new_context.username = identity
@@ -244,12 +245,12 @@ class HydraRightsBuilder(object):
         super(HydraRightsBuilder, self).__init__()
         self.base_builder = base_builder
 
-    def _is_person(self, identity):
+    def _identity_is_person(self, identity):
         return '@' in identity
         
     def _partition_users_groups(self, identity_list):
-        people = [ identity for identity in identity_list if self._is_person(identity) ]
-        groups = [ identity for identity in identity_list if not self._is_person(identity) ]
+        people = [ identity for identity in identity_list if self._identity_is_person(identity) ]
+        groups = [ identity for identity in identity_list if not self._identity_is_person(identity) ]
         return groups, people
 
     def build(self):
@@ -274,18 +275,3 @@ class HydraRightsBuilder(object):
         
 
         return rights
-
-
-
-class HydraRightsSerializer(object):
-    """docstring for HydraRightsBuilder"""
-    def __init__(self, builder = None):
-        super(HydraRightsSerializer, self).__init__()
-        self.builder = builder
-
-    def serialize(self):
-        """Take a rights builder object and serialize it using hydra rights"""
-        
-        # TODO: write code...
-        
-

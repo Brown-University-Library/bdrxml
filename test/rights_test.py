@@ -2,10 +2,10 @@ import unittest
 from eulxml.xmlmap  import load_xmlobject_from_string
 from bdrxml.rights import (
     Rights, 
+    HydraRights,
     make_rights,
     make_context,
     RightsBuilder,
-    HydraRights,
 )
 
 class HydraRightsReadWrite(unittest.TestCase):
@@ -35,19 +35,13 @@ class HydraRightsReadWrite(unittest.TestCase):
     def setUp(self):
         self.rights = load_xmlobject_from_string(self.FIXTURE, HydraRights)
 
-    def test_read_access(self):
+    def test_group_access(self):
         self.assertEqual( ['group3', 'group9', 'group8'], self.rights.read_access_group )
         
-    def test_edit_access(self):
+    def test_person_access(self):
         self.assertEqual( ['bob1', 'sally2'], self.rights.edit_access_person )
     
-    def test_add_discover_access(self):
-        self.rights.discover_access_group = ['newGroup1', 'newGroup2']
-        print self.rights.serialize(pretty=True)
-
-    def test_add_delete_access_person(self):
-        self.rights.delete_access_person = ['johnny1']
-        print self.rights.serialize(pretty=True)
+    #Additional testing on reading and assigning to string lists covered in eulxml
     
     def test_index_data(self):
         self.assertEqual({
@@ -144,7 +138,6 @@ class RightsReadWrite(unittest.TestCase):
             },self.rights.index_data())
 
     def test_index_data_hydra(self):
-        # TODO: write code...
         self.init_context("rights1", 'jack@brown.edu')
         self.init_context("rights2", 'jim@brown.edu')
         self.init_context("rights3", 'johnny@brown.edu')
@@ -249,7 +242,6 @@ class Builder(unittest.TestCase):
         self.builder.addReader('johnny@brown.edu').addDiscoverer('johnny@brown.edu')
         rights = self.builder.build()
         rights_str = rights.serialize(pretty=True)
-        print rights_str
         self.assertEqual(rights_str, RIGHTS_WITH_USERS)
         
     def test_add_users_and_build_hydra(self):
