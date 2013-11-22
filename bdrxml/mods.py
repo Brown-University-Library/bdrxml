@@ -6,6 +6,9 @@ from eulxml.xmlmap import NodeListField, NodeField
 #   those classes, and we're just overriding a few of them here.
 from eulxml.xmlmap.mods import *
 
+XLINK_NAMESPACE = 'http://www.w3.org/1999/xlink'
+XSI_NAMESPACE = 'http://www.w3.org/2001/XMLSchema-instance'
+XSI_LOCATION = 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-4.xsd'
 
 class OriginInfo(OriginInfo):
     label = SF('@displayLabel')
@@ -41,6 +44,10 @@ class Mods(MODSv34):
     Fields documented at:
     http://www.loc.gov/standards/mods/mods-outline.html
     """
+    MODSv34.ROOT_NAMESPACES['xlink'] = XLINK_NAMESPACE
+    MODSv34.ROOT_NAMESPACES['xsi'] = XSI_NAMESPACE
+    schema_location = SF('@xsi:schemaLocation')
+
     #deprecated - should use title_info_list from eulxml instead
     title_info = NodeListField('mods:titleInfo', TitleInfo)
     #override eulxml origin_info, because we add a displayLabel
@@ -289,5 +296,6 @@ class Mods(MODSv34):
 def make_mods():
     """Helper that returns Mods object."""
     m = Mods()
+    m.schema_location = XSI_LOCATION
     return m
 
