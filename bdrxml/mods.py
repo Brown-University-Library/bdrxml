@@ -46,7 +46,7 @@ class Mods(MODSv34):
     """
     MODSv34.ROOT_NAMESPACES['xlink'] = XLINK_NAMESPACE
     MODSv34.ROOT_NAMESPACES['xsi'] = XSI_NAMESPACE
-    schema_location = SF('@xsi:schemaLocation')
+    xsi_schema_location = SF('@xsi:schemaLocation')
 
     #deprecated - should use title_info_list from eulxml instead
     title_info = NodeListField('mods:titleInfo', TitleInfo)
@@ -296,6 +296,6 @@ class Mods(MODSv34):
 def make_mods():
     """Helper that returns Mods object."""
     m = Mods()
-    m.schema_location = XSI_LOCATION
+    m.xsi_schema_location = XSI_LOCATION
     return m
 
