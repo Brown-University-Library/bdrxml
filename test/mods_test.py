@@ -99,13 +99,19 @@ SAMPLE_MODS = u'''
   </mods:recordInfo>
 </mods:mods>
 '''
+CREATE_MODS = u'''<mods:mods xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-4.xsd">
+  <mods:titleInfo>
+    <mods:title>Poétry</mods:title>
+  </mods:titleInfo>
+</mods:mods>
+'''
 
 class ModsReadWrite(unittest.TestCase):
     def setUp(self):
         #basic fox
         self.mods = mods.make_mods()
         
-    def test_sample_mods(self):
+    def test_load_sample_mods(self):
         loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
         self.assertEqual(loaded.id, 'id101')
         self.assertEqual(loaded.title, u'Poétry')
@@ -129,6 +135,10 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(loaded.resource_type, 'text')
         self.assertEqual(loaded.genres[1].text, 'aat theses')
         self.assertEqual(loaded.notes[0].text, u'Thésis (Ph.D.)')
+
+    def test_create_mods(self):
+        self.mods.title = u'Poétry'
+        self.assertEqual(unicode(self.mods.serialize(pretty=True), 'utf-8'), CREATE_MODS)
 
     def test_round_trip(self):
         self.mods.title = "Sample title"
