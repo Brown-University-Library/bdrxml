@@ -45,6 +45,7 @@ SAMPLE_MODS = u'''
   </mods:physicalDescription>
   <mods:note>Thésis (Ph.D.)</mods:note>
   <mods:note type="@#$%random Typé" displayLabel="discarded:">random type note</mods:note>
+  <mods:note displayLabel="Short">Without ending</mods:note>
   <mods:note displayLabel="Display @#$label?">display label note</mods:note>
   <mods:name type="personal">
     <mods:namePart>Baker, Jim</mods:namePart>
@@ -94,10 +95,15 @@ SAMPLE_MODS = u'''
       <mods:citySection>Lower Ninth Ward</mods:citySection>
     </mods:hierarchicalGeographic>
   </mods:subject>
+  <mods:subject displayLabel="label missing colon">
+    <mods:topic>post modernism</mods:topic>
+  </mods:subject>
   <mods:recordInfo>
     <mods:recordContentSource authority="marcorg">RPB</mods:recordContentSource>
     <mods:recordCreationDate encoding="iso8601">20091218</mods:recordCreationDate>
   </mods:recordInfo>
+
+  <mods:identifier type="METSID">12345678</mods:identifier>
 </mods:mods>
 '''
 CREATE_MODS = u'''<mods:mods xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-4.xsd">
@@ -184,7 +190,7 @@ class ModsReadWrite(unittest.TestCase):
 
     def test_geographic_subjects(self):
         loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
-        subject = loaded.subjects[-1]
+        subject = loaded.subjects[-2]
         self.assertEqual(subject.hierarchical_geographic.country, 'United States')
         self.assertEqual(subject.hierarchical_geographic.state, 'Louisiana')
         self.assertEqual(subject.hierarchical_geographic.city, 'New Orleans')
@@ -212,13 +218,27 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['mods_note_display_label_ssim'], [u'display label note'])
         self.assertEqual(index_data['mods_title_alt'], [u'alternative title'])
         self.assertEqual(index_data['name'], ['Smith, Tom', 'Baker, Jim', 'Wilson, Jane', 'Brown University. English'])
-        self.assertEqual(index_data['note'], [u'Thésis (Ph.D.)', u'discarded: random type note', u'Display @#$label? display label note'])
+        self.assertEqual(index_data['note'], [u'Thésis (Ph.D.)', u'discarded: random type note', u'Short: Without ending', u'Display @#$label? display label note'])
         self.assertEqual(index_data['other_title'], [u'Other title'])
         self.assertEqual(index_data['primary_title'], u'Poétry')
-        self.assertEqual(index_data['keyword'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Stevens', u'Merrill', u'Eliot'])
-        self.assertEqual(index_data['mods_subject_ssim'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Stevens', u'Merrill', u'Eliot'])
+        self.assertEqual(index_data['keyword'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Stevens', u'Merrill', u'Eliot', u"label missing colon: post modernism"])
+        self.assertEqual(index_data['mods_subject_ssim'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Stevens', u'Merrill', u'Eliot', u"label missing colon: post modernism"])
         self.assertEqual(index_data['mods_subject_display_label_ssim'], [u'modernism', u'Yeats'])
         self.assertEqual(index_data['mods_subject_local_ssim'], [u'Stevens', u'Eliot'])
+
+    def test_index_title_parts(self):
+        loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
+        primary_title = loaded.title_info_list[0]
+        primary_title.subtitle = "Primary Subtitle"
+        primary_title.part_name = "Primary Part 1"
+        primary_title.part_number = "4"
+        primary_title.non_sort  = "The"
+        index_data = loaded.index_data()
+        self.assertEqual(index_data['subtitle'], u'Primary Subtitle')
+        self.assertEqual(index_data['partnumber'], u'4')
+        self.assertEqual(index_data['partname'], u'Primary Part 1')
+        self.assertEqual(index_data['nonsort'], u'The')
+
 
 
 def suite():
