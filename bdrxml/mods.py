@@ -206,7 +206,7 @@ class Mods(MODSv34):
         for identifier in identifier_els:
             type = identifier.get('type')
             if type:
-                data = self._add_or_extend(data, 'mods_id_%s_ssim' % type, [identifier.text])
+                data = self._add_or_extend(data, 'mods_id_%s_ssim' % self._slugify(type), [identifier.text])
             else:
                 data = self._add_or_extend(data, 'identifier', [identifier.text])
         #names
