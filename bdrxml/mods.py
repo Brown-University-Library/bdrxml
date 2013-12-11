@@ -19,6 +19,10 @@ class Collection(RelatedItem):
     id = SF('mods:identifier[@type="COLID"]')
 
 
+class PhysicalDescription(PhysicalDescription):
+    digital_origin = SF('mods:digitalOrigin')
+
+
 class HierarchicalGeographic(Common):
     ROOT_NAME = 'hierarchicalGeographic'
     continent = SF('mods:continent')
@@ -56,6 +60,7 @@ class Mods(MODSv34):
     collection = NodeField('mods:relatedItem[@displayLabel="Collection"]', Collection)
     #override eulxml subjects so we can add hierarchical_geographic to subject
     subjects = NodeListField('mods:subject', Subject)
+    physical_description = NodeField('mods:physicalDescription', PhysicalDescription)
 
     def index_data(self):
         '''Generate dict of field:data pairs for sending to solr
