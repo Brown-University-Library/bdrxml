@@ -3,7 +3,6 @@ import unittest
 from eulxml.xmlmap  import load_xmlobject_from_string
 from bdrxml import mods
 
-#sample MODS from bdr:10 on DAXDEV
 SAMPLE_MODS = u'''
 <mods:mods xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="id101" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
   <mods:titleInfo>
@@ -142,6 +141,8 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(loaded.resource_type, 'text')
         self.assertEqual(loaded.genres[1].text, 'aat theses')
         self.assertEqual(loaded.notes[0].text, u'Thésis (Ph.D.)')
+        self.assertEqual(loaded.physical_description.extent, u'viii, 208 p.')
+        self.assertEqual(loaded.physical_description.digital_origin, u'born digital')
 
     def test_create_mods(self):
         self.mods.title = u'Poétry'
