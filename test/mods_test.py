@@ -17,6 +17,7 @@ SAMPLE_MODS = u'''
   <mods:accessCondition href="http://creativecommons.org/publicdomain/zero/1.0/" type="use and reproduction">To the extent possible under law, the person who associated CC0 with this work has waived all copyright and related or neighboring rights to this work.</mods:accessCondition>
   <mods:accessCondition href="http://i.creativecommons.org/p/zero/1.0/88x31.png" type="logo"></mods:accessCondition>
   <mods:identifier type="test type">Test type id</mods:identifier>
+  <mods:identifier type="doi"/>
   <mods:name type="personal">
     <mods:namePart></mods:namePart>
   </mods:name>
@@ -215,6 +216,7 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['mods_access_condition_use_link_ssim'], [u'http://creativecommons.org/publicdomain/zero/1.0/'])
         self.assertEqual(index_data['mods_id'], 'id101')
         self.assertEqual(index_data['mods_id_test_type_ssim'], ['Test type id'])
+        self.assertTrue(u'mods_id_doi_ssi' not in index_data)
         self.assertEqual(index_data['mods_note_random_type_ssim'], [u'random type note'])
         self.assertEqual(index_data['mods_note_display_label_ssim'], [u'display label note'])
         self.assertEqual(index_data['mods_title_alt'], [u'alternative title'])

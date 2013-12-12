@@ -101,7 +101,8 @@ class Mods(MODSv34):
                 if mapper[2] == 'm':
                     data = self._add_or_extend(data, mapper[1], [element.text for element in element_list])
                 else:
-                    data[mapper[1]] = element_list[0].text
+                    if element_list[0].text:
+                        data[mapper[1]] = element_list[0].text
         #handle dates
         data = self._process_date(data, 'dateCreated')
         data = self._process_date(data, 'dateIssued')
@@ -240,10 +241,12 @@ class Mods(MODSv34):
         return data
 
     def _add_or_extend(self, data, field_name, data_list):
-        if field_name in data:
-            data[field_name].extend(data_list)
-        else:
-            data[field_name] = data_list
+        data_list = [d for d in data_list if d]
+        if data_list:
+            if field_name in data:
+                data[field_name].extend(data_list)
+            else:
+                data[field_name] = data_list
         return data
 
     def _slugify(self, text):
