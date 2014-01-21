@@ -102,8 +102,15 @@ SAMPLE_MODS = u'''
     <mods:recordContentSource authority="marcorg">RPB</mods:recordContentSource>
     <mods:recordCreationDate encoding="iso8601">20091218</mods:recordCreationDate>
   </mods:recordInfo>
-
   <mods:identifier type="METSID">12345678</mods:identifier>
+  <mods:location>
+    <mods:physicalLocation>Random location</mods:physicalLocation>
+    <mods:holdingSimple>
+      <mods:copyInformation>
+        <mods:note>location note</mods:note>
+      </mods:copyInformation>
+    </mods:holdingSimple>
+  </mods:location>
 </mods:mods>
 '''
 CREATE_MODS = u'''<mods:mods xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-4.xsd">
@@ -144,6 +151,8 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(loaded.notes[0].text, u'Thésis (Ph.D.)')
         self.assertEqual(loaded.physical_description.extent, u'viii, 208 p.')
         self.assertEqual(loaded.physical_description.digital_origin, u'born digital')
+        self.assertEqual(loaded.locations[0].physical, u'Random location')
+        self.assertEqual(loaded.locations[0].holding_simple.copy_information[0].notes[0].text, u'location note')
 
     def test_create_mods(self):
         self.mods.title = u'Poétry'
