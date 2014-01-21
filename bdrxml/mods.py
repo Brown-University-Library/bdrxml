@@ -23,6 +23,20 @@ class PhysicalDescription(PhysicalDescription):
     digital_origin = SF('mods:digitalOrigin')
 
 
+class CopyInformation(Common):
+    ROOT_NAME = 'copyInformation'
+    notes = NodeListField('mods:note', Note)
+
+
+class HoldingSimple(Common):
+    ROOT_NAME = 'holdingSimple'
+    copy_information = NodeListField('mods:copyInformation', CopyInformation)
+
+
+class Location(Location):
+    holding_simple = NodeField('mods:holdingSimple', HoldingSimple)
+
+
 class HierarchicalGeographic(Common):
     ROOT_NAME = 'hierarchicalGeographic'
     continent = SF('mods:continent')
@@ -61,6 +75,7 @@ class Mods(MODSv34):
     #override eulxml subjects so we can add hierarchical_geographic to subject
     subjects = NodeListField('mods:subject', Subject)
     physical_description = NodeField('mods:physicalDescription', PhysicalDescription)
+    locations = NodeListField('mods:location', Location)
 
     def index_data(self):
         '''Generate dict of field:data pairs for sending to solr
