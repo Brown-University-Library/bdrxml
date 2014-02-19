@@ -244,6 +244,8 @@ class Mods(MODSv34):
                         date = u''
                     if roles and roles[0]:
                         data = self._add_or_extend(data, 'contributor_display', ['%s%s (%s)' % (nameparts[0], date, roles[0])])
+                        data = self._add_or_extend(data, 'mods_role_ssim', [roles[0]])
+                        data = self._add_or_extend(data, 'mods_role_%s_ssim' % self._slugify(roles[0]), [nameparts[0]])
                         if roles[0] == 'creator':
                             data = self._add_or_extend(data, 'creator', [nameparts[0]])
                         else:
