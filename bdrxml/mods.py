@@ -296,13 +296,19 @@ class Mods(MODSv34):
                 for date in dates_els:
                     #make sure it's not an empty date element
                     if date.text:
+                        #see if we can get a valid date value to put in solr
+                        solr_date = self._get_solr_date(date.text.strip())
+                        #for all valid dates, add the year to the year field (eg. dateCreated_year_ssim)
+                        if solr_date:
+                            data = self._add_or_extend(data, '%s_year_ssim' % date_name, [solr_date[:4]])
                         if date_name not in data:
-                            #see if we can get a valid date value to put in solr
-                            solr_date = self._get_solr_date(date.text.strip())
+                            #add solr_date to data if it's a valid date not in data yet
                             if solr_date:
                                 data[date_name] = solr_date
+                            #if it's not a valid date, throw it in the catch-all field (eg. dateCreated_ssim)
                             else:
                                 data = self._add_or_extend(data, '%s_ssim' % date_name, [date.text])
+                        #if this is not the first date of this type, just throw it in the catch-all field
                         else:
                             #handle remaining dates
                             data = self._add_or_extend(data, '%s_ssim' % date_name, [date.text])
