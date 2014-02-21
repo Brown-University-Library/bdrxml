@@ -246,11 +246,16 @@ class Mods(MODSv34):
                         data = self._add_or_extend(data, 'contributor_display', ['%s%s (%s)' % (nameparts[0], date, roles[0])])
                         data = self._add_or_extend(data, 'mods_role_ssim', [roles[0]])
                         data = self._add_or_extend(data, 'mods_role_%s_ssim' % self._slugify(roles[0]), [nameparts[0]])
+                        if roles[0].endswith(u' place'):
+                            data = self._add_or_extend(data, 'mods_name_place_ssim', [nameparts[0]])
+                        else:
+                            data = self._add_or_extend(data, 'mods_name_nonplace_ssim', [nameparts[0]])
                         if roles[0] == 'creator':
                             data = self._add_or_extend(data, 'creator', [nameparts[0]])
                         else:
                             data = self._add_or_extend(data, 'contributor', [nameparts[0]])
                     else:
+                        data = self._add_or_extend(data, 'mods_name_nonplace_ssim', [nameparts[0]])
                         data = self._add_or_extend(data, 'contributor_display', ['%s%s' % (nameparts[0], date)])
         except Exception as e:
             raise Exception(u'names: %s' % repr(e))
