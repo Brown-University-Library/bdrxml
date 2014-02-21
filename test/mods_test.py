@@ -63,6 +63,12 @@ SAMPLE_MODS = u'''
       <mods:roleTerm type="text">sponsor</mods:roleTerm>
     </mods:role>
   </mods:name>
+  <mods:name type="corporate">
+    <mods:namePart>Providence, RI</mods:namePart>
+    <mods:role>
+      <mods:roleTerm type="text">distribution place</mods:roleTerm>
+    </mods:role>
+  </mods:name>
   <mods:typeOfResource>text</mods:typeOfResource>
   <mods:genre authority="aat"></mods:genre>
   <mods:genre authority="aat">aat theses</mods:genre>
@@ -142,8 +148,7 @@ class ModsReadWrite(unittest.TestCase):
         for i in range(3):
             self.assertTrue(personal_names[i] in personal_name_list)
         corporate_names = [unicode(name) for name in loaded.names if name.type == 'corporate']
-        corporate_name_list = [u'Brown University. English']
-        self.assertEqual(len(corporate_names), 1)
+        corporate_name_list = [u'Brown University. English', 'Providence, RI']
         self.assertEqual(corporate_names, corporate_name_list)
 
         self.assertEqual(loaded.resource_type, 'text')
@@ -211,7 +216,7 @@ class ModsReadWrite(unittest.TestCase):
         loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
         index_data = loaded.index_data()
         self.assertEqual(index_data['abstract'], [u'Poétry description...'])
-        self.assertEqual(index_data['contributor_display'], ['Smith, Tom, 1803 or 4-1860 (creator)', 'Baker, Jim, 1718-1762 (director)', 'Wilson, Jane', 'Brown University. English (sponsor)'])
+        self.assertEqual(index_data['contributor_display'], ['Smith, Tom, 1803 or 4-1860 (creator)', 'Baker, Jim, 1718-1762 (director)', 'Wilson, Jane', 'Brown University. English (sponsor)', 'Providence, RI (distribution place)'])
         self.assertEqual(index_data['copyrightDate'], '2008-01-01T00:00:00Z')
         self.assertEqual(index_data['copyrightDate_year_ssim'], ['2008'])
         self.assertEqual(index_data['dateCreated'], '2008-02-03T00:00:00Z')
@@ -229,14 +234,16 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['mods_id'], 'id101')
         self.assertEqual(index_data['mods_id_test_type_ssim'], ['Test type id'])
         self.assertTrue(u'mods_id_doi_ssi' not in index_data)
-        self.assertEqual(index_data['mods_role_ssim'], [u'creator', u'director', u'sponsor'])
+        self.assertEqual(index_data['mods_name_place_ssim'], [u'Providence, RI'])
+        self.assertEqual(sorted(index_data['mods_name_nonplace_ssim']), [u'Baker, Jim', u'Brown University. English', u'Smith, Tom', u'Wilson, Jane'])
+        self.assertEqual(sorted(index_data['mods_role_ssim']), [u'creator', u'director', u'distribution place', u'sponsor'])
         self.assertEqual(index_data['mods_role_creator_ssim'], [u'Smith, Tom'])
         self.assertEqual(index_data['mods_role_director_ssim'], [u'Baker, Jim'])
         self.assertEqual(index_data['mods_role_sponsor_ssim'], [u'Brown University. English'])
         self.assertEqual(index_data['mods_note_random_type_ssim'], [u'random type note'])
         self.assertEqual(index_data['mods_note_display_label_ssim'], [u'display label note'])
         self.assertEqual(index_data['mods_title_alt'], [u'alternative title'])
-        self.assertEqual(index_data['name'], ['Smith, Tom', 'Baker, Jim', 'Wilson, Jane', 'Brown University. English'])
+        self.assertEqual(index_data['name'], [u'Smith, Tom', u'Baker, Jim', u'Wilson, Jane', u'Brown University. English', u'Providence, RI'])
         self.assertEqual(index_data['note'], [u'Thésis (Ph.D.)', u'discarded: random type note', u'Short: Without ending', u'Display @#$label? display label note'])
         self.assertEqual(index_data['other_title'], [u'Other title'])
         self.assertEqual(index_data['primary_title'], u'Poétry')
