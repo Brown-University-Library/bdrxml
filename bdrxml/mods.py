@@ -209,6 +209,15 @@ class Mods(MODSv34):
                     data['other_title'].extend(titles)
                 else:
                     data['other_title'] = titles
+            #solrize ids here as well
+            identifier_els = related_item.xpath('mods:identifier', namespaces=self.ROOT_NAMESPACES)
+            for identifier in identifier_els:
+                if identifier.text:
+                    type = identifier.get('type')
+                    if type:
+                        data = self._add_or_extend(data, 'mods_related_id_%s_ssim' % self._slugify(type), [identifier.text])
+                    else:
+                        data = self._add_or_extend(data, 'mods_related_id_ssim', [identifier.text])
         #access conditions
         access_condition_els = self.node.xpath('mods:accessCondition', namespaces=self.ROOT_NAMESPACES)
         if access_condition_els:

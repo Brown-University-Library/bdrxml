@@ -117,6 +117,16 @@ SAMPLE_MODS = u'''
       </mods:copyInformation>
     </mods:holdingSimple>
   </mods:location>
+  <mods:relatedItem type="host">
+        <mods:identifier type="type"></mods:identifier>
+        <mods:identifier>test_id</mods:identifier>
+        <mods:identifier type="type">1234567890123456</mods:identifier>
+        <mods:part>
+            <mods:detail type="divid">
+                <mods:number>div01</mods:number>
+            </mods:detail>
+        </mods:part>
+    </mods:relatedItem>
 </mods:mods>
 '''
 CREATE_MODS = u'''<mods:mods xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-4.xsd">
@@ -237,6 +247,8 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['mods_name_place_ssim'], [u'Providence, RI'])
         self.assertEqual(sorted(index_data['mods_name_nonplace_ssim']), [u'Baker, Jim', u'Brown University. English', u'Smith, Tom', u'Wilson, Jane'])
         self.assertEqual(sorted(index_data['mods_role_ssim']), [u'creator', u'director', u'distribution place', u'sponsor'])
+        self.assertEqual(index_data['mods_related_id_ssim'], ['test_id'])
+        self.assertEqual(index_data['mods_related_id_type_ssim'], ['1234567890123456'])
         self.assertEqual(index_data['mods_role_creator_ssim'], [u'Smith, Tom'])
         self.assertEqual(index_data['mods_role_director_ssim'], [u'Baker, Jim'])
         self.assertEqual(index_data['mods_role_sponsor_ssim'], [u'Brown University. English'])
