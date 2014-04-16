@@ -10,8 +10,19 @@ XLINK_NAMESPACE = 'http://www.w3.org/1999/xlink'
 XSI_NAMESPACE = 'http://www.w3.org/2001/XMLSchema-instance'
 XSI_LOCATION = 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-4.xsd'
 
+class PlaceTerm(Common):
+    ROOT_NAME = 'placeTerm'
+    type = SF('@type')
+    authority = SF('@authority')
+    text = SF('text()')
+
+class Place(Common):
+    ROOT_NAME = 'place'
+    place_terms = NodeListField('mods:placeTerm', PlaceTerm)
+
 class OriginInfo(OriginInfo):
     label = SF('@displayLabel')
+    places = NodeListField('mods:place', Place)
 
 
 class Collection(RelatedItem):
