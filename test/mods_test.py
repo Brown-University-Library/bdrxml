@@ -29,6 +29,7 @@ SAMPLE_MODS = u'''
     </mods:role>
   </mods:name>
   <mods:originInfo displayLabel="date added">
+    <mods:place><mods:placeTerm>USA</mods:placeTerm></mods:place>
     <mods:dateCreated encoding="w3cdtf" qualifier="questionable">2018-01</mods:dateCreated>
     <mods:copyrightDate encoding="w3cdtf" keyDate="yes">2008</mods:copyrightDate>
     <mods:dateCreated encoding="w3cdtf" keyDate="yes"></mods:dateCreated>
@@ -150,6 +151,7 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(loaded.title_info[2].type, 'alternative')
         self.assertEqual(loaded.title_info[2].label, 'First line')
         self.assertEqual(loaded.origin_info.label, 'date added')
+        self.assertEqual(loaded.origin_info.places[0].place_terms[0].text, u'USA')
 
         #test names
         personal_names = [unicode(name.name_parts[0].text) for name in loaded.names if name.type == 'personal' and name.name_parts[0].text]
