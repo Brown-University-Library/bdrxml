@@ -32,6 +32,7 @@ class Collection(RelatedItem):
 
 class PhysicalDescription(PhysicalDescription):
     digital_origin = SF('mods:digitalOrigin')
+    note = SF('mods:note')
 
 
 class CopyInformation(Common):

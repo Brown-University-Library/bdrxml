@@ -43,6 +43,7 @@ SAMPLE_MODS = u'''
   <mods:physicalDescription>
     <mods:extent>viii, 208 p.</mods:extent>
     <mods:digitalOrigin>born digital</mods:digitalOrigin>
+    <mods:note>note 1</mods:note>
   </mods:physicalDescription>
   <mods:note>Thésis (Ph.D.)</mods:note>
   <mods:note type="@#$%random Typé" displayLabel="discarded:">random type note</mods:note>
@@ -171,6 +172,7 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(loaded.notes[0].text, u'Thésis (Ph.D.)')
         self.assertEqual(loaded.physical_description.extent, u'viii, 208 p.')
         self.assertEqual(loaded.physical_description.digital_origin, u'born digital')
+        self.assertEqual(loaded.physical_description.note, u'note 1')
         self.assertEqual(loaded.locations[0].physical, u'Random location')
         self.assertEqual(loaded.locations[0].holding_simple.copy_information[0].notes[0].text, u'location note')
 
