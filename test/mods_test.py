@@ -105,6 +105,9 @@ SAMPLE_MODS = u'''
   <mods:subject displayLabel="label missing colon">
     <mods:topic>post modernism</mods:topic>
   </mods:subject>
+  <mods:subject displayLabel="label">
+    <mods:temporal>1960s</mods:temporal>
+  </mods:subject>
   <mods:recordInfo>
     <mods:recordContentSource authority="marcorg">RPB</mods:recordContentSource>
     <mods:recordCreationDate encoding="iso8601">20091218</mods:recordCreationDate>
@@ -218,7 +221,7 @@ class ModsReadWrite(unittest.TestCase):
 
     def test_geographic_subjects(self):
         loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
-        subject = loaded.subjects[-2]
+        subject = loaded.subjects[-3]
         self.assertEqual(subject.hierarchical_geographic.country, 'United States')
         self.assertEqual(subject.hierarchical_geographic.state, 'Louisiana')
         self.assertEqual(subject.hierarchical_geographic.city, 'New Orleans')
@@ -261,9 +264,10 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['note'], [u'Thésis (Ph.D.)', u'discarded: random type note', u'Short: Without ending', u'Display @#$label? display label note'])
         self.assertEqual(index_data['other_title'], [u'Other title'])
         self.assertEqual(index_data['primary_title'], u'Poétry')
-        self.assertEqual(index_data['keyword'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Stevens', u'Merrill', u'Eliot', u"label missing colon: post modernism"])
-        self.assertEqual(index_data['mods_subject_ssim'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Stevens', u'Merrill', u'Eliot', u"label missing colon: post modernism"])
+        self.assertEqual(index_data['keyword'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Stevens', u'Merrill', u'Eliot', u"label missing colon: post modernism", u'label: 1960s'])
+        self.assertEqual(index_data['mods_subject_ssim'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Stevens', u'Merrill', u'Eliot', u"label missing colon: post modernism", u'label: 1960s'])
         self.assertEqual(index_data['mods_subject_display_label_ssim'], [u'modernism', u'Yeats'])
+        self.assertEqual(index_data['mods_subject_label_ssim'], [u'1960s'])
         self.assertEqual(index_data['mods_subject_local_ssim'], [u'Stevens', u'Eliot'])
 
     def test_index_title_parts(self):
