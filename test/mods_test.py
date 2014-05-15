@@ -107,7 +107,7 @@ SAMPLE_MODS = u'''
     <mods:topic>post modernism</mods:topic>
   </mods:subject>
   <mods:subject displayLabel="label">
-    <mods:temporal>1960s</mods:temporal>
+    <mods:temporal encoding="w3cdtf">1960s</mods:temporal>
   </mods:subject>
   <mods:recordInfo>
     <mods:recordContentSource authority="marcorg">RPB</mods:recordContentSource>
