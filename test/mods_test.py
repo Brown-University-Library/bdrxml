@@ -43,6 +43,7 @@ SAMPLE_MODS = u'''
   <mods:physicalDescription>
     <mods:extent>viii, 208 p.</mods:extent>
     <mods:digitalOrigin>born digital</mods:digitalOrigin>
+    <mods:note>note 1</mods:note>
   </mods:physicalDescription>
   <mods:note>Thésis (Ph.D.)</mods:note>
   <mods:note type="@#$%random Typé" displayLabel="discarded:">random type note</mods:note>
@@ -104,6 +105,9 @@ SAMPLE_MODS = u'''
   </mods:subject>
   <mods:subject displayLabel="label missing colon">
     <mods:topic>post modernism</mods:topic>
+  </mods:subject>
+  <mods:subject displayLabel="label">
+    <mods:temporal encoding="w3cdtf">1960s</mods:temporal>
   </mods:subject>
   <mods:recordInfo>
     <mods:recordContentSource authority="marcorg">RPB</mods:recordContentSource>
@@ -168,6 +172,7 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(loaded.notes[0].text, u'Thésis (Ph.D.)')
         self.assertEqual(loaded.physical_description.extent, u'viii, 208 p.')
         self.assertEqual(loaded.physical_description.digital_origin, u'born digital')
+        self.assertEqual(loaded.physical_description.note, u'note 1')
         self.assertEqual(loaded.locations[0].physical, u'Random location')
         self.assertEqual(loaded.locations[0].holding_simple.copy_information[0].notes[0].text, u'location note')
 
@@ -218,7 +223,7 @@ class ModsReadWrite(unittest.TestCase):
 
     def test_geographic_subjects(self):
         loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
-        subject = loaded.subjects[-2]
+        subject = loaded.subjects[-3]
         self.assertEqual(subject.hierarchical_geographic.country, 'United States')
         self.assertEqual(subject.hierarchical_geographic.state, 'Louisiana')
         self.assertEqual(subject.hierarchical_geographic.city, 'New Orleans')
@@ -261,9 +266,10 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['note'], [u'Thésis (Ph.D.)', u'discarded: random type note', u'Short: Without ending', u'Display @#$label? display label note'])
         self.assertEqual(index_data['other_title'], [u'Other title'])
         self.assertEqual(index_data['primary_title'], u'Poétry')
-        self.assertEqual(index_data['keyword'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Stevens', u'Merrill', u'Eliot', u"label missing colon: post modernism"])
-        self.assertEqual(index_data['mods_subject_ssim'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Stevens', u'Merrill', u'Eliot', u"label missing colon: post modernism"])
+        self.assertEqual(index_data['keyword'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Stevens', u'Merrill', u'Eliot', u"label missing colon: post modernism", u'label: 1960s'])
+        self.assertEqual(index_data['mods_subject_ssim'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Stevens', u'Merrill', u'Eliot', u"label missing colon: post modernism", u'label: 1960s'])
         self.assertEqual(index_data['mods_subject_display_label_ssim'], [u'modernism', u'Yeats'])
+        self.assertEqual(index_data['mods_subject_label_ssim'], [u'1960s'])
         self.assertEqual(index_data['mods_subject_local_ssim'], [u'Stevens', u'Eliot'])
 
     def test_index_title_parts(self):
