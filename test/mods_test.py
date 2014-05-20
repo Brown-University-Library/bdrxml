@@ -87,6 +87,7 @@ SAMPLE_MODS = u'''
     <mods:topic>Yeats</mods:topic>
   </mods:subject>
   <mods:subject authority="local">
+    <mods:topic>Ted</mods:topic>
     <mods:topic>Stevens</mods:topic>
   </mods:subject>
   <mods:subject>
@@ -266,11 +267,12 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['note'], [u'Thésis (Ph.D.)', u'discarded: random type note', u'Short: Without ending', u'Display @#$label? display label note'])
         self.assertEqual(index_data['other_title'], [u'Other title'])
         self.assertEqual(index_data['primary_title'], u'Poétry')
-        self.assertEqual(index_data['keyword'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Stevens', u'Merrill', u'Eliot', u"label missing colon: post modernism", u'label: 1960s'])
-        self.assertEqual(index_data['mods_subject_ssim'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Stevens', u'Merrill', u'Eliot', u"label missing colon: post modernism", u'label: 1960s'])
+        self.assertEqual(index_data['keyword'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Ted', u'Stevens', u'Merrill', u'Eliot', u"label missing colon: post modernism", u'label: 1960s'])
+        self.assertEqual(index_data['mods_subject_ssim'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Ted', u'Stevens', u'Merrill', u'Eliot', u"label missing colon: post modernism", u'label: 1960s'])
         self.assertEqual(index_data['mods_subject_display_label_ssim'], [u'modernism', u'Yeats'])
         self.assertEqual(index_data['mods_subject_label_ssim'], [u'1960s'])
-        self.assertEqual(index_data['mods_subject_local_ssim'], [u'Stevens', u'Eliot'])
+        self.assertEqual(index_data['mods_subject_label_missing_colon_ssim'], [u'post modernism'])
+        self.assertEqual(index_data['mods_subject_local_ssim'], [u'Ted', u'Stevens', u'Eliot'])
 
     def test_index_title_parts(self):
         loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)

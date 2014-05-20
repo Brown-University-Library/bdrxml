@@ -70,10 +70,17 @@ class Temporal(Common):
     text = SF('text()')
 
 
+class Topic(Common):
+    ROOT_NAME = 'topic'
+    authority = SF('@authority')
+    text = SF('text()')
+
+
 class Subject(Subject):
     label = SF('@displayLabel')
+    topic_list = NodeListField('mods:topic', Topic)
     hierarchical_geographic = NodeField('mods:hierarchicalGeographic', HierarchicalGeographic)
-    temporal = NodeField('mods:temporal', Temporal)
+    temporal_list = NodeListField('mods:temporal', Temporal)
 
 
 class Mods(MODSv34):
@@ -163,29 +170,26 @@ class Mods(MODSv34):
                 other_titles = [title_info.title for title_info in primary_titles[1:]]
                 data = self._add_or_extend(data, 'other_title', other_titles)
         #handle subject (topics & temporal)
-        subject_elements = [subject for subject in self.subjects if (subject.topic or subject.temporal)]
+        subject_elements = [subject for subject in self.subjects if (subject.topic_list or subject.temporal_list)]
         for subject in subject_elements:
-            if subject.topic:
-                subj_base_text = subject.topic
-            else:
-                subj_base_text = subject.temporal.text
             #add display label to text for general subjects field
+            subj_label = u''
             if subject.label:
                 final_char = subject.label.strip()[-1:]
                 if final_char in [u':', u'?', u'!']:
-                    subj_text = u'%s %s' % (subject.label, subj_base_text)
+                    subj_label = u'%s ' % subject.label
                 else:
-                    subj_text = u'%s: %s' % (subject.label, subj_base_text)
-            else:
-                subj_text = subj_base_text
+                    subj_label = u'%s: ' % subject.label
+            subj_text_list = [topic.text for topic in subject.topic_list]
+            subj_text_list.extend([temporal.text for temporal in subject.temporal_list])
             #add all subjects to the keyword & mods_subject_ssim fields
-            data = self._add_or_extend(data, 'keyword', [subj_text])
-            data = self._add_or_extend(data, 'mods_subject_ssim', [subj_text])
+            data = self._add_or_extend(data, 'keyword', [u'%s%s' % (subj_label, subj_text) for subj_text in subj_text_list])
+            data = self._add_or_extend(data, 'mods_subject_ssim', [u'%s%s' % (subj_label, subj_text) for subj_text in subj_text_list])
             if subject.authority:
-                data = self._add_or_extend(data, 'mods_subject_%s_ssim' % self._slugify(subject.authority), [subj_base_text])
+                data = self._add_or_extend(data, 'mods_subject_%s_ssim' % self._slugify(subject.authority), [u'%s%s' % (subj_label, subj_text) for subj_text in subj_text_list])
             else:
                 if subject.label:
-                    data = self._add_or_extend(data, 'mods_subject_%s_ssim' % self._slugify(subject.label), [subj_base_text])
+                    data = self._add_or_extend(data, 'mods_subject_%s_ssim' % self._slugify(subject.label), [u'%s' % subj_text for subj_text in subj_text_list])
         #handle notes
         for note in self.notes:
             #add display label to text for note field
