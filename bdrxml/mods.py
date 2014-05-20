@@ -108,6 +108,8 @@ class Mods(MODSv34):
         TODO: consider refactoring into a different class'''
         #(xpath to data we're looking for, solr field name, single or multi-valued)
         mapping_info = [
+            ('mods:physicalDescription/mods:extent', 'mods_physicalDescription_extent_ssim', 'm'),
+            ('mods:physicalDescription/mods:digitalOrigin', 'mods_physicalDescription_digitalOrigin_ssim', 'm'),
             ('mods:titleInfo[@type="alternative"]/mods:title', 'mods_title_alt', 'm'),
             ('mods:subject/mods:titleInfo/mods:title', 'other_title', 'm'),
             ('mods:subject/mods:name/mods:namePart[not(@type)]', 'subject', 'm'),
