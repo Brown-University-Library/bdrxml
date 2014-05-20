@@ -252,6 +252,8 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['mods_id'], 'id101')
         self.assertEqual(index_data['mods_id_test_type_ssim'], ['Test type id'])
         self.assertTrue(u'mods_id_doi_ssi' not in index_data)
+        self.assertEqual(index_data['mods_physicalDescription_extent_ssim'], [u'viii, 208 p.'])
+        self.assertEqual(index_data['mods_physicalDescription_digitalOrigin_ssim'], [u'born digital'])
         self.assertEqual(index_data['mods_name_place_ssim'], [u'Providence, RI'])
         self.assertEqual(sorted(index_data['mods_name_nonplace_ssim']), [u'Baker, Jim', u'Brown University. English', u'Smith, Tom', u'Wilson, Jane'])
         self.assertEqual(sorted(index_data['mods_role_ssim']), [u'creator', u'director', u'distribution place', u'sponsor'])
