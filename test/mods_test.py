@@ -263,6 +263,7 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['mods_role_director_ssim'], [u'Baker, Jim'])
         self.assertEqual(index_data['mods_role_sponsor_ssim'], [u'Brown University. English'])
         self.assertEqual(index_data['mods_note_random_type_ssim'], [u'random type note'])
+        self.assertEqual(index_data['mods_note_discarded_ssim'], [u'random type note'])
         self.assertEqual(index_data['mods_note_display_label_ssim'], [u'display label note'])
         self.assertEqual(index_data['mods_title_alt'], [u'alternative title'])
         self.assertEqual(index_data['name'], [u'Smith, Tom', u'Baker, Jim', u'Wilson, Jane', u'Brown University. English', u'Providence, RI'])

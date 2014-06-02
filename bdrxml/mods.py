@@ -207,9 +207,8 @@ class Mods(MODSv34):
             data = self._add_or_extend(data, 'note', [note_text])
             if note.type:
                 data = self._add_or_extend(data, 'mods_note_%s_ssim' % self._slugify(note.type), [note.text])
-            else:
-                if note.label:
-                    data = self._add_or_extend(data, 'mods_note_%s_ssim' % self._slugify(note.label), [note.text])
+            if note.label:
+                data = self._add_or_extend(data, 'mods_note_%s_ssim' % self._slugify(note.label), [note.text])
         #GENRES
         for genre in self.genres:
             if genre.text:
