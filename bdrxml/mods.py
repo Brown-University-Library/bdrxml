@@ -189,9 +189,8 @@ class Mods(MODSv34):
             data = self._add_or_extend(data, 'mods_subject_ssim', [u'%s%s' % (subj_label, subj_text) for subj_text in subj_text_list])
             if subject.authority:
                 data = self._add_or_extend(data, 'mods_subject_%s_ssim' % self._slugify(subject.authority), [u'%s%s' % (subj_label, subj_text) for subj_text in subj_text_list])
-            else:
-                if subject.label:
-                    data = self._add_or_extend(data, 'mods_subject_%s_ssim' % self._slugify(subject.label), [u'%s' % subj_text for subj_text in subj_text_list])
+            if subject.label:
+                data = self._add_or_extend(data, 'mods_subject_%s_ssim' % self._slugify(subject.label), [u'%s' % subj_text for subj_text in subj_text_list])
         #handle notes
         for note in self.notes:
             #add display label to text for note field

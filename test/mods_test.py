@@ -107,7 +107,7 @@ SAMPLE_MODS = u'''
   <mods:subject displayLabel="label missing colon">
     <mods:topic>post modernism</mods:topic>
   </mods:subject>
-  <mods:subject displayLabel="label">
+  <mods:subject authority="local" displayLabel="label">
     <mods:temporal encoding="w3cdtf">1960s</mods:temporal>
   </mods:subject>
   <mods:recordInfo>
@@ -275,7 +275,7 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['mods_subject_display_label_ssim'], [u'modernism', u'Yeats'])
         self.assertEqual(index_data['mods_subject_label_ssim'], [u'1960s'])
         self.assertEqual(index_data['mods_subject_label_missing_colon_ssim'], [u'post modernism'])
-        self.assertEqual(index_data['mods_subject_local_ssim'], [u'Ted', u'Stevens', u'Eliot'])
+        self.assertEqual(index_data['mods_subject_local_ssim'], [u'Ted', u'Stevens', u'Eliot', u'label: 1960s'])
 
     def test_index_title_parts(self):
         loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
