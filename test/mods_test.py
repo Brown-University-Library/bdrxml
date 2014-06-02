@@ -232,7 +232,7 @@ class ModsReadWrite(unittest.TestCase):
 
     def test_index_data(self):
         loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
-        index_data = loaded.index_data()
+        index_data = mods.ModsIndexer(loaded).index_data()
         self.assertEqual(index_data['abstract'], [u'Poétry description...'])
         self.assertEqual(index_data['contributor_display'], ['Smith, Tom, 1803 or 4-1860 (creator)', 'Baker, Jim, 1718-1762 (director)', 'Wilson, Jane', 'Brown University. English (sponsor)', 'Providence, RI (distribution place)'])
         self.assertEqual(index_data['copyrightDate'], '2008-01-01T00:00:00Z')
@@ -284,7 +284,7 @@ class ModsReadWrite(unittest.TestCase):
         primary_title.part_name = "Primary Part 1"
         primary_title.part_number = "4"
         primary_title.non_sort  = "The"
-        index_data = loaded.index_data()
+        index_data = mods.ModsIndexer(loaded).index_data()
         self.assertEqual(index_data['subtitle'], u'Primary Subtitle')
         self.assertEqual(index_data['partnumber'], u'4')
         self.assertEqual(index_data['partname'], u'Primary Part 1')

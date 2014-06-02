@@ -103,9 +103,14 @@ class Mods(MODSv34):
     physical_description = NodeField('mods:physicalDescription', PhysicalDescription)
     locations = NodeListField('mods:location', Location)
 
+
+class ModsIndexer(object):
+
+    def __init__(self, mods_obj):
+        self.mods = mods_obj
+
     def index_data(self):
-        '''Generate dict of field:data pairs for sending to solr
-        TODO: consider refactoring into a different class'''
+        '''Generate dict of field:data pairs for sending to solr'''
         #(xpath to data we're looking for, solr field name, single or multi-valued)
         mapping_info = [
             ('mods:physicalDescription/mods:extent', 'mods_physicalDescription_extent_ssim', 'm'),
@@ -139,7 +144,7 @@ class Mods(MODSv34):
             ('mods:relatedItem[@type="host" and starts-with(@displayLabel,"Collection")]/mods:identifier[@type = "COLID"]', 'mods_collection_id', 'm')]
         data = {}
         for mapper in mapping_info:
-            element_list = self.node.xpath(mapper[0], namespaces=self.ROOT_NAMESPACES)
+            element_list = self.mods.node.xpath(mapper[0], namespaces=self.mods.ROOT_NAMESPACES)
             if element_list:
                 if mapper[2] == 'm':
                     data = self._add_or_extend(data, mapper[1], [element.text for element in element_list])
@@ -155,7 +160,7 @@ class Mods(MODSv34):
         data = self._process_date(data, 'copyrightDate')
         data = self._process_date(data, 'dateOther')
         #handle titles
-        primary_titles = [title_info for title_info in self.title_info_list if title_info.type != 'alternative']
+        primary_titles = [title_info for title_info in self.mods.title_info_list if title_info.type != 'alternative']
         if primary_titles:
             data['primary_title'] = primary_titles[0].title
             #this is the only place we're setting subtitle, partnumber, partname, & nonsort
@@ -172,7 +177,7 @@ class Mods(MODSv34):
                 other_titles = [title_info.title for title_info in primary_titles[1:]]
                 data = self._add_or_extend(data, 'other_title', other_titles)
         #handle subject (topics & temporal)
-        subject_elements = [subject for subject in self.subjects if (subject.topic_list or subject.temporal_list)]
+        subject_elements = [subject for subject in self.mods.subjects if (subject.topic_list or subject.temporal_list)]
         for subject in subject_elements:
             #add display label to text for general subjects field
             subj_label = u''
@@ -192,7 +197,7 @@ class Mods(MODSv34):
             if subject.label:
                 data = self._add_or_extend(data, 'mods_subject_%s_ssim' % self._slugify(subject.label), [u'%s' % subj_text for subj_text in subj_text_list])
         #handle notes
-        for note in self.notes:
+        for note in self.mods.notes:
             #add display label to text for note field
             if note.label:
                 final_char = note.label.strip()[-1:]
@@ -209,21 +214,21 @@ class Mods(MODSv34):
             if note.label:
                 data = self._add_or_extend(data, 'mods_note_%s_ssim' % self._slugify(note.label), [note.text])
         #GENRES
-        for genre in self.genres:
+        for genre in self.mods.genres:
             if genre.text:
                 data = self._add_or_extend(data, 'genre', [genre.text])
                 if genre.authority:
                     genre_field_name = u'mods_genre_%s_ssim' % self._slugify(genre.authority)
                     data = self._add_or_extend(data, genre_field_name, [genre.text])
         #mods_id
-        if self.id:
-            data['mods_id'] = self.id
+        if self.mods.id:
+            data['mods_id'] = self.mods.id
         #related items - easier to handle with xpath for now
-        related_item_els = self.node.xpath('mods:relatedItem', namespaces=self.ROOT_NAMESPACES)
+        related_item_els = self.mods.node.xpath('mods:relatedItem', namespaces=self.mods.ROOT_NAMESPACES)
         for related_item in related_item_els:
             type = related_item.get('type')
             label = related_item.get('displayLabel')
-            title_els = related_item.xpath('mods:titleInfo/mods:title', namespaces=self.ROOT_NAMESPACES)
+            title_els = related_item.xpath('mods:titleInfo/mods:title', namespaces=self.mods.ROOT_NAMESPACES)
             titles = [title.text for title in title_els]
             if type == 'host' and label and label.startswith('Collection'):
                 if 'collection_title' in data:
@@ -237,7 +242,7 @@ class Mods(MODSv34):
                 else:
                     data['other_title'] = titles
             #solrize ids here as well
-            identifier_els = related_item.xpath('mods:identifier', namespaces=self.ROOT_NAMESPACES)
+            identifier_els = related_item.xpath('mods:identifier', namespaces=self.mods.ROOT_NAMESPACES)
             for identifier in identifier_els:
                 if identifier.text:
                     type = identifier.get('type')
@@ -246,7 +251,7 @@ class Mods(MODSv34):
                     else:
                         data = self._add_or_extend(data, 'mods_related_id_ssim', [identifier.text])
         #access conditions
-        access_condition_els = self.node.xpath('mods:accessCondition', namespaces=self.ROOT_NAMESPACES)
+        access_condition_els = self.mods.node.xpath('mods:accessCondition', namespaces=self.mods.ROOT_NAMESPACES)
         if access_condition_els:
             for access_condition in access_condition_els:
                 type = access_condition.get('type')
@@ -259,7 +264,7 @@ class Mods(MODSv34):
                     if href:
                         data = self._add_or_extend(data, 'mods_access_condition_logo_ssim', [href])
         #other id's not handled above
-        identifier_els = self.node.xpath('mods:identifier[@type and not(@type="COLID") and not(@type="URI") and not(@type="doi") and not(@type="METSID")]', namespaces=self.ROOT_NAMESPACES)
+        identifier_els = self.mods.node.xpath('mods:identifier[@type and not(@type="COLID") and not(@type="URI") and not(@type="doi") and not(@type="METSID")]', namespaces=self.mods.ROOT_NAMESPACES)
         for identifier in identifier_els:
             type = identifier.get('type')
             if type:
@@ -268,7 +273,7 @@ class Mods(MODSv34):
                 data = self._add_or_extend(data, 'identifier', [identifier.text])
         #names
         try:
-            for name in self.names:
+            for name in self.mods.names:
                 nameparts = [np.text for np in name.name_parts if not np.type]
                 roles = [role.text for role in name.roles if role.type == 'text']
                 dates = [np.text for np in name.name_parts if np.type == 'date']
@@ -332,7 +337,7 @@ class Mods(MODSv34):
         try:
             #for now, we'll ignore dates marked as questionable and end dates
             date_xpath = 'mods:originInfo/mods:%s[not(@qualifier="questionable") and (not(@point) or @point!="end" or @keyDate="yes")]' % date_name
-            dates_els = self.node.xpath(date_xpath, namespaces=self.ROOT_NAMESPACES)
+            dates_els = self.mods.node.xpath(date_xpath, namespaces=self.mods.ROOT_NAMESPACES)
             if dates_els:
                 for date in dates_els:
                     #make sure it's not an empty date element
