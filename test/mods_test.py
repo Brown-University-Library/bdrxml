@@ -107,7 +107,7 @@ SAMPLE_MODS = u'''
   <mods:subject displayLabel="label missing colon">
     <mods:topic>post modernism</mods:topic>
   </mods:subject>
-  <mods:subject displayLabel="label">
+  <mods:subject authority="local" displayLabel="label">
     <mods:temporal encoding="w3cdtf">1960s</mods:temporal>
   </mods:subject>
   <mods:recordInfo>
@@ -232,7 +232,7 @@ class ModsReadWrite(unittest.TestCase):
 
     def test_index_data(self):
         loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
-        index_data = loaded.index_data()
+        index_data = mods.ModsIndexer(loaded).index_data()
         self.assertEqual(index_data['abstract'], [u'Poétry description...'])
         self.assertEqual(index_data['contributor_display'], ['Smith, Tom, 1803 or 4-1860 (creator)', 'Baker, Jim, 1718-1762 (director)', 'Wilson, Jane', 'Brown University. English (sponsor)', 'Providence, RI (distribution place)'])
         self.assertEqual(index_data['copyrightDate'], '2008-01-01T00:00:00Z')
@@ -263,6 +263,7 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['mods_role_director_ssim'], [u'Baker, Jim'])
         self.assertEqual(index_data['mods_role_sponsor_ssim'], [u'Brown University. English'])
         self.assertEqual(index_data['mods_note_random_type_ssim'], [u'random type note'])
+        self.assertEqual(index_data['mods_note_discarded_ssim'], [u'random type note'])
         self.assertEqual(index_data['mods_note_display_label_ssim'], [u'display label note'])
         self.assertEqual(index_data['mods_title_alt'], [u'alternative title'])
         self.assertEqual(index_data['name'], [u'Smith, Tom', u'Baker, Jim', u'Wilson, Jane', u'Brown University. English', u'Providence, RI'])
@@ -274,7 +275,7 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['mods_subject_display_label_ssim'], [u'modernism', u'Yeats'])
         self.assertEqual(index_data['mods_subject_label_ssim'], [u'1960s'])
         self.assertEqual(index_data['mods_subject_label_missing_colon_ssim'], [u'post modernism'])
-        self.assertEqual(index_data['mods_subject_local_ssim'], [u'Ted', u'Stevens', u'Eliot'])
+        self.assertEqual(index_data['mods_subject_local_ssim'], [u'Ted', u'Stevens', u'Eliot', u'label: 1960s'])
 
     def test_index_title_parts(self):
         loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
@@ -283,7 +284,7 @@ class ModsReadWrite(unittest.TestCase):
         primary_title.part_name = "Primary Part 1"
         primary_title.part_number = "4"
         primary_title.non_sort  = "The"
-        index_data = loaded.index_data()
+        index_data = mods.ModsIndexer(loaded).index_data()
         self.assertEqual(index_data['subtitle'], u'Primary Subtitle')
         self.assertEqual(index_data['partnumber'], u'4')
         self.assertEqual(index_data['partname'], u'Primary Part 1')
