@@ -264,13 +264,14 @@ class ModsIndexer(object):
                     if href:
                         data = self._add_or_extend(data, 'mods_access_condition_logo_ssim', [href])
         #other id's not handled above
-        identifier_els = self.mods.node.xpath('mods:identifier[@type and not(@type="COLID") and not(@type="URI") and not(@type="doi") and not(@type="METSID")]', namespaces=self.mods.ROOT_NAMESPACES)
+        identifier_els = [idt for idt in self.mods.identifiers if idt.type not in ['COLID', 'URI', 'doi', 'METSID']]
         for identifier in identifier_els:
-            type = identifier.get('type')
-            if type:
-                data = self._add_or_extend(data, 'mods_id_%s_ssim' % self._slugify(type), [identifier.text])
-            else:
+            if identifier.text:
                 data = self._add_or_extend(data, 'identifier', [identifier.text])
+                if identifier.label:
+                    data = self._add_or_extend(data, 'mods_id_%s_ssim' % self._slugify(identifier.label), [identifier.text])
+                if identifier.type:
+                    data = self._add_or_extend(data, 'mods_id_%s_ssim' % self._slugify(identifier.type), [identifier.text])
         #names
         try:
             for name in self.mods.names:

@@ -17,7 +17,8 @@ SAMPLE_MODS = u'''
   <mods:accessCondition href="http://creativecommons.org/publicdomain/zero/1.0/" type="use and reproduction">To the extent possible under law, the person who associated CC0 with this work has waived all copyright and related or neighboring rights to this work.</mods:accessCondition>
   <mods:accessCondition href="http://i.creativecommons.org/p/zero/1.0/88x31.png" type="logo"></mods:accessCondition>
   <mods:identifier type="test type">Test type id</mods:identifier>
-  <mods:identifier type="doi"/>
+  <mods:identifier displayLabel="label">label id</mods:identifier>
+  <mods:identifier type="doi">dx.123.456</mods:identifier>
   <mods:name type="personal">
     <mods:namePart></mods:namePart>
   </mods:name>
@@ -243,6 +244,7 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['dateModified_year_ssim'], ['2008', '2008'])
         self.assertEqual(index_data['dateModified_ssim'], ['2008-06-07-2009-01-02', 'invalid date', '2008-06-07'])
         self.assertEqual(index_data['genre'], [u'aat theses', u'bdr theses', u'local theses'])
+        self.assertEqual(index_data['identifier'], [u'Test type id', u'label id'])
         self.assertEqual(index_data['mods_genre_aat_ssim'], [u'aat theses'])
         self.assertEqual(index_data['mods_genre_bdr_ssim'], [u'bdr theses'])
         self.assertEqual(index_data['mods_genre_local_ssim'], [u'local theses'])
@@ -251,7 +253,8 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['mods_access_condition_use_link_ssim'], [u'http://creativecommons.org/publicdomain/zero/1.0/'])
         self.assertEqual(index_data['mods_id'], 'id101')
         self.assertEqual(index_data['mods_id_test_type_ssim'], ['Test type id'])
-        self.assertTrue(u'mods_id_doi_ssi' not in index_data)
+        self.assertEqual(index_data['mods_id_doi_ssi'], 'dx.123.456')
+        self.assertEqual(index_data['mods_id_label_ssim'], ['label id'])
         self.assertEqual(index_data['mods_physicalDescription_extent_ssim'], [u'viii, 208 p.'])
         self.assertEqual(index_data['mods_physicalDescription_digitalOrigin_ssim'], [u'born digital'])
         self.assertEqual(index_data['mods_name_place_ssim'], [u'Providence, RI'])
