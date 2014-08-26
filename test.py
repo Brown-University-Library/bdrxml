@@ -6,6 +6,7 @@ from test import (
     rights_test,
     irMetadata_test,
     rels_test,
+    darwincore_test
 )
 
 def suite():
@@ -16,6 +17,7 @@ def suite():
     test_suite.addTest(rights_test.suite())
     test_suite.addTest(irMetadata_test.suite())
     test_suite.addTest(rels_test.suite())
+    test_suite.addTest(darwincore_test.suite())
     return test_suite
 
 runner = unittest.TextTestRunner(verbosity=2)
