@@ -9,16 +9,6 @@ XSINS = 'http://www.w3.org/2001/XMLSchema-instance'
 XSI_SCHEMA_LOCATION = 'http://rs.tdwg.org/dwc/dwcrecord/ http://rs.tdwg.org/dwc/xsd/tdwg_dwc_simple.xsd'
 
 
-class DWCCommon(xmlmap.XmlObject):
-    ROOT_NS = XMLNS
-    ROOT_NAMESPACES = {'sdr': ROOT_NS,
-                       'dc': DCNS,
-                       'dwc': DWCNS,
-                       'xsi': XSINS}
-    XSD_SCHEMA = 'http://rs.tdwg.org/dwc/xsd/tdwg_dwc_simple.xsd'
-    xsi_schema_location = xmlmap.StringField('@xsi:schemaLocation')
-
-
 class SimpleDarwinRecord(dc.DublinCore):
     ROOT_NAME = 'SimpleDarwinRecord'
     ROOT_NS = XMLNS
@@ -39,8 +29,18 @@ class SimpleDarwinRecord(dc.DublinCore):
     dwc_genus = xmlmap.StringField('dwc:genus')
 
 
-class SimpleDarwinRecordSet(DWCCommon):
+#this doesn't work yet - see tests
+class SimpleDarwinRecordSet(dc.DublinCore):
     ROOT_NAME = 'SimpleDarwinRecordSet'
+    ROOT_NS = XMLNS
+    ROOT_NAMESPACES = {'sdr': ROOT_NS,
+                       'dc': DCNS,
+                       'dwc': DWCNS,
+                       'xsi': XSINS}
+    XSD_SCHEMA = 'http://rs.tdwg.org/dwc/xsd/tdwg_dwc_simple.xsd'
+    xsi_schema_location = xmlmap.StringField('@xsi:schemaLocation')
+
+    simple_darwin_record_list = xmlmap.NodeListField('SimpleDarwinRecord', SimpleDarwinRecord)
 
 
 def make_simple_darwin_record():
