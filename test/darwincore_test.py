@@ -6,7 +6,10 @@ from bdrxml import darwincore
 
 DARWINCORE_INNER_CONTENT = '''  <dc:modified>2009-02-12T12:43:31</dc:modified>
   <dc:language>én</dc:language>
+  <dwc:catalogNumber>catalog number</dwc:catalogNumber>
   <dwc:basisOfRecord>Taxon</dwc:basisOfRecord>
+  <dwc:recordedBy>recorded by</dwc:recordedBy>
+  <dwc:individualID>individual id</dwc:individualID>
   <dwc:scientificName>Ctenomys sociabilis</dwc:scientificName>
   <dwc:acceptedNameUsage>Ctenomys sociabilis Pearson and Christie, 1985</dwc:acceptedNameUsage>
   <dwc:parentNameUsage>Ctenomys Blainville, 1826</dwc:parentNameUsage>
@@ -56,6 +59,9 @@ class SimpleDarwinRecordTestLoad(unittest.TestCase):
     def test_root(self):
         self.assertEqual(self.dwc.ROOT_NAME, u'SimpleDarwinRecord')
         self.assertEqual(self.dwc.language, u'én')
+        self.assertEqual(self.dwc.dwc_catalog_number, u'catalog number')
+        self.assertEqual(self.dwc.dwc_recorded_by, u'recorded by')
+        self.assertEqual(self.dwc.dwc_individual_id, u'individual id')
         self.assertEqual(self.dwc.dwc_scientific_name, u'Ctenomys sociabilis')
         self.assertEqual(self.dwc.dwc_higher_classification, u'Animalia; Chordata; Vertebrata; Mammalia; Theria; Eutheria; Rodentia; Hystricognatha; Hystricognathi; Ctenomyidae; Ctenomyini; Ctenomys')
         self.assertEqual(self.dwc.dwc_kingdom, u'Animalia')
@@ -64,6 +70,9 @@ class SimpleDarwinRecordTestLoad(unittest.TestCase):
         self.assertEqual(self.dwc.dwc_order, u'Rodentia')
         self.assertEqual(self.dwc.dwc_family, u'Ctenomyidae')
         self.assertEqual(self.dwc.dwc_genus, u'Cténomys')
+        self.assertEqual(self.dwc.dwc_accepted_name_usage, u'Ctenomys sociabilis Pearson and Christie, 1985')
+        self.assertEqual(self.dwc.dwc_specific_epithet, u'sociabilis')
+        self.assertEqual(self.dwc.dwc_scientific_name_authorship, u'Pearson and Christie, 1985')
 
     def test_output(self):
         self.assertEqual(self.dwc.serializeDocument(pretty=True), SIMPLE_DARWIN_XML)

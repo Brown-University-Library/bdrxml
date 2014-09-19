@@ -19,6 +19,11 @@ class SimpleDarwinRecord(dc.DublinCore):
     XSD_SCHEMA = 'http://rs.tdwg.org/dwc/xsd/tdwg_dwc_simple.xsd'
     xsi_schema_location = xmlmap.StringField('@xsi:schemaLocation')
 
+    dwc_catalog_number = xmlmap.StringField('dwc:catalogNumber')
+    dwc_recorded_by = xmlmap.StringField('dwc:recordedBy')
+    dwc_individual_id = xmlmap.StringField('dwc:individualID')
+    dwc_event_date = xmlmap.StringField('dwc:eventDate')
+    dwc_verbatim_event_date = xmlmap.StringField('dwc:verbatimEventDate')
     dwc_scientific_name = xmlmap.StringField('dwc:scientificName')
     dwc_higher_classification = xmlmap.StringField('dwc:higherClassification')
     dwc_kingdom = xmlmap.StringField('dwc:kingdom')
@@ -27,6 +32,13 @@ class SimpleDarwinRecord(dc.DublinCore):
     dwc_order = xmlmap.StringField('dwc:order')
     dwc_family = xmlmap.StringField('dwc:family')
     dwc_genus = xmlmap.StringField('dwc:genus')
+    dwc_specific_epithet = xmlmap.StringField('dwc:specificEpithet')
+    dwc_accepted_name_usage = xmlmap.StringField('dwc:acceptedNameUsage')
+    dwc_scientific_name_authorship = xmlmap.StringField('dwc:scientificNameAuthorship')
+    dwc_county = xmlmap.StringField('dwc:county')
+    dwc_state_province = xmlmap.StringField('dwc:stateProvince')
+    dwc_country = xmlmap.StringField('dwc:country')
+    dwc_habitat = xmlmap.StringField('dwc:habitat')
 
 
 #this doesn't work yet - see tests
