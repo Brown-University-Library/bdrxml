@@ -77,6 +77,11 @@ class SimpleDarwinRecordTestLoad(unittest.TestCase):
     def test_output(self):
         self.assertEqual(self.dwc.serializeDocument(pretty=True), SIMPLE_DARWIN_XML)
 
+    def test_indexing(self):
+        index_data = darwincore.SimpleDarwinRecordIndexer(self.dwc).index_data()
+        self.assertEqual(index_data['dwc_recorded_by'], u'recorded by')
+        self.assertEqual(index_data['dwc_genus'], u'Cténomys')
+
 
 class SimpleDarwinRecordSetTest(unittest.TestCase):
 
@@ -94,7 +99,7 @@ def suite():
     suite.addTest(SimpleDarwinRecordTest('test_root'))
     suite.addTest(SimpleDarwinRecordTestLoad('test_root'))
     suite.addTest(SimpleDarwinRecordTestLoad('test_output'))
-    #suite.addTest(SimpleDarwinRecordSetTest('test_root'))
+    suite.addTest(SimpleDarwinRecordTestLoad('test_indexing'))
     return suite
 
 

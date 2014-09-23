@@ -55,6 +55,23 @@ class SimpleDarwinRecordSet(dc.DublinCore):
     simple_darwin_record_list = xmlmap.NodeListField('SimpleDarwinRecord', SimpleDarwinRecord)
 
 
+class SimpleDarwinRecordIndexer(object):
+
+    def __init__(self, dwc):
+        self.dwc = dwc
+
+    def index_data(self):
+        fields = ['dwc_catalog_number', 'dwc_recorded_by', 'dwc_individual_id', 'dwc_event_date', 'dwc_verbatim_event_date',
+                'dwc_scientific_name', 'dwc_higher_classification', 'dwc_kingdom', 'dwc_phylum', 'dwc_class', 'dwc_order',
+                'dwc_family', 'dwc_genus', 'dwc_specific_epithet', 'dwc_accepted_name_usage', 'dwc_scientific_name_authorship',
+                'dwc_county', 'dwc_state_province', 'dwc_country', 'dwc_habitat']
+        data = {}
+        for field in fields:
+            if hasattr(self.dwc, field):
+                data[field] = getattr(self.dwc, field)
+        return data
+
+
 def make_simple_darwin_record():
     sdr = SimpleDarwinRecord()
     sdr.xsi_schema_location = XSI_SCHEMA_LOCATION
