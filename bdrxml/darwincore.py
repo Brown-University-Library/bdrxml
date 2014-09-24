@@ -68,7 +68,8 @@ class SimpleDarwinRecordIndexer(object):
         data = {}
         for field in fields:
             if hasattr(self.dwc, field):
-                data[field] = getattr(self.dwc, field)
+                field_name = u'%s_ssi' % field
+                data[field_name] =  u'%s' % getattr(self.dwc, field)
         return data
 
 
