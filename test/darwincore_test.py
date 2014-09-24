@@ -79,8 +79,8 @@ class SimpleDarwinRecordTestLoad(unittest.TestCase):
 
     def test_indexing(self):
         index_data = darwincore.SimpleDarwinRecordIndexer(self.dwc).index_data()
-        self.assertEqual(index_data['dwc_recorded_by'], u'recorded by')
-        self.assertEqual(index_data['dwc_genus'], u'Cténomys')
+        self.assertEqual(index_data['dwc_recorded_by_ssi'], u'recorded by')
+        self.assertEqual(index_data['dwc_genus_ssi'], u'Cténomys')
 
 
 class SimpleDarwinRecordSetTest(unittest.TestCase):
