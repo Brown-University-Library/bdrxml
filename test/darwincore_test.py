@@ -18,14 +18,12 @@ DARWINCORE_INNER_CONTENT = '''  <dc:modified>2009-02-12T12:43:31</dc:modified>
   <dwc:phylum>Chordata</dwc:phylum>
   <dwc:class>Mammalia</dwc:class>
   <dwc:order>Rodentia</dwc:order>
-  <dwc:family>Ctenomyidae</dwc:family>
   <dwc:genus>Cténomys</dwc:genus>
   <dwc:specificEpithet>sociabilis</dwc:specificEpithet>
   <dwc:taxonRank>species</dwc:taxonRank>
   <dwc:scientificNameAuthorship>Pearson and Christie, 1985</dwc:scientificNameAuthorship>
   <dwc:nomenclaturalCode>ICZN</dwc:nomenclaturalCode>
   <dwc:namePublishedIn>Pearson O. P., and M. I. Christie. 1985. Historia Natural, 5(37):388</dwc:namePublishedIn>
-  <dwc:taxonomicStatus>valid</dwc:taxonomicStatus>
   <dwc:dynamicProperties>iucnStatus=vulnerable; distribution=Neuquen, Argentina</dwc:dynamicProperties>'''
 
 SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
@@ -75,7 +73,6 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
         self.assertEqual(self.dwc.simple_darwin_record.dwc_phylum, u'Chordata')
         self.assertEqual(self.dwc.simple_darwin_record.dwc_class, u'Mammalia')
         self.assertEqual(self.dwc.simple_darwin_record.dwc_order, u'Rodentia')
-        self.assertEqual(self.dwc.simple_darwin_record.dwc_family, u'Ctenomyidae')
         self.assertEqual(self.dwc.simple_darwin_record.dwc_genus, u'Cténomys')
         self.assertEqual(self.dwc.simple_darwin_record.dwc_accepted_name_usage, u'Ctenomys sociabilis Pearson and Christie, 1985')
         self.assertEqual(self.dwc.simple_darwin_record.dwc_specific_epithet, u'sociabilis')
@@ -89,6 +86,7 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
         self.assertEqual(index_data['dwc_recorded_by_ssi'], u'recorded by')
         self.assertEqual(index_data['dwc_genus_ssi'], u'Cténomys')
         self.assertEqual(index_data['dwc_identifier_ssi'], u'én')
+        self.assertTrue('dwc_family_ssi' not in index_data)
 
 
 def suite():
