@@ -61,12 +61,12 @@ class SimpleDarwinRecordIndexer(object):
                 'dwc_county', 'dwc_state_province', 'dwc_country', 'dwc_habitat']
         data = {}
         for field in fields:
-            if hasattr(self.dwc, field):
+            if getattr(self.dwc, field):
                 field_name = u'%s_ssi' % field
                 data[field_name] =  u'%s' % getattr(self.dwc, field)
         dc_fields = ['creator', 'date', 'description', 'format', 'identifier', 'language']
         for field in dc_fields:
-            if hasattr(self.dwc, field):
+            if getattr(self.dwc, field):
                 field_name = u'dwc_%s_ssi' % field
                 data[field_name] = u'%s' % getattr(self.dwc, field)
 
