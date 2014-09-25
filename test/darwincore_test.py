@@ -64,6 +64,7 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
     def test_root(self):
         self.assertEqual(self.dwc.ROOT_NAME, u'SimpleDarwinRecordSet')
         self.assertEqual(self.dwc.simple_darwin_record.ROOT_NAME, u'SimpleDarwinRecord')
+        self.assertEqual(self.dwc.simple_darwin_record.dwc_basis_of_record, u'Taxon')
         self.assertEqual(self.dwc.simple_darwin_record.dwc_catalog_number, u'catalog number')
         self.assertEqual(self.dwc.simple_darwin_record.identifier, u'én')
         self.assertEqual(self.dwc.simple_darwin_record.dwc_recorded_by, u'recorded by')
@@ -87,6 +88,7 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
         index_data = darwincore.SimpleDarwinRecordIndexer(self.dwc.simple_darwin_record).index_data()
         self.assertEqual(index_data['dwc_recorded_by_ssi'], u'recorded by')
         self.assertEqual(index_data['dwc_genus_ssi'], u'Cténomys')
+        self.assertEqual(index_data['dwc_identifier_ssi'], u'én')
 
 
 def suite():

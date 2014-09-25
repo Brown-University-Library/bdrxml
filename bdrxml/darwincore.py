@@ -14,6 +14,7 @@ class SimpleDarwinRecord(dc.DublinCore):
     XSD_SCHEMA = None
     ROOT_NAMESPACES = {}
 
+    dwc_basis_of_record = xmlmap.StringField('dwc:basisOfRecord')
     dwc_catalog_number = xmlmap.StringField('dwc:catalogNumber')
     dwc_recorded_by = xmlmap.StringField('dwc:recordedBy')
     dwc_individual_id = xmlmap.StringField('dwc:individualID')
@@ -63,6 +64,11 @@ class SimpleDarwinRecordIndexer(object):
             if hasattr(self.dwc, field):
                 field_name = u'%s_ssi' % field
                 data[field_name] =  u'%s' % getattr(self.dwc, field)
+        dc_fields = ['creator', 'date', 'description', 'format', 'identifier', 'language']
+        for field in dc_fields:
+            if hasattr(self.dwc, field):
+                field_name = u'dwc_%s_ssi' % field
+                data[field_name] = u'%s' % getattr(self.dwc, field)
 
         return data
 
