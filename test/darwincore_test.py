@@ -65,7 +65,7 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
         self.assertEqual(self.dwc.ROOT_NAME, u'SimpleDarwinRecordSet')
         self.assertEqual(self.dwc.simple_darwin_record.ROOT_NAME, u'SimpleDarwinRecord')
         self.assertEqual(self.dwc.simple_darwin_record.dwc_catalog_number, u'catalog number')
-        self.assertEqual(self.dwc.simple_darwin_record.dc_identifier, u'én')
+        self.assertEqual(self.dwc.simple_darwin_record.identifier, u'én')
         self.assertEqual(self.dwc.simple_darwin_record.dwc_recorded_by, u'recorded by')
         self.assertEqual(self.dwc.simple_darwin_record.dwc_individual_id, u'individual id')
         self.assertEqual(self.dwc.simple_darwin_record.dwc_scientific_name, u'Ctenomys sociabilis')

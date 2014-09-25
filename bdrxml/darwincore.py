@@ -9,10 +9,11 @@ XSINS = 'http://www.w3.org/2001/XMLSchema-instance'
 XSI_SCHEMA_LOCATION = 'http://rs.tdwg.org/dwc/dwcrecord/ http://rs.tdwg.org/dwc/xsd/tdwg_dwc_simple.xsd'
 
 
-class SimpleDarwinRecord(xmlmap.XmlObject):
+class SimpleDarwinRecord(dc.DublinCore):
     ROOT_NAME = 'SimpleDarwinRecord'
+    XSD_SCHEMA = None
+    ROOT_NAMESPACES = {}
 
-    dc_identifier = xmlmap.StringField('dc:identifier')
     dwc_catalog_number = xmlmap.StringField('dwc:catalogNumber')
     dwc_recorded_by = xmlmap.StringField('dwc:recordedBy')
     dwc_individual_id = xmlmap.StringField('dwc:individualID')
