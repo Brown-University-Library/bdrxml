@@ -11,14 +11,10 @@ XSI_SCHEMA_LOCATION = 'http://rs.tdwg.org/dwc/dwcrecord/ http://rs.tdwg.org/dwc/
 
 class SimpleDarwinRecord(dc.DublinCore):
     ROOT_NAME = 'SimpleDarwinRecord'
-    ROOT_NS = XMLNS
-    ROOT_NAMESPACES = {'sdr': ROOT_NS,
-                       'dc': DCNS,
-                       'dwc': DWCNS,
-                       'xsi': XSINS}
-    XSD_SCHEMA = 'http://rs.tdwg.org/dwc/xsd/tdwg_dwc_simple.xsd'
-    xsi_schema_location = xmlmap.StringField('@xsi:schemaLocation')
+    XSD_SCHEMA = None
+    ROOT_NAMESPACES = {}
 
+    dwc_basis_of_record = xmlmap.StringField('dwc:basisOfRecord')
     dwc_catalog_number = xmlmap.StringField('dwc:catalogNumber')
     dwc_recorded_by = xmlmap.StringField('dwc:recordedBy')
     dwc_individual_id = xmlmap.StringField('dwc:individualID')
@@ -41,18 +37,16 @@ class SimpleDarwinRecord(dc.DublinCore):
     dwc_habitat = xmlmap.StringField('dwc:habitat')
 
 
-#this doesn't work yet - see tests
-class SimpleDarwinRecordSet(dc.DublinCore):
+class SimpleDarwinRecordSet(xmlmap.XmlObject):
     ROOT_NAME = 'SimpleDarwinRecordSet'
-    ROOT_NS = XMLNS
-    ROOT_NAMESPACES = {'sdr': ROOT_NS,
+    ROOT_NAMESPACES = {'sdr': XMLNS,
                        'dc': DCNS,
                        'dwc': DWCNS,
                        'xsi': XSINS}
     XSD_SCHEMA = 'http://rs.tdwg.org/dwc/xsd/tdwg_dwc_simple.xsd'
     xsi_schema_location = xmlmap.StringField('@xsi:schemaLocation')
 
-    simple_darwin_record_list = xmlmap.NodeListField('SimpleDarwinRecord', SimpleDarwinRecord)
+    simple_darwin_record = xmlmap.NodeField('sdr:SimpleDarwinRecord', SimpleDarwinRecord)
 
 
 class SimpleDarwinRecordIndexer(object):
@@ -70,6 +64,12 @@ class SimpleDarwinRecordIndexer(object):
             if hasattr(self.dwc, field):
                 field_name = u'%s_ssi' % field
                 data[field_name] =  u'%s' % getattr(self.dwc, field)
+        dc_fields = ['creator', 'date', 'description', 'format', 'identifier', 'language']
+        for field in dc_fields:
+            if hasattr(self.dwc, field):
+                field_name = u'dwc_%s_ssi' % field
+                data[field_name] = u'%s' % getattr(self.dwc, field)
+
         return data
 
 
