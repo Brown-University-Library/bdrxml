@@ -23,15 +23,13 @@ class MetsReadWrite(unittest.TestCase):
         #mods
         mods_section = make_mods()
         mods_section.title = 'sample'
-        mets.create_mdwrap()
-        mets.mdwrap.id = 'MODS'
+        mets.create_mods()
         mets.mods = mods_section
         #dwc
         dwc_section = make_simple_darwin_record_set()
         dwc_section.create_simple_darwin_record()
         dwc_section.simple_darwin_record.catalog_number = 'catalog number'
-        mets.create_mdwrap()
-        mets.mdwrap.id = 'DWC'
+        mets.create_dwc()
         mets.dwc = dwc_section
         #ir
         mets.create_ir()

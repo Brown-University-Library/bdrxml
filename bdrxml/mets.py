@@ -65,7 +65,7 @@ class BDRMets(Common):
     pid = xmlmap.StringField('@OBJID')
     mdwrap = xmlmap.NodeField('METS:dmdSec[@ID="DM1"]/METS:mdWrap', MdWrap)
     mods = xmlmap.NodeField('METS:dmdSec[@ID="DM1"]/METS:mdWrap[@MDTYPE="MODS"]/METS:xmlData/mods:mods', mods.Mods)
-    dwc = xmlmap.NodeField('METS:dmdSec[@ID="DM2"]/METS:mdWrap[@MDTYPE="DWC"]/METS:xmlData/sdr:SimpleDarwinRecordSet', darwincore.SimpleDarwinRecordSet)
+    dwc = xmlmap.NodeField('METS:dmdSec[@ID="DM2"]/METS:mdWrap[@MDTYPE="OTHER"]/METS:xmlData/sdr:SimpleDarwinRecordSet', darwincore.SimpleDarwinRecordSet)
     ir = xmlmap.NodeField('METS:dmdSec[@ID="DM3"]/METS:mdWrap[@MDTYPE="OTHER"][@OTHERMDTYPE="IR"]/METS:xmlData/ir:irData', IR)
     rights = xmlmap.NodeField('METS:amdSec/METS:rightsMD[@ID="RMD1"]/METS:mdWrap[@LABEL="RIGHTSMD"][@MDTYPE="OTHER"]/METS:xmlData/rights:RightsDeclarationMD', Rights)
     filesec = xmlmap.NodeField('METS:fileSec', FileSec)
