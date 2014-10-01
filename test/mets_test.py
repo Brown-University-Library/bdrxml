@@ -3,6 +3,7 @@ import unittest
 from eulxml.xmlmap  import load_xmlobject_from_string, load_xmlobject_from_file
 from bdrxml.mets import BDRMets, make_mets, File, FileGrp, StructMap
 from bdrxml.mods import make_mods
+from bdrxml.darwincore import make_simple_darwin_record_set
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 
@@ -22,9 +23,14 @@ class MetsReadWrite(unittest.TestCase):
         #mods
         mods_section = make_mods()
         mods_section.title = 'sample'
-        mets.create_mdwrap()
-        mets.mdwrap.id = 'MODS'
+        mets.create_mods()
         mets.mods = mods_section
+        #dwc
+        dwc_section = make_simple_darwin_record_set()
+        dwc_section.create_simple_darwin_record()
+        dwc_section.simple_darwin_record.catalog_number = 'catalog number'
+        mets.create_dwc()
+        mets.dwc = dwc_section
         #ir
         mets.create_ir()
         mets.ir.filename = 'sample.txt'
@@ -46,11 +52,11 @@ class MetsReadWrite(unittest.TestCase):
         mets.create_structmap()  # not used but required for valid mets
         #serialize
         created_string = mets.serialize( pretty=True )
-        # print created_string
         #load
         loaded = load_xmlobject_from_string(created_string, BDRMets)
         #test
         self.assertEqual(loaded.mods.title, 'sample')
+        self.assertEqual(loaded.dwc.simple_darwin_record.catalog_number, 'catalog number')
         self.assertEqual(loaded.ir.filename, 'sample.txt')
         self.assertEqual( type(loaded.structmap), StructMap )
         self.assertEqual( loaded.filesec.filegrp[0].file[0].node.items(), [('ADMID', 'TMD1'), ('GROUPID', 'GRP1'), ('ID', 'FID1')] )
