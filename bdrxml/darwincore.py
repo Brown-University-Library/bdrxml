@@ -36,6 +36,8 @@ class SimpleDarwinRecord(xmlmap.XmlObject):
     family = xmlmap.StringField('dwc:family')
     genus = xmlmap.StringField('dwc:genus')
     specific_epithet = xmlmap.StringField('dwc:specificEpithet')
+    infraspecific_epithet = xmlmap.StringField('dwc:infraspecificEpithet')
+    taxon_rank = xmlmap.StringField('dwc:taxonRank')
     accepted_name_usage = xmlmap.StringField('dwc:acceptedNameUsage')
     scientific_name_authorship = xmlmap.StringField('dwc:scientificNameAuthorship')
     county = xmlmap.StringField('dwc:county')
@@ -66,8 +68,8 @@ class SimpleDarwinRecordIndexer(object):
     def index_data(self):
         fields = ['catalog_number', 'recorded_by', 'individual_id', 'event_date', 'verbatim_event_date',
                 'scientific_name', 'higher_classification', 'kingdom', 'phylum', 'class_', 'order',
-                'family', 'genus', 'specific_epithet', 'accepted_name_usage', 'scientific_name_authorship',
-                'county', 'state_province', 'country', 'habitat', 'identification_id']
+                'family', 'genus', 'specific_epithet', 'infraspecific_epithet', 'taxon_rank', 'accepted_name_usage',
+                'scientific_name_authorship', 'county', 'state_province', 'country', 'habitat', 'identification_id']
         data = {}
         for field in fields:
             if getattr(self.dwc, field):
