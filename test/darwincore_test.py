@@ -30,7 +30,8 @@ SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
     <dwc:order>Rodentia</dwc:order>
     <dwc:genus>Cténomys</dwc:genus>
     <dwc:specificEpithet>sociabilis</dwc:specificEpithet>
-    <dwc:taxonRank>species</dwc:taxonRank>
+    <dwc:infraspecificEpithet>sociabilis sub</dwc:infraspecificEpithet>
+    <dwc:taxonRank>subspecies</dwc:taxonRank>
     <dwc:scientificNameAuthorship>Pearson and Christie, 1985</dwc:scientificNameAuthorship>
     <dwc:nomenclaturalCode>ICZN</dwc:nomenclaturalCode>
     <dwc:namePublishedIn>Pearson O. P., and M. I. Christie. 1985. Historia Natural, 5(37):388</dwc:namePublishedIn>
@@ -85,6 +86,8 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
         self.assertEqual(self.dwc.simple_darwin_record.genus, u'Cténomys')
         self.assertEqual(self.dwc.simple_darwin_record.accepted_name_usage, u'Ctenomys sociabilis Pearson and Christie, 1985')
         self.assertEqual(self.dwc.simple_darwin_record.specific_epithet, u'sociabilis')
+        self.assertEqual(self.dwc.simple_darwin_record.infraspecific_epithet, u'sociabilis sub')
+        self.assertEqual(self.dwc.simple_darwin_record.taxon_rank, u'subspecies')
         self.assertEqual(self.dwc.simple_darwin_record.scientific_name_authorship, u'Pearson and Christie, 1985')
 
     def test_output(self):
@@ -96,6 +99,8 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
         self.assertEqual(index_data['dwc_class_ssi'], u'Mammalia')
         self.assertEqual(index_data['dwc_genus_ssi'], u'Cténomys')
         self.assertEqual(index_data['dwc_identification_id_ssi'], u'én12345')
+        self.assertEqual(index_data['dwc_infraspecific_epithet_ssi'], u'sociabilis sub')
+        self.assertEqual(index_data['dwc_taxon_rank_ssi'], u'subspecies')
         self.assertTrue('dwc_family_ssi' not in index_data)
 
 
