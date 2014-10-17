@@ -114,6 +114,7 @@ SAMPLE_MODS = u'''
   <mods:recordInfo>
     <mods:recordContentSource authority="marcorg">RPB</mods:recordContentSource>
     <mods:recordCreationDate encoding="iso8601">20091218</mods:recordCreationDate>
+    <mods:recordIdentifier source="RPB">a1234567</mods:recordIdentifier>
   </mods:recordInfo>
   <mods:identifier type="METSID">12345678</mods:identifier>
   <mods:location>
@@ -279,6 +280,7 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['mods_subject_label_ssim'], [u'1960s'])
         self.assertEqual(index_data['mods_subject_label_missing_colon_ssim'], [u'post modernism'])
         self.assertEqual(index_data['mods_subject_local_ssim'], [u'Ted', u'Stevens', u'Eliot', u'label: 1960s'])
+        self.assertEqual(index_data['mods_record_info_record_identifier_ssim'], [u'a1234567'])
 
     def test_index_title_parts(self):
         loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)

@@ -149,6 +149,7 @@ class ModsIndexer(object):
             ('mods:identifier[@type="doi"]', 'mods_id_doi_ssi', 's'),
             ('mods:identifier[@type="METSID"]', 'mets_id', 's'),
             ('mods:identifier[@type="METSID"]', 'mods_id_mets_ssi', 's'),
+            ('mods:recordInfo/mods:recordIdentifier', 'mods_record_info_record_identifier_ssim', 'm'),
             ('mods:relatedItem[@type="host" and starts-with(@displayLabel,"Collection")]/mods:identifier[@type = "COLID"]', 'mods_collection_id', 'm')]
         data = {}
         for mapper in mapping_info:
