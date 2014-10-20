@@ -119,10 +119,20 @@ class ModsIndexer(object):
 
     def __init__(self, mods_obj):
         self.mods = mods_obj
+        self._has_invalid_date = None
+
+    def has_invalid_date(self):
+        if self._has_invalid_date is None:
+            raise Exception('index_data() hasn\'t been called yet')
+        elif self._has_invalid_date:
+            return True
+        else:
+            return False
 
     def index_data(self):
         '''Generate dict of field:data pairs for sending to solr'''
         #(xpath to data we're looking for, solr field name, single or multi-valued)
+        self._has_invalid_date = False
         mapping_info = [
             ('mods:physicalDescription/mods:extent', 'mods_physicalDescription_extent_ssim', 'm'),
             ('mods:physicalDescription/mods:digitalOrigin', 'mods_physicalDescription_digitalOrigin_ssim', 'm'),
@@ -363,6 +373,7 @@ class ModsIndexer(object):
             date = date + '-01-01T00:00:00Z'
         else:
             date = None
+            self._has_invalid_date = True
         return date
 
     def _process_date(self, data, date_name):
