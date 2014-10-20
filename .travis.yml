@@ -1,6 +1,6 @@
 language: python
-#before_install:
-# - sudo apt-get install -qq libxml2-dev libxslt-dev
+before_install:
+ - sudo apt-get install -qq libxml2-dev libxslt-dev
 env:
   - CFLAGS="-O0"
 python:
