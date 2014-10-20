@@ -391,12 +391,9 @@ class ModsIndexer(object):
                 #index dates with qualifiers or end dates in special fields
                 if point == 'end':
                     data = self._add_or_extend(data, 'mods_%s_end_ssim' % date_name, [date.text])
-                if qualifier == 'approximate':
-                    data = self._add_or_extend(data, 'mods_%s_approximate_ssim' % date_name, [date.text])
-                elif qualifier == 'inferred':
-                    data = self._add_or_extend(data, 'mods_%s_inferred_ssim' % date_name, [date.text])
-                elif qualifier == 'questionable':
-                    data = self._add_or_extend(data, 'mods_%s_questionable_ssim' % date_name, [date.text])
+                DATE_QUALIFIERS = ['approximate', 'inferred', 'questionable']
+                if qualifier in DATE_QUALIFIERS:
+                    data = self._add_or_extend(data, 'mods_%s_%s_ssim' % (date_name, qualifier), [date.text])
         except Exception as e:
             raise Exception(u'%s: %s' % (date_name, repr(e)))
         return data
