@@ -181,7 +181,7 @@ class ModsIndexer(object):
         #handle titles
         primary_titles = [title_info for title_info in self.mods.title_info_list if title_info.type != 'alternative']
         if primary_titles:
-            data['primary_title'] = u' '.join([t.strip() for t in primary_titles[0].title.splitlines()])
+            data['primary_title'] = self.as_one_line(primary_titles[0].title)
             #this is the only place we're setting subtitle, partnumber, partname, & nonsort
             if primary_titles[0].subtitle:
                 data['subtitle'] = primary_titles[0].subtitle
@@ -332,6 +332,9 @@ class ModsIndexer(object):
             raise Exception(u'names: %s' % repr(e))
 
         return data
+
+    def as_one_line(self, text):
+        return u' '.join([t.strip() for t in text.splitlines()])
 
     def _add_or_extend(self, data, field_name, data_list):
         data_list = [d for d in data_list if d]
