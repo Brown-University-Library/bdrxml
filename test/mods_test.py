@@ -35,11 +35,13 @@ SAMPLE_MODS = u'''
     <mods:copyrightDate encoding="w3cdtf" keyDate="yes">2008</mods:copyrightDate>
     <mods:dateCreated encoding="w3cdtf" keyDate="yes"></mods:dateCreated>
     <mods:dateCreated encoding="w3cdtf" keyDate="yes">2008-02-03</mods:dateCreated>
+    <mods:dateIssued encoding="w3cdtf" point="end">2008-04-25</mods:dateIssued>
     <mods:dateModified encoding="w3cdtf">2008-06-07-2009-01-02</mods:dateModified>
     <mods:dateModified encoding="w3cdtf" point="start">invalid date</mods:dateModified>
     <mods:dateModified encoding="w3cdtf" point="start">2008-05-06</mods:dateModified>
     <mods:dateModified encoding="w3cdtf" point="start">2008-06-07</mods:dateModified>
-    <mods:dateOther encoding="w3cdtf" point="start">2009-10-11</mods:dateOther>
+    <mods:dateOther encoding="w3cdtf" qualifier="inferred">2000</mods:dateOther>
+    <mods:dateOther encoding="w3cdtf" qualifier="approximate">2009</mods:dateOther>
   </mods:originInfo>
   <mods:physicalDescription>
     <mods:extent>viii, 208 p.</mods:extent>
@@ -128,6 +130,7 @@ SAMPLE_MODS = u'''
   <mods:relatedItem type="host">
         <mods:identifier type="type"></mods:identifier>
         <mods:identifier>test_id</mods:identifier>
+        <mods:dateCreated encoding="w3cdtf" keyDate="yes">1908-04-03</mods:dateCreated>
         <mods:identifier type="type">1234567890123456</mods:identifier>
         <mods:part>
             <mods:detail type="divid">
@@ -240,9 +243,15 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['copyrightDate'], '2008-01-01T00:00:00Z')
         self.assertEqual(index_data['copyrightDate_year_ssim'], ['2008'])
         self.assertEqual(index_data['dateCreated'], '2008-02-03T00:00:00Z')
-        self.assertEqual(sorted(index_data['dateCreated_year_ssim']), ['2008'])
+        self.assertTrue('dateIssued' not in index_data)
+        self.assertEqual(index_data['dateCreated_year_ssim'], ['2008'])
+        self.assertEqual(index_data['dateCreated_ssim'], ['2018-01'])
+        self.assertEqual(index_data['mods_dateCreated_questionable_ssim'], ['2018-01'])
+        self.assertEqual(index_data['mods_dateOther_approximate_ssim'], ['2009'])
+        self.assertEqual(index_data['mods_dateOther_inferred_ssim'], ['2000'])
+        self.assertEqual(index_data['mods_dateIssued_end_ssim'], ['2008-04-25'])
         self.assertEqual(index_data['dateModified'], '2008-05-06T00:00:00Z')
-        self.assertEqual(index_data['dateModified_year_ssim'], ['2008', '2008'])
+        self.assertEqual(index_data['dateModified_year_ssim'], ['2008'])
         self.assertEqual(index_data['dateModified_ssim'], ['2008-06-07-2009-01-02', 'invalid date', '2008-06-07'])
         self.assertEqual(index_data['genre'], [u'aat theses', u'bdr theses', u'local theses'])
         self.assertEqual(index_data['identifier'], [u'Test type id', u'label id'])

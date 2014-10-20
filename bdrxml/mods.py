@@ -365,36 +365,38 @@ class ModsIndexer(object):
     def _process_date(self, data, date_name):
         #dates - actual date fields are single value, but we put other dates into a multi-value string fields
         try:
-            #for now, we'll ignore dates marked as questionable and end dates
-            date_xpath = 'mods:originInfo/mods:%s[not(@qualifier="questionable") and (not(@point) or @point!="end" or @keyDate="yes")]' % date_name
+            date_xpath = 'mods:originInfo/mods:%s' % date_name
             dates_els = self.mods.node.xpath(date_xpath, namespaces=self.mods.ROOT_NAMESPACES)
-            if dates_els:
-                for date in dates_els:
-                    #make sure it's not an empty date element
-                    if date.text:
-                        #see if we can get a valid date value to put in solr
-                        solr_date = self._get_solr_date(date.text.strip())
-                        #for all valid dates, add the year to the year field (eg. dateCreated_year_ssim)
-                        if solr_date:
-                            data = self._add_or_extend(data, '%s_year_ssim' % date_name, [solr_date[:4]])
-                        if date_name not in data:
-                            #add solr_date to data if it's a valid date not in data yet
-                            if solr_date:
-                                data[date_name] = solr_date
-                            #if it's not a valid date, throw it in the catch-all field (eg. dateCreated_ssim)
-                            else:
-                                data = self._add_or_extend(data, '%s_ssim' % date_name, [date.text])
-                        #if this is not the first date of this type, just throw it in the catch-all field
-                        else:
-                            #handle remaining dates
-                            data = self._add_or_extend(data, '%s_ssim' % date_name, [date.text])
-                        #some special facets handling for dateOther
-                        if date_name == 'dateOther':
-                            type = date.get('type')
-                            if type == 'quarterSort':
-                                data = self._add_or_extend(data, 'mods_dateOther_quarter_facet', [date.text])
-                            elif type == 'yearSort':
-                                data = self._add_or_extend(data, 'mods_dateOther_year_facet', [date.text])
+            for date in [d for d in dates_els if d.text]:
+                #see if we can get a valid date value to put in solr date field
+                solr_date = self._get_solr_date(date.text.strip())
+                qualifier = date.get('qualifier')
+                point = date.get('point')
+                key_date = date.get('keyDate')
+                #these are the main valid dates (ignore questionable and end dates here)
+                if solr_date and (date_name not in data) and (qualifier != 'questionable') and (point != 'end' or key_date == 'yes'):
+                    #for all valid dates, add the year to the year field (eg. dateCreated_year_ssim)
+                    data = self._add_or_extend(data, '%s_year_ssim' % date_name, [solr_date[:4]])
+                    data[date_name] = solr_date
+                #any other dates get put in generic field (eg. dateCreated_ssim)
+                else:
+                    data = self._add_or_extend(data, '%s_ssim' % date_name, [date.text])
+                #some special facets handling for dateOther
+                if date_name == 'dateOther':
+                    type = date.get('type')
+                    if type == 'quarterSort':
+                        data = self._add_or_extend(data, 'mods_dateOther_quarter_facet', [date.text])
+                    elif type == 'yearSort':
+                        data = self._add_or_extend(data, 'mods_dateOther_year_facet', [date.text])
+                #index dates with qualifiers or end dates in special fields
+                if point == 'end':
+                    data = self._add_or_extend(data, 'mods_%s_end_ssim' % date_name, [date.text])
+                if qualifier == 'approximate':
+                    data = self._add_or_extend(data, 'mods_%s_approximate_ssim' % date_name, [date.text])
+                elif qualifier == 'inferred':
+                    data = self._add_or_extend(data, 'mods_%s_inferred_ssim' % date_name, [date.text])
+                elif qualifier == 'questionable':
+                    data = self._add_or_extend(data, 'mods_%s_questionable_ssim' % date_name, [date.text])
         except Exception as e:
             raise Exception(u'%s: %s' % (date_name, repr(e)))
         return data
