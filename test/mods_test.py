@@ -6,7 +6,8 @@ from bdrxml import mods
 SAMPLE_MODS = u'''
 <mods:mods xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="id101" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
   <mods:titleInfo>
-    <mods:title>Poétry</mods:title>
+    <mods:title>Poétry
+    Title</mods:title>
   </mods:titleInfo>
   <mods:titleInfo>
     <mods:title>Other title</mods:title>
@@ -155,7 +156,7 @@ class ModsReadWrite(unittest.TestCase):
     def test_load_sample_mods(self):
         loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
         self.assertEqual(loaded.id, 'id101')
-        self.assertEqual(loaded.title, u'Poétry')
+        self.assertEqual(loaded.title, u'Poétry\n    Title')
         self.assertEqual(loaded.title_info[1].title, 'Other title')
         self.assertEqual(loaded.title_info[2].title, 'alternative title')
         self.assertEqual(loaded.title_info[2].type, 'alternative')
@@ -282,7 +283,7 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['name'], [u'Smith, Tom', u'Baker, Jim', u'Wilson, Jane', u'Brown University. English', u'Providence, RI'])
         self.assertEqual(index_data['note'], [u'Thésis (Ph.D.)', u'discarded: random type note', u'Short: Without ending', u'Display @#$label? display label note'])
         self.assertEqual(index_data['other_title'], [u'Other title'])
-        self.assertEqual(index_data['primary_title'], u'Poétry')
+        self.assertEqual(index_data['primary_title'], u'Poétry Title')
         self.assertEqual(index_data['keyword'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Ted', u'Stevens', u'Merrill', u'Eliot', u"label missing colon: post modernism", u'label: 1960s'])
         self.assertEqual(index_data['mods_subject_ssim'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Ted', u'Stevens', u'Merrill', u'Eliot', u"label missing colon: post modernism", u'label: 1960s'])
         self.assertEqual(index_data['mods_subject_display_label_ssim'], [u'modernism', u'Yeats'])
