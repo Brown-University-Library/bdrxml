@@ -83,6 +83,16 @@ class Subject(Subject):
     temporal_list = NodeListField('mods:temporal', Temporal)
 
 
+class RecordIdentifier(Common):
+    ROOT_NAME = 'recordIdentifier'
+    source = SF('@source')
+    text = SF('text()')
+
+
+class BdrRecordInfo(RecordInfo):
+    record_identifier_list = NodeListField('mods:recordIdentifier', RecordIdentifier)
+
+
 class Mods(MODSv34):
     """Map mods fields - just where we override MODSv34
     Fields documented at:
@@ -102,6 +112,7 @@ class Mods(MODSv34):
     subjects = NodeListField('mods:subject', Subject)
     physical_description = NodeField('mods:physicalDescription', PhysicalDescription)
     locations = NodeListField('mods:location', Location)
+    record_info_list = NodeListField('mods:recordInfo', BdrRecordInfo)
 
 
 class ModsIndexer(object):
@@ -149,7 +160,6 @@ class ModsIndexer(object):
             ('mods:identifier[@type="doi"]', 'mods_id_doi_ssi', 's'),
             ('mods:identifier[@type="METSID"]', 'mets_id', 's'),
             ('mods:identifier[@type="METSID"]', 'mods_id_mets_ssi', 's'),
-            ('mods:recordInfo/mods:recordIdentifier', 'mods_record_info_record_identifier_ssim', 'm'),
             ('mods:relatedItem[@type="host" and starts-with(@displayLabel,"Collection")]/mods:identifier[@type = "COLID"]', 'mods_collection_id', 'm')]
         data = {}
         for mapper in mapping_info:
@@ -232,6 +242,16 @@ class ModsIndexer(object):
         #mods_id
         if self.mods.id:
             data['mods_id'] = self.mods.id
+        #record info
+        for record_info in self.mods.record_info_list:
+            for record_id in record_info.record_identifier_list:
+                #add all record_identifiers
+                field_name = 'mods_record_info_record_identifier_ssim'
+                data = self._add_or_extend(data, field_name, [record_id.text])
+                #add a field with the source specified as well, if present
+                if record_id.source:
+                    field_name = 'mods_record_info_record_identifier_%s_ssim' % self._slugify(record_id.source)
+                    data = self._add_or_extend(data, field_name, [record_id.text])
         #related items - easier to handle with xpath for now
         related_item_els = self.mods.node.xpath('mods:relatedItem', namespaces=self.mods.ROOT_NAMESPACES)
         for related_item in related_item_els:
