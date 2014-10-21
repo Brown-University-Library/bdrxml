@@ -117,8 +117,18 @@ class Mods(MODSv34):
 
 class ModsIndexer(object):
 
+    DATE_NAMES = ['dateCreated', 'dateIssued', 'dateCaptured', 'dateValid', 'dateModified', 'copyrightDate', 'dateOther']
+    DATE_QUALIFIERS = ['approximate', 'inferred', 'questionable']
+
     def __init__(self, mods_obj):
         self.mods = mods_obj
+
+    def has_invalid_date(self):
+        for d in ModsIndexer.DATE_NAMES:
+            for date in self._get_dates(d):
+                if not self._get_solr_date(date.text.strip()):
+                    return True
+        return False
 
     def index_data(self):
         '''Generate dict of field:data pairs for sending to solr'''
@@ -171,13 +181,8 @@ class ModsIndexer(object):
                     if element_list[0].text:
                         data[mapper[1]] = element_list[0].text
         #handle dates
-        data = self._process_date(data, 'dateCreated')
-        data = self._process_date(data, 'dateIssued')
-        data = self._process_date(data, 'dateCaptured')
-        data = self._process_date(data, 'dateValid')
-        data = self._process_date(data, 'dateModified')
-        data = self._process_date(data, 'copyrightDate')
-        data = self._process_date(data, 'dateOther')
+        for d in ModsIndexer.DATE_NAMES:
+            data = self._process_date(data, d)
         #handle titles
         primary_titles = [title_info for title_info in self.mods.title_info_list if title_info.type != 'alternative']
         if primary_titles:
@@ -365,12 +370,17 @@ class ModsIndexer(object):
             date = None
         return date
 
+    def _get_dates(self, date_name):
+        #get all the dates, excluding any empty dates
+        date_xpath = 'mods:originInfo/mods:%s' % date_name
+        dates_els = self.mods.node.xpath(date_xpath, namespaces=self.mods.ROOT_NAMESPACES)
+        return [d for d in dates_els if d.text]
+
+
     def _process_date(self, data, date_name):
         #dates - actual date fields are single value, but we put other dates into a multi-value string fields
         try:
-            date_xpath = 'mods:originInfo/mods:%s' % date_name
-            dates_els = self.mods.node.xpath(date_xpath, namespaces=self.mods.ROOT_NAMESPACES)
-            for date in [d for d in dates_els if d.text]:
+            for date in self._get_dates(date_name):
                 #see if we can get a valid date value to put in solr date field
                 solr_date = self._get_solr_date(date.text.strip())
                 qualifier = date.get('qualifier')
@@ -394,8 +404,7 @@ class ModsIndexer(object):
                 #index dates with qualifiers or end dates in special fields
                 if point == 'end':
                     data = self._add_or_extend(data, 'mods_%s_end_ssim' % date_name, [date.text])
-                DATE_QUALIFIERS = ['approximate', 'inferred', 'questionable']
-                if qualifier in DATE_QUALIFIERS:
+                if qualifier in ModsIndexer.DATE_QUALIFIERS:
                     data = self._add_or_extend(data, 'mods_%s_%s_ssim' % (date_name, qualifier), [date.text])
         except Exception as e:
             raise Exception(u'%s: %s' % (date_name, repr(e)))
