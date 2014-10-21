@@ -117,12 +117,14 @@ class Mods(MODSv34):
 
 class ModsIndexer(object):
 
+    DATE_NAMES = ['dateCreated', 'dateIssued', 'dateCaptured', 'dateValid', 'dateModified', 'copyrightDate', 'dateOther']
+    DATE_QUALIFIERS = ['approximate', 'inferred', 'questionable']
+
     def __init__(self, mods_obj):
         self.mods = mods_obj
-        self.date_names = ['dateCreated', 'dateIssued', 'dateCaptured', 'dateValid', 'dateModified', 'copyrightDate', 'dateOther']
 
     def has_invalid_date(self):
-        for d in self.date_names:
+        for d in ModsIndexer.DATE_NAMES:
             for date in self._get_dates(d):
                 if not self._get_solr_date(date.text.strip()):
                     return True
@@ -179,7 +181,7 @@ class ModsIndexer(object):
                     if element_list[0].text:
                         data[mapper[1]] = element_list[0].text
         #handle dates
-        for d in self.date_names:
+        for d in ModsIndexer.DATE_NAMES:
             data = self._process_date(data, d)
         #handle titles
         primary_titles = [title_info for title_info in self.mods.title_info_list if title_info.type != 'alternative']
@@ -402,8 +404,7 @@ class ModsIndexer(object):
                 #index dates with qualifiers or end dates in special fields
                 if point == 'end':
                     data = self._add_or_extend(data, 'mods_%s_end_ssim' % date_name, [date.text])
-                DATE_QUALIFIERS = ['approximate', 'inferred', 'questionable']
-                if qualifier in DATE_QUALIFIERS:
+                if qualifier in ModsIndexer.DATE_QUALIFIERS:
                     data = self._add_or_extend(data, 'mods_%s_%s_ssim' % (date_name, qualifier), [date.text])
         except Exception as e:
             raise Exception(u'%s: %s' % (date_name, repr(e)))
