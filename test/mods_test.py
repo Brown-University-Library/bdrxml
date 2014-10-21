@@ -239,7 +239,6 @@ class ModsReadWrite(unittest.TestCase):
     def test_index_data(self):
         loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
         indexer = mods.ModsIndexer(loaded)
-        self.assertRaises(Exception, indexer.has_invalid_date)
         index_data = indexer.index_data()
         self.assertEqual(index_data['abstract'], [u'Poétry description...'])
         self.assertEqual(index_data['contributor_display'], ['Smith, Tom, 1803 or 4-1860 (creator)', 'Baker, Jim, 1718-1762 (director)', 'Wilson, Jane', 'Brown University. English (sponsor)', 'Providence, RI (distribution place)'])
@@ -294,6 +293,10 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['mods_subject_local_ssim'], [u'Ted', u'Stevens', u'Eliot', u'label: 1960s'])
         self.assertEqual(index_data['mods_record_info_record_identifier_ssim'], [u'a1234567'])
         self.assertEqual(index_data['mods_record_info_record_identifier_rpb_ssim'], [u'a1234567'])
+
+    def test_invalid_date(self):
+        loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
+        indexer = mods.ModsIndexer(loaded)
         self.assertTrue(indexer.has_invalid_date())
 
     def test_index_title_parts(self):
@@ -315,6 +318,10 @@ class ModsReadWrite(unittest.TestCase):
         indexer = mods.ModsIndexer(loaded)
         index_data = indexer.index_data()
         self.assertEqual(index_data['primary_title'], u'Poétry')
+
+    def test_basic_invalid_date(self):
+        loaded = load_xmlobject_from_string(CREATE_MODS, mods.Mods)
+        indexer = mods.ModsIndexer(loaded)
         self.assertFalse(indexer.has_invalid_date())
 
 

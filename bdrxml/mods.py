@@ -119,20 +119,18 @@ class ModsIndexer(object):
 
     def __init__(self, mods_obj):
         self.mods = mods_obj
-        self._has_invalid_date = None
+        self.date_names = ['dateCreated', 'dateIssued', 'dateCaptured', 'dateValid', 'dateModified', 'copyrightDate', 'dateOther']
 
     def has_invalid_date(self):
-        if self._has_invalid_date is None:
-            raise Exception('index_data() hasn\'t been called yet')
-        elif self._has_invalid_date:
-            return True
-        else:
-            return False
+        for d in self.date_names:
+            for date in self._get_dates(d):
+                if not self._get_solr_date(date.text.strip()):
+                    return True
+        return False
 
     def index_data(self):
         '''Generate dict of field:data pairs for sending to solr'''
         #(xpath to data we're looking for, solr field name, single or multi-valued)
-        self._has_invalid_date = False
         mapping_info = [
             ('mods:physicalDescription/mods:extent', 'mods_physicalDescription_extent_ssim', 'm'),
             ('mods:physicalDescription/mods:digitalOrigin', 'mods_physicalDescription_digitalOrigin_ssim', 'm'),
@@ -181,13 +179,8 @@ class ModsIndexer(object):
                     if element_list[0].text:
                         data[mapper[1]] = element_list[0].text
         #handle dates
-        data = self._process_date(data, 'dateCreated')
-        data = self._process_date(data, 'dateIssued')
-        data = self._process_date(data, 'dateCaptured')
-        data = self._process_date(data, 'dateValid')
-        data = self._process_date(data, 'dateModified')
-        data = self._process_date(data, 'copyrightDate')
-        data = self._process_date(data, 'dateOther')
+        for d in self.date_names:
+            data = self._process_date(data, d)
         #handle titles
         primary_titles = [title_info for title_info in self.mods.title_info_list if title_info.type != 'alternative']
         if primary_titles:
@@ -373,15 +366,19 @@ class ModsIndexer(object):
             date = date + '-01-01T00:00:00Z'
         else:
             date = None
-            self._has_invalid_date = True
         return date
+
+    def _get_dates(self, date_name):
+        #get all the dates, excluding any empty dates
+        date_xpath = 'mods:originInfo/mods:%s' % date_name
+        dates_els = self.mods.node.xpath(date_xpath, namespaces=self.mods.ROOT_NAMESPACES)
+        return [d for d in dates_els if d.text]
+
 
     def _process_date(self, data, date_name):
         #dates - actual date fields are single value, but we put other dates into a multi-value string fields
         try:
-            date_xpath = 'mods:originInfo/mods:%s' % date_name
-            dates_els = self.mods.node.xpath(date_xpath, namespaces=self.mods.ROOT_NAMESPACES)
-            for date in [d for d in dates_els if d.text]:
+            for date in self._get_dates(date_name):
                 #see if we can get a valid date value to put in solr date field
                 solr_date = self._get_solr_date(date.text.strip())
                 qualifier = date.get('qualifier')
