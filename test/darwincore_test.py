@@ -93,6 +93,11 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
     def test_output(self):
         self.assertEqual(self.dwc.serializeDocument(pretty=True), SIMPLE_DARWIN_SET_XML)
 
+class SimpleDarwinRecordSetIndexerTest(unittest.TestCase):
+
+    def setUp(self):
+        self.dwc = load_xmlobject_from_string(SIMPLE_DARWIN_SET_XML, darwincore.SimpleDarwinRecordSet)
+
     def test_indexing(self):
         index_data = darwincore.SimpleDarwinRecordIndexer(self.dwc.simple_darwin_record).index_data()
         self.assertEqual(index_data['dwc_recorded_by_ssi'], u'recorded by')
@@ -101,14 +106,51 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
         self.assertEqual(index_data['dwc_identification_id_ssi'], u'én12345')
         self.assertEqual(index_data['dwc_infraspecific_epithet_ssi'], u'sociabilis sub')
         self.assertEqual(index_data['dwc_taxon_rank_ssi'], u'subspecies')
+        self.assertEqual(index_data['dwc_constructed_name_ssi'], u'Cténomys sociabilis sub')
         self.assertTrue('dwc_family_ssi' not in index_data)
+
+    def test_sparse_record(self):
+        dwc = load_xmlobject_from_string(CREATED_SIMPLE_DARWIN_SET_XML, darwincore.SimpleDarwinRecordSet)
+        index_data = darwincore.SimpleDarwinRecordIndexer(dwc.simple_darwin_record).index_data()
+        self.assertEqual(index_data, {'dwc_catalog_number_ssi': u'catalog number'})
+
+    def test_infraspecific_section(self):
+        dwc = darwincore.make_simple_darwin_record_set()
+        dwc.create_simple_darwin_record()
+        dwc.simple_darwin_record.infraspecific_epithet = 'infra'
+        indexer = darwincore.SimpleDarwinRecordIndexer(dwc.simple_darwin_record)
+        self.assertEqual(indexer._get_infraspecific_section(), u'infra')
+        dwc.simple_darwin_record.taxon_rank = 'variety'
+        self.assertEqual(indexer._get_infraspecific_section(), u'var. infra')
+
+    def test_specific_section(self):
+        dwc = darwincore.make_simple_darwin_record_set()
+        dwc.create_simple_darwin_record()
+        dwc.simple_darwin_record.specific_epithet = 'species'
+        indexer = darwincore.SimpleDarwinRecordIndexer(dwc.simple_darwin_record)
+        self.assertEqual(indexer._get_specific_section(), 'species')
+        dwc.simple_darwin_record.infraspecific_epithet = 'subspecies'
+        self.assertEqual(indexer._get_specific_section(), 'subspecies')
+
+    def test_constructed_name(self):
+        dwc = darwincore.make_simple_darwin_record_set()
+        dwc.create_simple_darwin_record()
+        dwc.simple_darwin_record.specific_epithet = 'species'
+        indexer = darwincore.SimpleDarwinRecordIndexer(dwc.simple_darwin_record)
+        self.assertEqual(indexer._get_constructed_name(), u'species')
+        dwc.simple_darwin_record.genus = 'genus'
+        self.assertEqual(indexer._get_constructed_name(), u'genus species')
 
 
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(SimpleDarwinRecordSetTest('test_root'))
     suite.addTest(SimpleDarwinRecordSetTest('test_output'))
-    suite.addTest(SimpleDarwinRecordSetTest('test_indexing'))
+    suite.addTest(SimpleDarwinRecordSetIndexerTest('test_indexing'))
+    suite.addTest(SimpleDarwinRecordSetIndexerTest('test_sparse_record'))
+    suite.addTest(SimpleDarwinRecordSetIndexerTest('test_infraspecific_section'))
+    suite.addTest(SimpleDarwinRecordSetIndexerTest('test_specific_section'))
+    suite.addTest(SimpleDarwinRecordSetIndexerTest('test_constructed_name'))
     suite.addTest(SimpleDarwinRecordSetTestLoad('test_1'))
     return suite
 
