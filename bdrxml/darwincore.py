@@ -65,23 +65,9 @@ class SimpleDarwinRecordIndexer(object):
     def __init__(self, dwc):
         self.dwc = dwc
 
-    def _get_infraspecific_section(self):
-        if self.dwc.taxon_rank and self.dwc.taxon_rank == 'variety':
-            return u'var. %s' % self.dwc.infraspecific_epithet
-        else:
-            return self.dwc.infraspecific_epithet
-
-    def _get_specific_section(self):
-        if self.dwc.infraspecific_epithet:
-            return self._get_infraspecific_section()
-        else:
-            return self.dwc.specific_epithet
-
-    def _get_constructed_name(self):
-        if self.dwc.genus:
-            return u'%s %s' % (self.dwc.genus, self._get_specific_section())
-        else:
-            return self._get_specific_section()
+    def _get_taxon_rank_abbr(self):
+        mapping = {'variety': 'var.', 'subspecies': 'subsp.'}
+        return mapping.get(self.dwc.taxon_rank, '')
 
     def index_data(self):
         fields = ['catalog_number', 'recorded_by', 'individual_id', 'event_date', 'verbatim_event_date',
@@ -96,9 +82,9 @@ class SimpleDarwinRecordIndexer(object):
                 else:
                     field_name = u'dwc_%s_ssi' % field
                 data[field_name] =  u'%s' % getattr(self.dwc, field)
-        constructed_name = self._get_constructed_name()
-        if constructed_name:
-            data['dwc_constructed_name_ssi'] = constructed_name
+        taxon_rank_abbr = self._get_taxon_rank_abbr()
+        if taxon_rank_abbr:
+            data['dwc_taxon_rank_abbr_ssi'] = taxon_rank_abbr
         return data
 
 
