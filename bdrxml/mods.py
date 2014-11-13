@@ -89,6 +89,12 @@ class RecordIdentifier(Common):
     text = SF('text()')
 
 
+class TargetAudience(Common):
+    ROOT_NAME = 'targetAudience'
+    authority = SF('@authority')
+    text = SF('text()')
+
+
 class BdrRecordInfo(RecordInfo):
     record_identifier_list = NodeListField('mods:recordIdentifier', RecordIdentifier)
 
@@ -112,6 +118,7 @@ class Mods(MODSv34):
     subjects = NodeListField('mods:subject', Subject)
     physical_description = NodeField('mods:physicalDescription', PhysicalDescription)
     locations = NodeListField('mods:location', Location)
+    target_audiences = NodeListField('mods:targetAudience', TargetAudience)
     record_info_list = NodeListField('mods:recordInfo', BdrRecordInfo)
 
 
