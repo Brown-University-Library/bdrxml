@@ -30,6 +30,7 @@ SAMPLE_MODS = u'''
       <mods:roleTerm type="text">creator</mods:roleTerm>
     </mods:role>
   </mods:name>
+  <mods:targetAudience authority="local">Target Audience</mods:targetAudience>
   <mods:originInfo displayLabel="date added">
     <mods:place><mods:placeTerm>USA</mods:placeTerm></mods:place>
     <mods:dateCreated encoding="w3cdtf" qualifier="questionable">2018-01</mods:dateCreated>
@@ -177,6 +178,8 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(loaded.resource_type, 'text')
         self.assertEqual(loaded.genres[1].text, 'aat theses')
         self.assertEqual(loaded.notes[0].text, u'Thésis (Ph.D.)')
+        self.assertEqual(loaded.target_audiences[0].text, u'Target Audience')
+        self.assertEqual(loaded.target_audiences[0].authority, u'local')
         self.assertEqual(loaded.physical_description.extent, u'viii, 208 p.')
         self.assertEqual(loaded.physical_description.digital_origin, u'born digital')
         self.assertEqual(loaded.physical_description.note, u'note 1')
