@@ -19,6 +19,7 @@ SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
     <dwc:catalogNumber>catalog number</dwc:catalogNumber>
     <dwc:basisOfRecord>Taxon</dwc:basisOfRecord>
     <dwc:recordedBy>recorded by</dwc:recordedBy>
+    <dwc:recordNumber>2</dwc:recordNumber>
     <dwc:individualID>individual id</dwc:individualID>
     <dwc:scientificName>Ctenomys sociabilis</dwc:scientificName>
     <dwc:acceptedNameUsage>Ctenomys sociabilis Pearson and Christie, 1985</dwc:acceptedNameUsage>
@@ -76,6 +77,7 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
         self.assertEqual(self.dwc.simple_darwin_record.basis_of_record, u'Taxon')
         self.assertEqual(self.dwc.simple_darwin_record.catalog_number, u'catalog number')
         self.assertEqual(self.dwc.simple_darwin_record.recorded_by, u'recorded by')
+        self.assertEqual(self.dwc.simple_darwin_record.record_number, u'2')
         self.assertEqual(self.dwc.simple_darwin_record.individual_id, u'individual id')
         self.assertEqual(self.dwc.simple_darwin_record.scientific_name, u'Ctenomys sociabilis')
         self.assertEqual(self.dwc.simple_darwin_record.higher_classification, u'Animalia; Chordata; Vertebrata; Mammalia; Theria; Eutheria; Rodentia; Hystricognatha; Hystricognathi; Ctenomyidae; Ctenomyini; Ctenomys')
@@ -101,6 +103,7 @@ class SimpleDarwinRecordSetIndexerTest(unittest.TestCase):
     def test_indexing(self):
         index_data = darwincore.SimpleDarwinRecordIndexer(self.dwc.simple_darwin_record).index_data()
         self.assertEqual(index_data['dwc_recorded_by_ssi'], u'recorded by')
+        self.assertEqual(index_data['dwc_record_number_ssi'], u'2')
         self.assertEqual(index_data['dwc_class_ssi'], u'Mammalia')
         self.assertEqual(index_data['dwc_genus_ssi'], u'Cténomys')
         self.assertEqual(index_data['dwc_identification_id_ssi'], u'én12345')

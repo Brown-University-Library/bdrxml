@@ -24,6 +24,7 @@ class SimpleDarwinRecord(xmlmap.XmlObject):
     basis_of_record = xmlmap.StringField('dwc:basisOfRecord')
     catalog_number = xmlmap.StringField('dwc:catalogNumber')
     recorded_by = xmlmap.StringField('dwc:recordedBy')
+    record_number = xmlmap.StringField('dwc:recordNumber')
     individual_id = xmlmap.StringField('dwc:individualID')
     event_date = xmlmap.StringField('dwc:eventDate')
     verbatim_event_date = xmlmap.StringField('dwc:verbatimEventDate')
@@ -70,7 +71,7 @@ class SimpleDarwinRecordIndexer(object):
         return mapping.get(self.dwc.taxon_rank, '')
 
     def index_data(self):
-        fields = ['catalog_number', 'recorded_by', 'individual_id', 'event_date', 'verbatim_event_date',
+        fields = ['catalog_number', 'recorded_by', 'record_number', 'individual_id', 'event_date', 'verbatim_event_date',
                 'scientific_name', 'higher_classification', 'kingdom', 'phylum', 'class_', 'order',
                 'family', 'genus', 'specific_epithet', 'infraspecific_epithet', 'taxon_rank', 'accepted_name_usage',
                 'scientific_name_authorship', 'county', 'state_province', 'country', 'habitat', 'identification_id']
