@@ -139,6 +139,9 @@ SAMPLE_MODS = u'''
                 <mods:number>div01</mods:number>
             </mods:detail>
         </mods:part>
+        <mods:name type="personal">
+            <mods:namePart>Shakespeare, William</mods:namePart>
+        </mods:name>
     </mods:relatedItem>
 </mods:mods>
 '''
@@ -277,18 +280,13 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(sorted(index_data['mods_role_ssim']), [u'creator', u'director', u'distribution place', u'sponsor'])
         self.assertEqual(index_data['mods_related_id_ssim'], ['test_id'])
         self.assertEqual(index_data['mods_related_id_type_ssim'], ['1234567890123456'])
+        self.assertEqual(index_data['mods_related_name_ssim'], ['Shakespeare, William'])
         self.assertEqual(index_data['mods_role_creator_ssim'], [u'Smith, Tom'])
         self.assertEqual(index_data['mods_role_director_ssim'], [u'Baker, Jim'])
         self.assertEqual(index_data['mods_role_sponsor_ssim'], [u'Brown University. English'])
         self.assertEqual(index_data['mods_note_random_type_ssim'], [u'random type note'])
         self.assertEqual(index_data['mods_note_discarded_ssim'], [u'random type note'])
         self.assertEqual(index_data['mods_note_display_label_ssim'], [u'display label note'])
-        self.assertEqual(index_data['mods_title_alt'], [u'alternative title'])
-        self.assertEqual(index_data['name'], [u'Smith, Tom', u'Baker, Jim', u'Wilson, Jane', u'Brown University. English', u'Providence, RI'])
-        self.assertEqual(index_data['note'], [u'Thésis (Ph.D.)', u'discarded: random type note', u'Short: Without ending', u'Display @#$label? display label note'])
-        self.assertEqual(index_data['other_title'], [u'Other title'])
-        self.assertEqual(index_data['primary_title'], u'Poétry Title')
-        self.assertEqual(index_data['keyword'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Ted', u'Stevens', u'Merrill', u'Eliot', u"label missing colon: post modernism", u'label: 1960s'])
         self.assertEqual(index_data['mods_subject_ssim'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Ted', u'Stevens', u'Merrill', u'Eliot', u"label missing colon: post modernism", u'label: 1960s'])
         self.assertEqual(index_data['mods_subject_display_label_ssim'], [u'modernism', u'Yeats'])
         self.assertEqual(index_data['mods_subject_label_ssim'], [u'1960s'])
@@ -296,6 +294,12 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['mods_subject_local_ssim'], [u'Ted', u'Stevens', u'Eliot', u'label: 1960s'])
         self.assertEqual(index_data['mods_record_info_record_identifier_ssim'], [u'a1234567'])
         self.assertEqual(index_data['mods_record_info_record_identifier_rpb_ssim'], [u'a1234567'])
+        self.assertEqual(index_data['mods_title_alt'], [u'alternative title'])
+        self.assertEqual(index_data['name'], [u'Smith, Tom', u'Baker, Jim', u'Wilson, Jane', u'Brown University. English', u'Providence, RI'])
+        self.assertEqual(index_data['note'], [u'Thésis (Ph.D.)', u'discarded: random type note', u'Short: Without ending', u'Display @#$label? display label note'])
+        self.assertEqual(index_data['other_title'], [u'Other title'])
+        self.assertEqual(index_data['primary_title'], u'Poétry Title')
+        self.assertEqual(index_data['keyword'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Ted', u'Stevens', u'Merrill', u'Eliot', u"label missing colon: post modernism", u'label: 1960s'])
 
     def test_invalid_date(self):
         loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)

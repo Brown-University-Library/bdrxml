@@ -291,6 +291,11 @@ class ModsIndexer(object):
                         data = self._add_or_extend(data, 'mods_related_id_%s_ssim' % self._slugify(type), [identifier.text])
                     else:
                         data = self._add_or_extend(data, 'mods_related_id_ssim', [identifier.text])
+            name_els = related_item.xpath('mods:name', namespaces=self.mods.ROOT_NAMESPACES)
+            for name in name_els:
+                name_parts = name.xpath('mods:namePart', namespaces=self.mods.ROOT_NAMESPACES)
+                for np in name_parts:
+                    data = self._add_or_extend(data, 'mods_related_name_ssim', [np.text])
         #access conditions
         access_condition_els = self.mods.node.xpath('mods:accessCondition', namespaces=self.mods.ROOT_NAMESPACES)
         if access_condition_els:
