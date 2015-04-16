@@ -30,9 +30,16 @@ class Collection(RelatedItem):
     id = SF('mods:identifier[@type="COLID"]')
 
 
+class PhysicalDescriptionForm(Common):
+    ROOT_NAME = 'form'
+    authority = SF('@authority')
+    type = SF('@type')
+    text = SF('text()')
+
 class PhysicalDescription(PhysicalDescription):
     digital_origin = SF('mods:digitalOrigin')
     note = SF('mods:note')
+    forms = NodeListField('mods:form', PhysicalDescriptionForm)
 
 
 class CopyInformation(Common):
@@ -190,6 +197,14 @@ class ModsIndexer(object):
         #handle dates
         for d in ModsIndexer.DATE_NAMES:
             data = self._process_date(data, d)
+        #handle physicalDescription
+        if self.mods.physical_description:
+            for form in self.mods.physical_description.forms:
+                if form.text:
+                    if form.type:
+                        data = self._add_or_extend(data, 'mods_physicalDescription_form_%s_ssim' % self._slugify(form.type), [form.text])
+                    else:
+                        data = self._add_or_extend(data, 'mods_physicalDescription_form_ssim', [form.text])
         #handle titles
         primary_titles = [title_info for title_info in self.mods.title_info_list if title_info.type != 'alternative']
         if primary_titles:

@@ -49,6 +49,7 @@ SAMPLE_MODS = u'''
     <mods:extent>viii, 208 p.</mods:extent>
     <mods:digitalOrigin>born digital</mods:digitalOrigin>
     <mods:note>note 1</mods:note>
+    <mods:form type="material">oil</mods:form>
   </mods:physicalDescription>
   <mods:note>Thésis (Ph.D.)</mods:note>
   <mods:note type="@#$%random Typé" displayLabel="discarded:">random type note</mods:note>
@@ -275,6 +276,7 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['mods_id_label_ssim'], ['label id'])
         self.assertEqual(index_data['mods_physicalDescription_extent_ssim'], [u'viii, 208 p.'])
         self.assertEqual(index_data['mods_physicalDescription_digitalOrigin_ssim'], [u'born digital'])
+        self.assertEqual(index_data['mods_physicalDescription_form_material_ssim'], [u'oil'])
         self.assertEqual(index_data['mods_name_place_ssim'], [u'Providence, RI'])
         self.assertEqual(sorted(index_data['mods_name_nonplace_ssim']), [u'Baker, Jim', u'Brown University. English', u'Smith, Tom', u'Wilson, Jane'])
         self.assertEqual(sorted(index_data['mods_role_ssim']), [u'creator', u'director', u'distribution place', u'sponsor'])
