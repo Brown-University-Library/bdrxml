@@ -27,7 +27,7 @@ SAMPLE_MODS = u'''
     <mods:namePart>Smith, Tom</mods:namePart>
     <mods:namePart type="date">1803 or 4-1860</mods:namePart>
     <mods:role>
-      <mods:roleTerm type="text">creator</mods:roleTerm>
+      <mods:roleTerm type="text" authority="marcrelator" authorityURI="http://id.loc.gov/vocabulary/relators" valueURI="http://id.loc.gov/vocabulary/relators/cre">Creator</mods:roleTerm>
     </mods:role>
   </mods:name>
   <mods:targetAudience authority="local">Target Audience</mods:targetAudience>
@@ -178,6 +178,10 @@ class ModsReadWrite(unittest.TestCase):
         corporate_names = [unicode(name) for name in loaded.names if name.type == 'corporate']
         corporate_name_list = [u'Brown University. English', 'Providence, RI']
         self.assertEqual(corporate_names, corporate_name_list)
+        tom_smith = [name for name in loaded.names if name.name_parts[0].text == u'Smith, Tom'][0]
+        self.assertEqual(tom_smith.roles[0].authority, u'marcrelator')
+        self.assertEqual(tom_smith.roles[0].authority_uri, u'http://id.loc.gov/vocabulary/relators')
+        self.assertEqual(tom_smith.roles[0].value_uri, u'http://id.loc.gov/vocabulary/relators/cre')
 
         self.assertEqual(loaded.resource_type, 'text')
         self.assertEqual(loaded.genres[1].text, 'aat theses')
@@ -248,7 +252,7 @@ class ModsReadWrite(unittest.TestCase):
         indexer = mods.ModsIndexer(loaded)
         index_data = indexer.index_data()
         self.assertEqual(index_data['abstract'], [u'Poétry description...'])
-        self.assertEqual(index_data['contributor_display'], ['Smith, Tom, 1803 or 4-1860 (creator)', 'Baker, Jim, 1718-1762 (director)', 'Wilson, Jane', 'Brown University. English (sponsor)', 'Providence, RI (distribution place)'])
+        self.assertEqual(index_data['contributor_display'], ['Smith, Tom, 1803 or 4-1860 (Creator)', 'Baker, Jim, 1718-1762 (director)', 'Wilson, Jane', 'Brown University. English (sponsor)', 'Providence, RI (distribution place)'])
         self.assertEqual(index_data['copyrightDate'], '2008-01-01T00:00:00Z')
         self.assertEqual(index_data['copyrightDate_year_ssim'], ['2008'])
         self.assertEqual(index_data['dateCreated'], '2008-02-03T00:00:00Z')
@@ -279,7 +283,7 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['mods_physicalDescription_form_material_ssim'], [u'oil'])
         self.assertEqual(index_data['mods_name_place_ssim'], [u'Providence, RI'])
         self.assertEqual(sorted(index_data['mods_name_nonplace_ssim']), [u'Baker, Jim', u'Brown University. English', u'Smith, Tom', u'Wilson, Jane'])
-        self.assertEqual(sorted(index_data['mods_role_ssim']), [u'creator', u'director', u'distribution place', u'sponsor'])
+        self.assertEqual(sorted(index_data['mods_role_ssim']), [u'Creator', u'director', u'distribution place', u'sponsor'])
         self.assertEqual(index_data['mods_related_id_ssim'], ['test_id'])
         self.assertEqual(index_data['mods_related_id_type_ssim'], ['1234567890123456'])
         self.assertEqual(index_data['mods_related_name_ssim'], ['Shakespeare, William'])

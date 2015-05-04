@@ -106,6 +106,15 @@ class BdrRecordInfo(RecordInfo):
     record_identifier_list = NodeListField('mods:recordIdentifier', RecordIdentifier)
 
 
+class BdrRole(Role):
+    authority_uri = xmlmap.StringField('mods:roleTerm/@authorityURI')
+    value_uri = xmlmap.StringField('mods:roleTerm/@valueURI')
+
+
+class BdrName(Name):
+    roles = xmlmap.NodeListField('mods:role', BdrRole)
+
+
 class Mods(MODSv34):
     """Map mods fields - just where we override MODSv34
     Fields documented at:
@@ -127,6 +136,7 @@ class Mods(MODSv34):
     locations = NodeListField('mods:location', Location)
     target_audiences = NodeListField('mods:targetAudience', TargetAudience)
     record_info_list = NodeListField('mods:recordInfo', BdrRecordInfo)
+    names = xmlmap.NodeListField('mods:name', BdrName)
 
 
 class ModsIndexer(object):
