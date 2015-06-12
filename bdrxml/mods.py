@@ -96,6 +96,12 @@ class RecordIdentifier(Common):
     text = SF('text()')
 
 
+class Classification(Common):
+    ROOT_NAME = 'classification'
+    label = SF('@displayLabel')
+    text = SF('text()')
+
+
 class TargetAudience(Common):
     ROOT_NAME = 'targetAudience'
     authority = SF('@authority')
@@ -133,6 +139,7 @@ class Mods(MODSv34):
     #override eulxml subjects so we can add hierarchical_geographic to subject
     subjects = NodeListField('mods:subject', Subject)
     physical_description = NodeField('mods:physicalDescription', PhysicalDescription)
+    classifications = NodeListField('mods:classification', Classification)
     locations = NodeListField('mods:location', Location)
     target_audiences = NodeListField('mods:targetAudience', TargetAudience)
     record_info_list = NodeListField('mods:recordInfo', BdrRecordInfo)
@@ -276,6 +283,10 @@ class ModsIndexer(object):
                 if genre.authority:
                     genre_field_name = u'mods_genre_%s_ssim' % self._slugify(genre.authority)
                     data = self._add_or_extend(data, genre_field_name, [genre.text])
+        #Classifications
+        for classification in self.mods.classifications:
+            if classification.text:
+                data = self._add_or_extend(data, 'mods_classification_ssim', [classification.text])
         #mods_id
         if self.mods.id:
             data['mods_id'] = self.mods.id

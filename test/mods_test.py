@@ -121,6 +121,7 @@ SAMPLE_MODS = u'''
     <mods:recordCreationDate encoding="iso8601">20091218</mods:recordCreationDate>
     <mods:recordIdentifier source="RPB">a1234567</mods:recordIdentifier>
   </mods:recordInfo>
+  <mods:classification displayLabel="Test classification">Some classification</mods:classification>
   <mods:identifier type="METSID">12345678</mods:identifier>
   <mods:location>
     <mods:physicalLocation>Random location</mods:physicalLocation>
@@ -191,6 +192,8 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(loaded.physical_description.extent, u'viii, 208 p.')
         self.assertEqual(loaded.physical_description.digital_origin, u'born digital')
         self.assertEqual(loaded.physical_description.note, u'note 1')
+        self.assertEqual(loaded.classifications[0].text, u'Some classification')
+        self.assertEqual(loaded.classifications[0].label, u'Test classification')
         self.assertEqual(loaded.locations[0].physical, u'Random location')
         self.assertEqual(loaded.locations[0].holding_simple.copy_information[0].notes[0].text, u'location note')
 
@@ -259,6 +262,7 @@ class ModsReadWrite(unittest.TestCase):
         self.assertTrue('dateIssued' not in index_data)
         self.assertEqual(index_data['dateCreated_year_ssim'], ['2008'])
         self.assertEqual(index_data['dateCreated_ssim'], ['2018-01'])
+        self.assertEqual(index_data['mods_classification_ssim'], ['Some classification'])
         self.assertEqual(index_data['mods_dateCreated_questionable_ssim'], ['2018-01'])
         self.assertEqual(index_data['mods_dateOther_approximate_ssim'], ['2009'])
         self.assertEqual(index_data['mods_dateOther_inferred_ssim'], ['2000'])
