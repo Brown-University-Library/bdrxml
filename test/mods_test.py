@@ -23,7 +23,7 @@ SAMPLE_MODS = u'''
   <mods:name type="personal">
     <mods:namePart></mods:namePart>
   </mods:name>
-  <mods:name type="personal">
+  <mods:name type="personal" authority="fast" authorityURI="http://fast.com" valueURI="http://fast.com/1">
     <mods:namePart>Smith, Tom</mods:namePart>
     <mods:namePart type="date">1803 or 4-1860</mods:namePart>
     <mods:role>
@@ -82,6 +82,7 @@ SAMPLE_MODS = u'''
   <mods:genre authority="aat">aat theses</mods:genre>
   <mods:genre authority="bdr">bdr theses</mods:genre>
   <mods:genre authority="local">local theses</mods:genre>
+  <mods:genre authority="fast" authorityURI="http://fast.com" valueURI="http://fast.com/123">123</mods:genre>
   <mods:abstract>Poétry description...</mods:abstract>
   <mods:subject displayLabel="Display Labél!">
     <mods:topic>modernism</mods:topic>
@@ -115,6 +116,9 @@ SAMPLE_MODS = u'''
   </mods:subject>
   <mods:subject authority="local" displayLabel="label">
     <mods:temporal encoding="w3cdtf">1960s</mods:temporal>
+  </mods:subject>
+  <mods:subject authority="fast" authorityURI="http://fast.com" valueURI="http://fast.com/456">
+    <mods:topic>456</mods:topic>
   </mods:subject>
   <mods:recordInfo>
     <mods:recordContentSource authority="marcorg">RPB</mods:recordContentSource>
@@ -183,12 +187,23 @@ class ModsReadWrite(unittest.TestCase):
         corporate_name_list = [u'Brown University. English', 'Providence, RI']
         self.assertEqual(corporate_names, corporate_name_list)
         tom_smith = [name for name in loaded.names if name.name_parts[0].text == u'Smith, Tom'][0]
+        self.assertEqual(tom_smith.authority, u'fast')
+        self.assertEqual(tom_smith.authority_uri, u'http://fast.com')
+        self.assertEqual(tom_smith.value_uri, u'http://fast.com/1')
         self.assertEqual(tom_smith.roles[0].authority, u'marcrelator')
         self.assertEqual(tom_smith.roles[0].authority_uri, u'http://id.loc.gov/vocabulary/relators')
         self.assertEqual(tom_smith.roles[0].value_uri, u'http://id.loc.gov/vocabulary/relators/cre')
 
         self.assertEqual(loaded.resource_type, 'text')
         self.assertEqual(loaded.genres[1].text, 'aat theses')
+        self.assertEqual(loaded.genres[4].text, '123')
+        self.assertEqual(loaded.genres[4].authority, 'fast')
+        self.assertEqual(loaded.genres[4].authority_uri, 'http://fast.com')
+        self.assertEqual(loaded.genres[4].value_uri, 'http://fast.com/123')
+        s = [s for s in loaded.subjects if s.topic == '456'][0]
+        self.assertEqual(s.authority, 'fast')
+        self.assertEqual(s.authority_uri, 'http://fast.com')
+        self.assertEqual(s.value_uri, 'http://fast.com/456')
         self.assertEqual(loaded.notes[0].text, u'Thésis (Ph.D.)')
         self.assertEqual(loaded.target_audiences[0].text, u'Target Audience')
         self.assertEqual(loaded.target_audiences[0].authority, u'local')
@@ -249,7 +264,7 @@ class ModsReadWrite(unittest.TestCase):
 
     def test_geographic_subjects(self):
         loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
-        subject = loaded.subjects[-3]
+        subject = [s for s in loaded.subjects if s.hierarchical_geographic][0]
         self.assertEqual(subject.hierarchical_geographic.country, 'United States')
         self.assertEqual(subject.hierarchical_geographic.state, 'Louisiana')
         self.assertEqual(subject.hierarchical_geographic.city, 'New Orleans')
@@ -275,7 +290,7 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['dateModified'], '2008-05-06T00:00:00Z')
         self.assertEqual(index_data['dateModified_year_ssim'], ['2008'])
         self.assertEqual(index_data['dateModified_ssim'], ['2008-06-07-2009-01-02', 'invalid date', '2008-06-07'])
-        self.assertEqual(index_data['genre'], [u'aat theses', u'bdr theses', u'local theses'])
+        self.assertEqual(index_data['genre'], [u'aat theses', u'bdr theses', u'local theses', u'123'])
         self.assertEqual(index_data['identifier'], [u'Test type id', u'label id'])
         self.assertEqual(index_data['mods_genre_aat_ssim'], [u'aat theses'])
         self.assertEqual(index_data['mods_genre_bdr_ssim'], [u'bdr theses'])
@@ -302,7 +317,7 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['mods_note_random_type_ssim'], [u'random type note'])
         self.assertEqual(index_data['mods_note_discarded_ssim'], [u'random type note'])
         self.assertEqual(index_data['mods_note_display_label_ssim'], [u'display label note'])
-        self.assertEqual(index_data['mods_subject_ssim'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Ted', u'Stevens', u'Merrill', u'Eliot', u"label missing colon: post modernism", u'label: 1960s'])
+        self.assertEqual(index_data['mods_subject_ssim'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Ted', u'Stevens', u'Merrill', u'Eliot', u"label missing colon: post modernism", u'label: 1960s', u'456'])
         self.assertEqual(index_data['mods_subject_display_label_ssim'], [u'modernism', u'Yeats'])
         self.assertEqual(index_data['mods_subject_label_ssim'], [u'1960s'])
         self.assertEqual(index_data['mods_subject_label_missing_colon_ssim'], [u'post modernism'])
@@ -314,7 +329,7 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['note'], [u'Thésis (Ph.D.)', u'discarded: random type note', u'Short: Without ending', u'Display @#$label? display label note'])
         self.assertEqual(index_data['other_title'], [u'Other title'])
         self.assertEqual(index_data['primary_title'], u'Poétry Title')
-        self.assertEqual(index_data['keyword'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Ted', u'Stevens', u'Merrill', u'Eliot', u"label missing colon: post modernism", u'label: 1960s'])
+        self.assertEqual(index_data['keyword'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Ted', u'Stevens', u'Merrill', u'Eliot', u"label missing colon: post modernism", u'label: 1960s', u'456'])
 
     def test_invalid_date(self):
         loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)

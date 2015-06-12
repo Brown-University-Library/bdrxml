@@ -85,6 +85,8 @@ class Topic(Common):
 
 class Subject(Subject):
     label = SF('@displayLabel')
+    authority_uri = SF('@authorityURI')
+    value_uri = SF('@valueURI')
     topic_list = NodeListField('mods:topic', Topic)
     hierarchical_geographic = NodeField('mods:hierarchicalGeographic', HierarchicalGeographic)
     temporal_list = NodeListField('mods:temporal', Temporal)
@@ -102,6 +104,11 @@ class Classification(Common):
     text = SF('text()')
 
 
+class Genre(Genre):
+    authority_uri = SF('@authorityURI')
+    value_uri = SF('@valueURI')
+
+
 class TargetAudience(Common):
     ROOT_NAME = 'targetAudience'
     authority = SF('@authority')
@@ -113,12 +120,14 @@ class BdrRecordInfo(RecordInfo):
 
 
 class BdrRole(Role):
-    authority_uri = xmlmap.StringField('mods:roleTerm/@authorityURI')
-    value_uri = xmlmap.StringField('mods:roleTerm/@valueURI')
+    authority_uri = SF('mods:roleTerm/@authorityURI')
+    value_uri = SF('mods:roleTerm/@valueURI')
 
 
 class BdrName(Name):
     roles = xmlmap.NodeListField('mods:role', BdrRole)
+    authority_uri = SF('@authorityURI')
+    value_uri = SF('@valueURI')
 
 
 class BdrBaseMods(BaseMods):
@@ -129,6 +138,7 @@ class BdrBaseMods(BaseMods):
     subjects = NodeListField('mods:subject', Subject)
     physical_description = NodeField('mods:physicalDescription', PhysicalDescription)
     locations = NodeListField('mods:location', Location)
+    genres = NodeListField('mods:genre', Genre)
     target_audiences = NodeListField('mods:targetAudience', TargetAudience)
     record_info_list = NodeListField('mods:recordInfo', BdrRecordInfo)
     names = xmlmap.NodeListField('mods:name', BdrName)
