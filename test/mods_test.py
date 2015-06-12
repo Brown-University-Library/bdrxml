@@ -132,19 +132,22 @@ SAMPLE_MODS = u'''
     </mods:holdingSimple>
   </mods:location>
   <mods:relatedItem type="host">
-        <mods:identifier type="type"></mods:identifier>
-        <mods:identifier>test_id</mods:identifier>
-        <mods:dateCreated encoding="w3cdtf" keyDate="yes">1908-04-03</mods:dateCreated>
-        <mods:identifier type="type">1234567890123456</mods:identifier>
-        <mods:part>
-            <mods:detail type="divid">
-                <mods:number>div01</mods:number>
-            </mods:detail>
-        </mods:part>
-        <mods:name type="personal">
-            <mods:namePart>Shakespeare, William</mods:namePart>
-        </mods:name>
-    </mods:relatedItem>
+    <mods:identifier type="type"></mods:identifier>
+    <mods:identifier>test_id</mods:identifier>
+    <mods:dateCreated encoding="w3cdtf" keyDate="yes">1908-04-03</mods:dateCreated>
+    <mods:identifier type="type">1234567890123456</mods:identifier>
+    <mods:part>
+      <mods:detail type="divid">
+        <mods:number>div01</mods:number>
+      </mods:detail>
+    </mods:part>
+    <mods:name type="personal">
+      <mods:namePart>Shakespeare, William</mods:namePart>
+    </mods:name>
+  </mods:relatedItem>
+  <mods:relatedItem displayLabel="location of original">
+    <mods:classification displayLabel="label">Classification</mods:classification>
+  </mods:relatedItem>
 </mods:mods>
 '''
 CREATE_MODS = u'''<mods:mods xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-4.xsd">
@@ -156,7 +159,7 @@ CREATE_MODS = u'''<mods:mods xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink
 
 class ModsReadWrite(unittest.TestCase):
     def setUp(self):
-        #basic fox
+        #basic mods
         self.mods = mods.make_mods()
         
     def test_load_sample_mods(self):
@@ -196,6 +199,8 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(loaded.classifications[0].label, u'Test classification')
         self.assertEqual(loaded.locations[0].physical, u'Random location')
         self.assertEqual(loaded.locations[0].holding_simple.copy_information[0].notes[0].text, u'location note')
+        self.assertEqual(loaded.related_items[1].label, u'location of original')
+        self.assertEqual(loaded.related_items[1].classifications[0].text, u'Classification')
 
     def test_create_mods(self):
         self.mods.title = u'Poétry'
