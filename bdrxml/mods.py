@@ -121,29 +121,41 @@ class BdrName(Name):
     roles = xmlmap.NodeListField('mods:role', BdrRole)
 
 
-class Mods(MODSv34):
-    """Map mods fields - just where we override MODSv34
-    Fields documented at:
-    http://www.loc.gov/standards/mods/mods-outline.html
-    """
-    MODSv34.ROOT_NAMESPACES['xlink'] = XLINK_NAMESPACE
-    MODSv34.ROOT_NAMESPACES['xsi'] = XSI_NAMESPACE
-    xsi_schema_location = SF('@xsi:schemaLocation')
-
-    #deprecated - should use title_info_list from eulxml instead
-    title_info = NodeListField('mods:titleInfo', TitleInfo)
+class BdrBaseMods(BaseMods):
+    classifications = NodeListField('mods:classification', Classification)
     #override eulxml origin_info, because we add a displayLabel
     origin_info = NodeField('mods:originInfo', OriginInfo)
-    #Add a commonly used related item
-    collection = NodeField('mods:relatedItem[@displayLabel="Collection"]', Collection)
     #override eulxml subjects so we can add hierarchical_geographic to subject
     subjects = NodeListField('mods:subject', Subject)
     physical_description = NodeField('mods:physicalDescription', PhysicalDescription)
-    classifications = NodeListField('mods:classification', Classification)
     locations = NodeListField('mods:location', Location)
     target_audiences = NodeListField('mods:targetAudience', TargetAudience)
     record_info_list = NodeListField('mods:recordInfo', BdrRecordInfo)
     names = xmlmap.NodeListField('mods:name', BdrName)
+
+
+class BdrRelatedItem(BdrBaseMods):
+    ROOT_NAME = 'relatedItem'
+    type = xmlmap.SchemaField("@type", 'relatedItemTypeAttributeDefinition')
+    label = xmlmap.StringField('@displayLabel')
+
+
+class Mods(BdrBaseMods):
+    """Map mods fields - just where we override MODSv34
+    Fields documented at:
+    http://www.loc.gov/standards/mods/mods-outline.html
+    """
+    ROOT_NAME = 'mods'
+    XSD_SCHEMA = MODSv34_SCHEMA
+    Common.ROOT_NAMESPACES['xlink'] = XLINK_NAMESPACE
+    Common.ROOT_NAMESPACES['xsi'] = XSI_NAMESPACE
+    xsi_schema_location = SF('@xsi:schemaLocation')
+
+    #deprecated - should use title_info_list from eulxml instead
+    title_info = NodeListField('mods:titleInfo', TitleInfo)
+    #Add a commonly used related item
+    collection = NodeField('mods:relatedItem[@displayLabel="Collection"]', Collection)
+    related_items = xmlmap.NodeListField('mods:relatedItem', BdrRelatedItem)
 
 
 class ModsIndexer(object):
