@@ -32,7 +32,7 @@ SAMPLE_MODS = u'''
   </mods:name>
   <mods:targetAudience authority="local">Target Audience</mods:targetAudience>
   <mods:originInfo displayLabel="date added">
-    <mods:place><mods:placeTerm>USA</mods:placeTerm></mods:place>
+    <mods:place><mods:placeTerm authority="auth" authorityURI="http://auth.com" valueURI="http://auth.com/usa">USA</mods:placeTerm></mods:place>
     <mods:dateCreated encoding="w3cdtf" qualifier="questionable">2018-01</mods:dateCreated>
     <mods:copyrightDate encoding="w3cdtf" keyDate="yes">2008</mods:copyrightDate>
     <mods:dateCreated encoding="w3cdtf" keyDate="yes"></mods:dateCreated>
@@ -176,6 +176,9 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(loaded.title_info[2].label, 'First line')
         self.assertEqual(loaded.origin_info.label, 'date added')
         self.assertEqual(loaded.origin_info.places[0].place_terms[0].text, u'USA')
+        self.assertEqual(loaded.origin_info.places[0].place_terms[0].authority, u'auth')
+        self.assertEqual(loaded.origin_info.places[0].place_terms[0].authority_uri, 'http://auth.com')
+        self.assertEqual(loaded.origin_info.places[0].place_terms[0].value_uri, 'http://auth.com/usa')
 
         #test names
         personal_names = [unicode(name.name_parts[0].text) for name in loaded.names if name.type == 'personal' and name.name_parts[0].text]
