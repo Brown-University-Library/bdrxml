@@ -14,6 +14,8 @@ class PlaceTerm(Common):
     ROOT_NAME = 'placeTerm'
     type = SF('@type')
     authority = SF('@authority')
+    authority_uri = SF('@authorityURI')
+    value_uri = SF('@valueURI')
     text = SF('text()')
 
 class Place(Common):
