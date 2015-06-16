@@ -112,6 +112,9 @@ class RecordIdentifier(Common):
 class Classification(Common):
     ROOT_NAME = 'classification'
     label = SF('@displayLabel')
+    authority = SF('@authority')
+    authority_uri = SF('@authorityURI')
+    value_uri = SF('@valueURI')
     text = SF('text()')
 
 
