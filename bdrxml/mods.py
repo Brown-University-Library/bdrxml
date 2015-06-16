@@ -44,6 +44,14 @@ class PhysicalDescription(PhysicalDescription):
     forms = NodeListField('mods:form', PhysicalDescriptionForm)
 
 
+class PhysicalLocation(Common):
+    ROOT_NAME = 'physicalLocation'
+    authority = SF('@authority')
+    authority_uri = SF('@authorityURI')
+    value_uri = SF('@valueURI')
+    text = SF('text()')
+
+
 class CopyInformation(Common):
     ROOT_NAME = 'copyInformation'
     notes = NodeListField('mods:note', Note)
@@ -55,6 +63,7 @@ class HoldingSimple(Common):
 
 
 class Location(Location):
+    physical = NodeField('mods:physicalLocation', PhysicalLocation)
     holding_simple = NodeField('mods:holdingSimple', HoldingSimple)
 
 
