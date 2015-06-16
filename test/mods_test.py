@@ -125,7 +125,7 @@ SAMPLE_MODS = u'''
     <mods:recordCreationDate encoding="iso8601">20091218</mods:recordCreationDate>
     <mods:recordIdentifier source="RPB">a1234567</mods:recordIdentifier>
   </mods:recordInfo>
-  <mods:classification displayLabel="Test classification">Some classification</mods:classification>
+  <mods:classification displayLabel="Test classification" authority="classauth" authorityURI="http://classauth.com" valueURI="http://classauth.com/some">Some classification</mods:classification>
   <mods:identifier type="METSID">12345678</mods:identifier>
   <mods:location>
     <mods:physicalLocation authority="locauth" authorityURI="http://locauth.com" valueURI="http://locauth.com/random">Random location</mods:physicalLocation>
@@ -215,6 +215,9 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(loaded.physical_description.note, u'note 1')
         self.assertEqual(loaded.classifications[0].text, u'Some classification')
         self.assertEqual(loaded.classifications[0].label, u'Test classification')
+        self.assertEqual(loaded.classifications[0].authority, u'classauth')
+        self.assertEqual(loaded.classifications[0].authority_uri, u'http://classauth.com')
+        self.assertEqual(loaded.classifications[0].value_uri, u'http://classauth.com/some')
         self.assertEqual(loaded.locations[0].physical.text, u'Random location')
         self.assertEqual(loaded.locations[0].physical.authority, u'locauth')
         self.assertEqual(loaded.locations[0].physical.authority_uri, u'http://locauth.com')
