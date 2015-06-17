@@ -129,22 +129,22 @@ class TargetAudience(Common):
     text = SF('text()')
 
 
-class BdrRecordInfo(RecordInfo):
+class RecordInfo(RecordInfo):
     record_identifier_list = NodeListField('mods:recordIdentifier', RecordIdentifier)
 
 
-class BdrRole(Role):
+class Role(Role):
     authority_uri = SF('mods:roleTerm/@authorityURI')
     value_uri = SF('mods:roleTerm/@valueURI')
 
 
-class BdrName(Name):
-    roles = xmlmap.NodeListField('mods:role', BdrRole)
+class Name(Name):
+    roles = xmlmap.NodeListField('mods:role', Role)
     authority_uri = SF('@authorityURI')
     value_uri = SF('@valueURI')
 
 
-class BdrBaseMods(BaseMods):
+class BaseMods(BaseMods):
     classifications = NodeListField('mods:classification', Classification)
     #override eulxml origin_info, because we add a displayLabel
     origin_info = NodeField('mods:originInfo', OriginInfo)
@@ -154,17 +154,17 @@ class BdrBaseMods(BaseMods):
     locations = NodeListField('mods:location', Location)
     genres = NodeListField('mods:genre', Genre)
     target_audiences = NodeListField('mods:targetAudience', TargetAudience)
-    record_info_list = NodeListField('mods:recordInfo', BdrRecordInfo)
-    names = xmlmap.NodeListField('mods:name', BdrName)
+    record_info_list = NodeListField('mods:recordInfo', RecordInfo)
+    names = xmlmap.NodeListField('mods:name', Name)
 
 
-class BdrRelatedItem(BdrBaseMods):
+class RelatedItem(BaseMods):
     ROOT_NAME = 'relatedItem'
     type = xmlmap.SchemaField("@type", 'relatedItemTypeAttributeDefinition')
     label = xmlmap.StringField('@displayLabel')
 
 
-class Mods(BdrBaseMods):
+class Mods(BaseMods):
     """Map mods fields - just where we override MODSv34
     Fields documented at:
     http://www.loc.gov/standards/mods/mods-outline.html
@@ -179,7 +179,7 @@ class Mods(BdrBaseMods):
     title_info = NodeListField('mods:titleInfo', TitleInfo)
     #Add a commonly used related item
     collection = NodeField('mods:relatedItem[@displayLabel="Collection"]', Collection)
-    related_items = xmlmap.NodeListField('mods:relatedItem', BdrRelatedItem)
+    related_items = xmlmap.NodeListField('mods:relatedItem', RelatedItem)
 
 
 class ModsIndexer(object):
