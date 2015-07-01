@@ -373,14 +373,14 @@ class ModsIndexer(object):
         if access_condition_els:
             for access_condition in access_condition_els:
                 type = access_condition.get('type')
-                href = access_condition.get('href') #should really be xlink:href
+                xlink_href = access_condition.get('{%s}href' % XLINK_NAMESPACE)
                 if type == 'use and reproduction':
                     data = self._add_or_extend(data, 'mods_access_condition_use_text_tsim', [access_condition.text])
-                    if href:
-                        data = self._add_or_extend(data, 'mods_access_condition_use_link_ssim', [href])
+                    if xlink_href:
+                        data = self._add_or_extend(data, 'mods_access_condition_use_link_ssim', [xlink_href])
                 elif type == 'logo':
-                    if href:
-                        data = self._add_or_extend(data, 'mods_access_condition_logo_ssim', [href])
+                    if xlink_href:
+                        data = self._add_or_extend(data, 'mods_access_condition_logo_ssim', [xlink_href])
         #other id's not handled above
         identifier_els = [idt for idt in self.mods.identifiers if idt.type not in ['COLID', 'URI', 'doi', 'METSID']]
         for identifier in identifier_els:
