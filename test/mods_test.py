@@ -4,7 +4,7 @@ from eulxml.xmlmap  import load_xmlobject_from_string
 from bdrxml import mods
 
 SAMPLE_MODS = u'''
-<mods:mods xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="id101" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
+<mods:mods xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="id101" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
   <mods:titleInfo>
     <mods:title>Poétry
     Title</mods:title>
@@ -15,8 +15,8 @@ SAMPLE_MODS = u'''
   <mods:titleInfo type="alternative" displayLabel="First line">
     <mods:title>alternative title</mods:title>
   </mods:titleInfo>
-  <mods:accessCondition href="http://creativecommons.org/publicdomain/zero/1.0/" type="use and reproduction">To the extent possible under law, the person who associated CC0 with this work has waived all copyright and related or neighboring rights to this work.</mods:accessCondition>
-  <mods:accessCondition href="http://i.creativecommons.org/p/zero/1.0/88x31.png" type="logo"></mods:accessCondition>
+  <mods:accessCondition xlink:href="http://creativecommons.org/publicdomain/zero/1.0/" type="use and reproduction">To the extent possible under law, the person who associated CC0 with this work has waived all copyright and related or neighboring rights to this work.</mods:accessCondition>
+  <mods:accessCondition xlink:href="http://i.creativecommons.org/xlink.png" type="logo"></mods:accessCondition>
   <mods:identifier type="test type">Test type id</mods:identifier>
   <mods:identifier displayLabel="label">label id</mods:identifier>
   <mods:identifier type="doi">dx.123.456</mods:identifier>
@@ -304,7 +304,7 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(index_data['mods_genre_aat_ssim'], [u'aat theses'])
         self.assertEqual(index_data['mods_genre_bdr_ssim'], [u'bdr theses'])
         self.assertEqual(index_data['mods_genre_local_ssim'], [u'local theses'])
-        self.assertEqual(index_data['mods_access_condition_logo_ssim'], [u'http://i.creativecommons.org/p/zero/1.0/88x31.png'])
+        self.assertEqual(index_data['mods_access_condition_logo_ssim'], [u'http://i.creativecommons.org/xlink.png'])
         self.assertEqual(index_data['mods_access_condition_use_text_tsim'], [u'To the extent possible under law, the person who associated CC0 with this work has waived all copyright and related or neighboring rights to this work.'])
         self.assertEqual(index_data['mods_access_condition_use_link_ssim'], [u'http://creativecommons.org/publicdomain/zero/1.0/'])
         self.assertEqual(index_data['mods_id'], 'id101')
