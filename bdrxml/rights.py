@@ -1,8 +1,6 @@
 """
 Making rightsMetadata for the BDR and Hydra.
-
 """
-
 from eulxml import xmlmap
 from eulxml.xmlmap import XmlObject
 from eulxml.xmlmap import StringField as SF
@@ -11,6 +9,7 @@ from eulxml.xmlmap import SimpleBooleanField as BF
 from itertools import chain
 RIGHTS_NAMESPACE = 'http://cosimo.stanford.edu/sdr/metsrights/'
 XLINK_NAMESPACE = 'http://www.w3.org/1999/xlink'
+
 
 class HydraRights(XmlObject):
     ROOT_NAMESPACES = {
@@ -26,7 +25,6 @@ class HydraRights(XmlObject):
     edit_access_person = SFL('hydra:access[@type="edit"]/hydra:machine/hydra:person')
     delete_access_group = SFL('hydra:access[@type="delete"]/hydra:machine/hydra:group')
     delete_access_person = SFL('hydra:access[@type="delete"]/hydra:machine/hydra:person')
-
 
     def index_data(self):
         return {
@@ -46,7 +44,6 @@ class HydraRights(XmlObject):
     def index_data_hydra(self):
         return self.index_data()
 
-
     def get_builder(self):
         """Creates a RightsBuilder based on the information stored in the this HydraRights object"""
         return RightsBuilder(
@@ -64,6 +61,7 @@ class Common(XmlObject):
                }
     ROOT_NS = RIGHTS_NAMESPACE
     ROOT_NAME = 'rights'
+
 
 class Context(Common):
     ROOT_NS = RIGHTS_NAMESPACE
@@ -93,11 +91,12 @@ class Holder(Common):
     context_ids = SF('@CONTEXTIDS')
     name = SF('rights:RightsHolderName')
 
+
 class Rights(Common):
     ROOT_NAME = 'RightsDeclarationMD'
     XSD_SCHEMA = "http://cosimo.stanford.edu/sdr/rights http://cosimo.stanford.edu/sdr/metsrights.xsd"
     schema_location = SF('@xsi:schemaLocation', 'self')
-    
+
     category = SF('@RIGHTSCATEGORY')
     holder = xmlmap.NodeField('rights:RightsHolder', Holder)
     #Can't call this context - it's a property inherited from the XMLMap
@@ -208,7 +207,7 @@ class RightsBuilder(object):
 
 
 class BDRRightsBuilder(object):
-    """docstring for BDRRightsBuilder"""
+
     def __init__(self, base_builder):
         super(BDRRightsBuilder, self).__init__()
         self.base_builder = base_builder
@@ -240,7 +239,7 @@ class BDRRightsBuilder(object):
     
 
 class HydraRightsBuilder(object):
-    """docstring for HydraRightsBuilder"""
+
     def __init__(self, base_builder):
         super(HydraRightsBuilder, self).__init__()
         self.base_builder = base_builder
@@ -271,7 +270,5 @@ class HydraRightsBuilder(object):
         groups, people = self._partition_users_groups(self.base_builder._deleters | self.base_builder._owners)
         rights.delete_access_group = groups
         rights.delete_access_person = people
-
-        
 
         return rights

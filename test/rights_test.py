@@ -64,11 +64,9 @@ class HydraRightsReadWrite(unittest.TestCase):
         }, self.rights.index_data_bdr())
 
 
-
-
 class RightsReadWrite(unittest.TestCase):
+
     def setUp(self):
-#basic right
         self.rights = make_rights()
 
     def init_holder(self):
@@ -153,7 +151,9 @@ class RightsReadWrite(unittest.TestCase):
             'delete_access_person_ssim': sorted([ 'jack@brown.edu', 'jim@brown.edu', 'johnny@brown.edu',]),
         }, self.rights.index_data_hydra())
 
+
 EMPTY_RIGHTS_XML = """<rights:RightsDeclarationMD xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rights="http://cosimo.stanford.edu/sdr/metsrights/" xsi:schemaLocation="http://cosimo.stanford.edu/sdr/rights http://cosimo.stanford.edu/sdr/metsrights.xsd"><rights:RightsHolder/></rights:RightsDeclarationMD>"""
+
 EMPTY_HYDRA_RIGHTS_XML = """<rightsMetadata xmlns:hydra="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1"/>"""
 
 RIGHTS_WITH_USERS = """<rights:RightsDeclarationMD xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rights="http://cosimo.stanford.edu/sdr/metsrights/" xsi:schemaLocation="http://cosimo.stanford.edu/sdr/rights http://cosimo.stanford.edu/sdr/metsrights.xsd">
@@ -200,6 +200,7 @@ HYDRA_RIGHTS_WITH_USERS = """<rightsMetadata xmlns:hydra="http://hydra-collab.st
 
 class Builder(unittest.TestCase):
     """Test for the rights builder"""
+
     def setUp(self):
         self.builder = RightsBuilder()
     
@@ -253,7 +254,6 @@ class Builder(unittest.TestCase):
         rights_str = rights.serialize(pretty=True)
         self.assertEqual(rights_str, HYDRA_RIGHTS_WITH_USERS)
 
-    
     def test_getting_builder_back_from_bdr_rights(self):
         self.builder.addReader('jack@brown.edu').addReader('BROWN:GROUP')
         self.builder.addReader('jack@brown.edu')
@@ -273,8 +273,6 @@ class Builder(unittest.TestCase):
         self.assertEqual(new_builder, self.builder)
 
 
-
-
 def suite():
     suite1 = unittest.makeSuite(RightsReadWrite, 'test')
     suite2 = unittest.makeSuite(Builder, 'test')
@@ -284,4 +282,3 @@ def suite():
 
 if __name__ == '__main__':
     unittest.main()
-        
