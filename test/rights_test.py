@@ -123,6 +123,13 @@ class RightsReadWrite(unittest.TestCase):
         self.init_holder()
         tmp_ctext = self.rights.get_ctext_for("johnny@brown.edu")
         self.assertEqual(tmp_ctext.id, "rights3")
+
+    def test_update_context(self):
+        self.init_context("rights1", 'jack@brown.edu')
+        self.assertEqual(self.rights.ctext[0].delete, True)
+        ctx = self.rights.get_ctext_for('jack@brown.edu')
+        setattr(ctx, 'delete', False)
+        self.assertEqual(self.rights.ctext[0].delete, False)
     
     def test_index_data(self):
         self.init_context("rights1", 'jack@brown.edu')
