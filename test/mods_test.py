@@ -239,6 +239,15 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(loaded.title, 'Sample title')
         self.assertEqual(loaded.origin_info.publisher, 'BUL')
 
+    def test_setting_xlink_href(self):
+        access_condition = mods.AccessCondition(text='access condition')
+        access_condition.node.set('{%s}href' % mods.XLINK_NAMESPACE, 'http://example.com')
+        self.mods.access_conditions.append(access_condition)
+        mods_str = self.mods.serialize(pretty=False)
+        loaded = load_xmlobject_from_string(mods_str, mods.Mods)
+        xlink_href = loaded.access_conditions[0].node.get('{%s}href' % mods.XLINK_NAMESPACE)
+        self.assertEqual(xlink_href, 'http://example.com')
+
     def test_subjects(self):
         self.mods.title = "Sample"
         topics = ['sample', 'test']
