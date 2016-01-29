@@ -165,7 +165,7 @@ class ModsReadWrite(unittest.TestCase):
     def setUp(self):
         #basic mods
         self.mods = mods.make_mods()
-        
+
     def test_load_sample_mods(self):
         loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
         self.assertEqual(loaded.id, 'id101')
@@ -287,97 +287,6 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(subject.hierarchical_geographic.state, 'Louisiana')
         self.assertEqual(subject.hierarchical_geographic.city, 'New Orleans')
         self.assertEqual(subject.hierarchical_geographic.city_section, 'Lower Ninth Ward')
-
-    def test_index_data(self):
-        loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
-        indexer = mods.ModsIndexer(loaded)
-        index_data = indexer.index_data()
-        self.assertEqual(index_data['abstract'], [u'Poétry description...'])
-        self.assertEqual(index_data['contributor_display'], ['Smith, Tom, 1803 or 4-1860 (Creator)', 'Baker, Jim, 1718-1762 (director)', 'Wilson, Jane', 'Brown University. English (sponsor)', 'Providence, RI (distribution place)'])
-        self.assertEqual(index_data['copyrightDate'], '2008-01-01T00:00:00Z')
-        self.assertEqual(index_data['copyrightDate_year_ssim'], ['2008'])
-        self.assertEqual(index_data['dateCreated'], '2008-02-03T00:00:00Z')
-        self.assertTrue('dateIssued' not in index_data)
-        self.assertEqual(index_data['dateCreated_year_ssim'], ['2008'])
-        self.assertEqual(index_data['dateCreated_ssim'], ['2018-01'])
-        self.assertEqual(index_data['mods_classification_ssim'], ['Some classification'])
-        self.assertEqual(index_data['mods_dateCreated_questionable_ssim'], ['2018-01'])
-        self.assertEqual(index_data['mods_dateOther_approximate_ssim'], ['2009'])
-        self.assertEqual(index_data['mods_dateOther_inferred_ssim'], ['2000'])
-        self.assertEqual(index_data['mods_dateIssued_end_ssim'], ['2008-04-25'])
-        self.assertEqual(index_data['dateModified'], '2008-05-06T00:00:00Z')
-        self.assertEqual(index_data['dateModified_year_ssim'], ['2008'])
-        self.assertEqual(index_data['dateModified_ssim'], ['2008-06-07-2009-01-02', 'invalid date', '2008-06-07'])
-        self.assertEqual(index_data['genre'], [u'aat theses', u'bdr theses', u'local theses', u'123'])
-        self.assertEqual(index_data['identifier'], [u'Test type id', u'label id'])
-        self.assertEqual(index_data['mods_genre_aat_ssim'], [u'aat theses'])
-        self.assertEqual(index_data['mods_genre_bdr_ssim'], [u'bdr theses'])
-        self.assertEqual(index_data['mods_genre_local_ssim'], [u'local theses'])
-        self.assertEqual(index_data['mods_access_condition_logo_ssim'], [u'http://i.creativecommons.org/xlink.png'])
-        self.assertEqual(index_data['mods_access_condition_use_text_tsim'], [u'To the extent possible under law, the person who associated CC0 with this work has waived all copyright and related or neighboring rights to this work.'])
-        self.assertEqual(index_data['mods_access_condition_use_link_ssim'], [u'http://creativecommons.org/publicdomain/zero/1.0/'])
-        self.assertEqual(index_data['mods_id'], 'id101')
-        self.assertEqual(index_data['mods_id_test_type_ssim'], ['Test type id'])
-        self.assertEqual(index_data['mods_id_doi_ssi'], 'dx.123.456')
-        self.assertEqual(index_data['mods_id_label_ssim'], ['label id'])
-        self.assertEqual(index_data['mods_physicalDescription_extent_ssim'], [u'viii, 208 p.'])
-        self.assertEqual(index_data['mods_physicalDescription_digitalOrigin_ssim'], [u'born digital'])
-        self.assertEqual(index_data['mods_physicalDescription_form_material_ssim'], [u'oil'])
-        self.assertEqual(index_data['mods_name_place_ssim'], [u'Providence, RI'])
-        self.assertEqual(sorted(index_data['mods_name_nonplace_ssim']), [u'Baker, Jim', u'Brown University. English', u'Smith, Tom', u'Wilson, Jane'])
-        self.assertEqual(sorted(index_data['mods_role_ssim']), [u'Creator', u'director', u'distribution place', u'sponsor'])
-        self.assertEqual(index_data['mods_related_id_ssim'], ['test_id'])
-        self.assertEqual(index_data['mods_related_id_type_ssim'], ['1234567890123456'])
-        self.assertEqual(index_data['mods_related_name_ssim'], ['Shakespeare, William'])
-        self.assertEqual(index_data['mods_role_creator_ssim'], [u'Smith, Tom'])
-        self.assertEqual(index_data['mods_role_director_ssim'], [u'Baker, Jim'])
-        self.assertEqual(index_data['mods_role_sponsor_ssim'], [u'Brown University. English'])
-        self.assertEqual(index_data['mods_note_random_type_ssim'], [u'random type note'])
-        self.assertEqual(index_data['mods_note_discarded_ssim'], [u'random type note'])
-        self.assertEqual(index_data['mods_note_display_label_ssim'], [u'display label note'])
-        self.assertEqual(index_data['mods_subject_ssim'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Ted', u'Stevens', u'Merrill', u'Eliot', u"label missing colon: post modernism", u'label: 1960s', u'456'])
-        self.assertEqual(index_data['mods_subject_display_label_ssim'], [u'modernism', u'Yeats'])
-        self.assertEqual(index_data['mods_subject_label_ssim'], [u'1960s'])
-        self.assertEqual(index_data['mods_subject_label_missing_colon_ssim'], [u'post modernism'])
-        self.assertEqual(index_data['mods_subject_local_ssim'], [u'Ted', u'Stevens', u'Eliot', u'label: 1960s'])
-        self.assertEqual(index_data['mods_record_info_record_identifier_ssim'], [u'a1234567'])
-        self.assertEqual(index_data['mods_record_info_record_identifier_rpb_ssim'], [u'a1234567'])
-        self.assertEqual(index_data['mods_title_alt'], [u'alternative title'])
-        self.assertEqual(index_data['name'], [u'Smith, Tom', u'Baker, Jim', u'Wilson, Jane', u'Brown University. English', u'Providence, RI'])
-        self.assertEqual(index_data['note'], [u'Thésis (Ph.D.)', u'discarded: random type note', u'Short: Without ending', u'Display @#$label? display label note'])
-        self.assertEqual(index_data['other_title'], [u'Other title'])
-        self.assertEqual(index_data['primary_title'], u'Poétry Title')
-        self.assertEqual(index_data['keyword'], [u'Display Labél! modernism', u'metalepsis', u'Display Label: Yeats', u'Ted', u'Stevens', u'Merrill', u'Eliot', u"label missing colon: post modernism", u'label: 1960s', u'456'])
-
-    def test_invalid_date(self):
-        loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
-        indexer = mods.ModsIndexer(loaded)
-        self.assertTrue(indexer.has_invalid_date())
-
-    def test_index_title_parts(self):
-        loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
-        primary_title = loaded.title_info_list[0]
-        primary_title.subtitle = "Primary Subtitle"
-        primary_title.part_name = "Primary Part 1"
-        primary_title.part_number = "4"
-        primary_title.non_sort  = "The"
-        index_data = mods.ModsIndexer(loaded).index_data()
-        self.assertEqual(index_data['subtitle'], u'Primary Subtitle')
-        self.assertEqual(index_data['partnumber'], u'4')
-        self.assertEqual(index_data['partname'], u'Primary Part 1')
-        self.assertEqual(index_data['nonsort'], u'The')
-
-    def test_index_basic_mods(self):
-        #this is to make sure we test index_data() with a basic MODS that doesn't have mods elements
-        loaded = load_xmlobject_from_string(CREATE_MODS, mods.Mods)
-        indexer = mods.ModsIndexer(loaded)
-        index_data = indexer.index_data()
-        self.assertEqual(index_data['primary_title'], u'Poétry')
-
-    def test_basic_invalid_date(self):
-        loaded = load_xmlobject_from_string(CREATE_MODS, mods.Mods)
-        indexer = mods.ModsIndexer(loaded)
-        self.assertFalse(indexer.has_invalid_date())
 
 
 def suite():
