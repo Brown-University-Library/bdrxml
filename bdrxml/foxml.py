@@ -47,10 +47,10 @@ from eulxml.xmlmap import StringField as SF
 from eulxml.xmlmap import NodeField, NodeListField
 
 #Local xml maps
-from mets import BDRMets, METS_NAMESPACE
-from rels import RelsExt, RelsInt
-from rights import Rights, RIGHTS_NAMESPACE
-from irMetadata import IR, IR_NAMESPACE
+from .mets import BDRMets, METS_NAMESPACE
+from .rels import RelsExt, RelsInt
+from .rights import Rights, RIGHTS_NAMESPACE
+from .irMetadata import IR, IR_NAMESPACE
 
 
 FOXNS = 'info:fedora/fedora-system:def/foxml#'

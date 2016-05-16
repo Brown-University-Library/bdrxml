@@ -6,10 +6,10 @@ Making METS for the BDR.
 from eulxml import xmlmap
 from eulxml.xmlmap import StringField as SF
 
-import mods
-import darwincore
-from rights import Rights, RIGHTS_NAMESPACE
-from irMetadata import IR, IR_NAMESPACE
+from . import mods
+from . import darwincore
+from .rights import Rights, RIGHTS_NAMESPACE
+from .irMetadata import IR, IR_NAMESPACE
 
 METS_NAMESPACE = 'http://www.loc.gov/METS/'
 XLINK_NAMESPACE = 'http://www.w3.org/1999/xlink'
