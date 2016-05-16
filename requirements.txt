@@ -1,2 +1,2 @@
 lxml==3.3.3
-eulxml==0.21.0
+eulxml==1.0.1
