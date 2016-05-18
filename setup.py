@@ -5,4 +5,7 @@ setup(name='bdrxml',
     packages=find_packages(),
     package_data={'bdrxml': ['test/data/*.*',
                              'templates/*.*']},
+    install_requires=[
+        'eulxml>=1.0.1',
+    ]
 )
