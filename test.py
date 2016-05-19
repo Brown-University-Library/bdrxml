@@ -1,3 +1,4 @@
+import sys
 import unittest
 from test import (
     foxml_test,
@@ -21,4 +22,8 @@ def suite():
     return test_suite
 
 runner = unittest.TextTestRunner(verbosity=2)
-runner.run(suite())
+result = runner.run(suite())
+if result.wasSuccessful():
+    sys.exit(0)
+else:
+    sys.exit(1)

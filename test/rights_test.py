@@ -159,11 +159,11 @@ class RightsReadWrite(unittest.TestCase):
         }, self.rights.index_data_hydra())
 
 
-EMPTY_RIGHTS_XML = """<rights:RightsDeclarationMD xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rights="http://cosimo.stanford.edu/sdr/metsrights/" xsi:schemaLocation="http://cosimo.stanford.edu/sdr/rights http://cosimo.stanford.edu/sdr/metsrights.xsd"><rights:RightsHolder/></rights:RightsDeclarationMD>"""
+EMPTY_RIGHTS_XML = """<rights:RightsDeclarationMD xmlns:rights="http://cosimo.stanford.edu/sdr/metsrights/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cosimo.stanford.edu/sdr/rights http://cosimo.stanford.edu/sdr/metsrights.xsd"><rights:RightsHolder/></rights:RightsDeclarationMD>"""
 
 EMPTY_HYDRA_RIGHTS_XML = """<rightsMetadata xmlns:hydra="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1"/>"""
 
-RIGHTS_WITH_USERS = """<rights:RightsDeclarationMD xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rights="http://cosimo.stanford.edu/sdr/metsrights/" xsi:schemaLocation="http://cosimo.stanford.edu/sdr/rights http://cosimo.stanford.edu/sdr/metsrights.xsd">
+RIGHTS_WITH_USERS = """<rights:RightsDeclarationMD xmlns:rights="http://cosimo.stanford.edu/sdr/metsrights/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cosimo.stanford.edu/sdr/rights http://cosimo.stanford.edu/sdr/metsrights.xsd">
   <rights:RightsHolder CONTEXTIDS="rights000 rights001 rights002 rights003"/>
   <rights:Context CONTEXTID="rights000">
     <rights:Permissions DELETE="false" DISCOVER="true" DISPLAY="true" MODIFY="false"/>
