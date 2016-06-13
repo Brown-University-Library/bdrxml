@@ -4,7 +4,7 @@ from eulxml.xmlmap import load_xmlobject_from_string
 from bdrxml import darwincore
 
 
-#test darwin core that's been confirmed to validate (validate again if there are any changes!)
+#this dwc should validate, except for dc:rights and dwc:individualID fields
 SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
 <sdr:SimpleDarwinRecordSet xmlns:sdr="http://rs.tdwg.org/dwc/xsd/simpledarwincore/" xmlns:dc="http://purl.org/dc/terms/" xmlns:dwc="http://rs.tdwg.org/dwc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://rs.tdwg.org/dwc/xsd/simpledarwincore/ http://rs.tdwg.org/dwc/xsd/tdwg_dwc_simple.xsd">
   <sdr:SimpleDarwinRecord>
@@ -34,6 +34,7 @@ SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
     <dwc:infraspecificEpithet>sociabilis sub</dwc:infraspecificEpithet>
     <dwc:taxonRank>subspecies</dwc:taxonRank>
     <dwc:scientificNameAuthorship>Pearson and Christie, 1985</dwc:scientificNameAuthorship>
+    <dwc:municipality>Some City</dwc:municipality>
     <dwc:nomenclaturalCode>ICZN</dwc:nomenclaturalCode>
     <dwc:namePublishedIn>Pearson O. P., and M. I. Christie. 1985. Historia Natural, 5(37):388</dwc:namePublishedIn>
     <dwc:dynamicProperties>iucnStatus=vulnerable; distribution=Neuquen, Argentina</dwc:dynamicProperties>
@@ -91,6 +92,7 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
         self.assertEqual(self.dwc.simple_darwin_record.infraspecific_epithet, u'sociabilis sub')
         self.assertEqual(self.dwc.simple_darwin_record.taxon_rank, u'subspecies')
         self.assertEqual(self.dwc.simple_darwin_record.scientific_name_authorship, u'Pearson and Christie, 1985')
+        self.assertEqual(self.dwc.simple_darwin_record.municipality, u'Some City')
 
     def test_output(self):
         self.assertEqual(self.dwc.serializeDocument(pretty=True), SIMPLE_DARWIN_SET_XML)

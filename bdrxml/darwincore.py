@@ -41,6 +41,7 @@ class SimpleDarwinRecord(xmlmap.XmlObject):
     taxon_rank = xmlmap.StringField('dwc:taxonRank')
     accepted_name_usage = xmlmap.StringField('dwc:acceptedNameUsage')
     scientific_name_authorship = xmlmap.StringField('dwc:scientificNameAuthorship')
+    municipality = xmlmap.StringField('dwc:municipality')
     county = xmlmap.StringField('dwc:county')
     state_province = xmlmap.StringField('dwc:stateProvince')
     country = xmlmap.StringField('dwc:country')
