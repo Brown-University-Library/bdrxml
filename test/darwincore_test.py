@@ -35,6 +35,7 @@ SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
     <dwc:taxonRank>subspecies</dwc:taxonRank>
     <dwc:scientificNameAuthorship>Pearson and Christie, 1985</dwc:scientificNameAuthorship>
     <dwc:municipality>Some City</dwc:municipality>
+    <dwc:locality>Locality information</dwc:locality>
     <dwc:nomenclaturalCode>ICZN</dwc:nomenclaturalCode>
     <dwc:namePublishedIn>Pearson O. P., and M. I. Christie. 1985. Historia Natural, 5(37):388</dwc:namePublishedIn>
     <dwc:dynamicProperties>iucnStatus=vulnerable; distribution=Neuquen, Argentina</dwc:dynamicProperties>
@@ -93,6 +94,7 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
         self.assertEqual(self.dwc.simple_darwin_record.taxon_rank, u'subspecies')
         self.assertEqual(self.dwc.simple_darwin_record.scientific_name_authorship, u'Pearson and Christie, 1985')
         self.assertEqual(self.dwc.simple_darwin_record.municipality, u'Some City')
+        self.assertEqual(self.dwc.simple_darwin_record.locality, u'Locality information')
 
     def test_output(self):
         self.assertEqual(self.dwc.serializeDocument(pretty=True), SIMPLE_DARWIN_SET_XML)
