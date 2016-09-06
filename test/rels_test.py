@@ -34,7 +34,6 @@ class RelsTest(unittest.TestCase):
       rids.version.append( rids_v )
       ## ouput
       xml =  rids.serialize( pretty=True )
-      self.assertEqual( type(xml), str )
       ## test
       tree = etree.fromstring( xml.decode(u'utf-8', u'replace') )
       descriptions_xpath = u'''/foxml:datastream/foxml:datastreamVersion/foxml:xmlContent/*[namespace-uri()='http://www.w3.org/1999/02/22-rdf-syntax-ns#' and local-name()='RDF']/*[namespace-uri()='http://www.w3.org/1999/02/22-rdf-syntax-ns#' and local-name()='Description']'''
