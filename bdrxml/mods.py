@@ -1,3 +1,5 @@
+# coding: utf-8
+from __future__ import unicode_literals
 import re
 import unicodedata
 from eulxml.xmlmap import StringField as SF
