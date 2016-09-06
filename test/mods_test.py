@@ -155,7 +155,7 @@ SAMPLE_MODS = '''
   </mods:relatedItem>
 </mods:mods>
 '''
-CREATE_MODS = '''<mods:mods xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-4.xsd">
+MODS_SNIPPET = '''
   <mods:titleInfo>
     <mods:title>Poétry</mods:title>
   </mods:titleInfo>
@@ -182,12 +182,12 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(loaded.origin_info.places[0].place_terms[0].value_uri, 'http://auth.com/usa')
 
         #test names
-        personal_names = [unicode(name.name_parts[0].text) for name in loaded.names if name.type == 'personal' and name.name_parts[0].text]
+        personal_names = [name.name_parts[0].text for name in loaded.names if name.type == 'personal' and name.name_parts[0].text]
         self.assertEqual(len(personal_names), 3)
         personal_name_list = ['Smith, Tom', 'Baker, Jim', 'Wilson, Jane']
         for i in range(3):
             self.assertTrue(personal_names[i] in personal_name_list)
-        corporate_names = [unicode(name) for name in loaded.names if name.type == 'corporate']
+        corporate_names = [name.name_parts[0].text for name in loaded.names if name.type == 'corporate']
         corporate_name_list = ['Brown University. English', 'Providence, RI']
         self.assertEqual(corporate_names, corporate_name_list)
         tom_smith = [name for name in loaded.names if name.name_parts[0].text == 'Smith, Tom'][0]
@@ -229,7 +229,7 @@ class ModsReadWrite(unittest.TestCase):
 
     def test_create_mods(self):
         self.mods.title = 'Poétry'
-        self.assertEqual(unicode(self.mods.serialize(pretty=True), 'utf-8'), CREATE_MODS)
+        self.assertTrue(MODS_SNIPPET.encode('utf8') in self.mods.serialize(pretty=True))
 
     def test_round_trip(self):
         self.mods.title = "Sample title"

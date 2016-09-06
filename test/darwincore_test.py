@@ -45,13 +45,16 @@ SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
 '''
 
 #validates
-CREATED_SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
-<sdr:SimpleDarwinRecordSet xmlns:dc="http://purl.org/dc/terms/" xmlns:dwc="http://rs.tdwg.org/dwc/terms/" xmlns:sdr="http://rs.tdwg.org/dwc/xsd/simpledarwincore/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://rs.tdwg.org/dwc/xsd/simpledarwincore/ http://rs.tdwg.org/dwc/xsd/tdwg_dwc_simple.xsd">
+SIMPLE_DARWIN_SNIPPET = '''
   <sdr:SimpleDarwinRecord>
     <dwc:catalogNumber>catalog number</dwc:catalogNumber>
   </sdr:SimpleDarwinRecord>
-</sdr:SimpleDarwinRecordSet>
 '''
+CREATED_SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
+<sdr:SimpleDarwinRecordSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dc="http://purl.org/dc/terms/" xmlns:dwc="http://rs.tdwg.org/dwc/terms/" xmlns:sdr="http://rs.tdwg.org/dwc/xsd/simpledarwincore/" xsi:schemaLocation="http://rs.tdwg.org/dwc/xsd/simpledarwincore/ http://rs.tdwg.org/dwc/xsd/tdwg_dwc_simple.xsd">
+%s
+</sdr:SimpleDarwinRecordSet>
+''' % SIMPLE_DARWIN_SNIPPET
 
 
 class SimpleDarwinRecordSetTestLoad(unittest.TestCase):
@@ -62,7 +65,8 @@ class SimpleDarwinRecordSetTestLoad(unittest.TestCase):
     def test_1(self):
         self.dwc.create_simple_darwin_record()
         self.dwc.simple_darwin_record.catalog_number = 'catalog number'
-        self.assertEqual(self.dwc.serializeDocument(pretty=True), CREATED_SIMPLE_DARWIN_SET_XML)
+        dwc_data = self.dwc.serializeDocument(pretty=True)
+        self.assertTrue(SIMPLE_DARWIN_SNIPPET.encode('utf8') in dwc_data)
 
 
 class SimpleDarwinRecordSetTest(unittest.TestCase):
