@@ -1,8 +1,7 @@
-"""
-Foxml creation.
-"""
-#Default foxml from the reference exmample - http://fedora-commons.org/documentation/3.3.1/ - http://fedora-commons.org/documentation/3.3.1/attachments/4718716/4915209.xml
+# coding: utf-8
+from __future__ import unicode_literals
 
+#Default foxml from the reference exmample - http://fedora-commons.org/documentation/3.3.1/ - http://fedora-commons.org/documentation/3.3.1/attachments/4718716/4915209.xml
 FOX = """
 <foxml:digitalObject VERSION="1.1" PID="demo:999" xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/definitions/1/0/foxml1-1.xsd" xmlns:foxml="info:fedora/fedora-system:def/foxml#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <foxml:objectProperties>
@@ -47,10 +46,10 @@ from eulxml.xmlmap import StringField as SF
 from eulxml.xmlmap import NodeField, NodeListField
 
 #Local xml maps
-from mets import BDRMets, METS_NAMESPACE
-from rels import RelsExt, RelsInt
-from rights import Rights, RIGHTS_NAMESPACE
-from irMetadata import IR, IR_NAMESPACE
+from .mets import BDRMets, METS_NAMESPACE
+from .rels import RelsExt, RelsInt
+from .rights import Rights, RIGHTS_NAMESPACE
+from .irMetadata import IR, IR_NAMESPACE
 
 
 FOXNS = 'info:fedora/fedora-system:def/foxml#'

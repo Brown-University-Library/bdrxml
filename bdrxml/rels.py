@@ -1,7 +1,5 @@
-"""
-Create RELS-EXT and RELS-INT
-"""
-
+# coding: utf-8
+from __future__ import unicode_literals
 from eulxml import xmlmap
 from eulxml.xmlmap import StringField as SF
 from eulxml.xmlmap import NodeListField

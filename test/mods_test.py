@@ -1,9 +1,10 @@
 # coding: utf-8
+from __future__ import unicode_literals
 import unittest
 from eulxml.xmlmap  import load_xmlobject_from_string
 from bdrxml import mods
 
-SAMPLE_MODS = u'''
+SAMPLE_MODS = '''
 <mods:mods xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="id101" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
   <mods:titleInfo>
     <mods:title>Poétry
@@ -154,7 +155,7 @@ SAMPLE_MODS = u'''
   </mods:relatedItem>
 </mods:mods>
 '''
-CREATE_MODS = u'''<mods:mods xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-4.xsd">
+MODS_SNIPPET = '''
   <mods:titleInfo>
     <mods:title>Poétry</mods:title>
   </mods:titleInfo>
@@ -169,33 +170,33 @@ class ModsReadWrite(unittest.TestCase):
     def test_load_sample_mods(self):
         loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
         self.assertEqual(loaded.id, 'id101')
-        self.assertEqual(loaded.title, u'Poétry\n    Title')
+        self.assertEqual(loaded.title, 'Poétry\n    Title')
         self.assertEqual(loaded.title_info[1].title, 'Other title')
         self.assertEqual(loaded.title_info[2].title, 'alternative title')
         self.assertEqual(loaded.title_info[2].type, 'alternative')
         self.assertEqual(loaded.title_info[2].label, 'First line')
         self.assertEqual(loaded.origin_info.label, 'date added')
-        self.assertEqual(loaded.origin_info.places[0].place_terms[0].text, u'USA')
-        self.assertEqual(loaded.origin_info.places[0].place_terms[0].authority, u'auth')
+        self.assertEqual(loaded.origin_info.places[0].place_terms[0].text, 'USA')
+        self.assertEqual(loaded.origin_info.places[0].place_terms[0].authority, 'auth')
         self.assertEqual(loaded.origin_info.places[0].place_terms[0].authority_uri, 'http://auth.com')
         self.assertEqual(loaded.origin_info.places[0].place_terms[0].value_uri, 'http://auth.com/usa')
 
         #test names
-        personal_names = [unicode(name.name_parts[0].text) for name in loaded.names if name.type == 'personal' and name.name_parts[0].text]
+        personal_names = [name.name_parts[0].text for name in loaded.names if name.type == 'personal' and name.name_parts[0].text]
         self.assertEqual(len(personal_names), 3)
-        personal_name_list = [u'Smith, Tom', u'Baker, Jim', u'Wilson, Jane']
+        personal_name_list = ['Smith, Tom', 'Baker, Jim', 'Wilson, Jane']
         for i in range(3):
             self.assertTrue(personal_names[i] in personal_name_list)
-        corporate_names = [unicode(name) for name in loaded.names if name.type == 'corporate']
-        corporate_name_list = [u'Brown University. English', 'Providence, RI']
+        corporate_names = [name.name_parts[0].text for name in loaded.names if name.type == 'corporate']
+        corporate_name_list = ['Brown University. English', 'Providence, RI']
         self.assertEqual(corporate_names, corporate_name_list)
-        tom_smith = [name for name in loaded.names if name.name_parts[0].text == u'Smith, Tom'][0]
-        self.assertEqual(tom_smith.authority, u'fast')
-        self.assertEqual(tom_smith.authority_uri, u'http://fast.com')
-        self.assertEqual(tom_smith.value_uri, u'http://fast.com/1')
-        self.assertEqual(tom_smith.roles[0].authority, u'marcrelator')
-        self.assertEqual(tom_smith.roles[0].authority_uri, u'http://id.loc.gov/vocabulary/relators')
-        self.assertEqual(tom_smith.roles[0].value_uri, u'http://id.loc.gov/vocabulary/relators/cre')
+        tom_smith = [name for name in loaded.names if name.name_parts[0].text == 'Smith, Tom'][0]
+        self.assertEqual(tom_smith.authority, 'fast')
+        self.assertEqual(tom_smith.authority_uri, 'http://fast.com')
+        self.assertEqual(tom_smith.value_uri, 'http://fast.com/1')
+        self.assertEqual(tom_smith.roles[0].authority, 'marcrelator')
+        self.assertEqual(tom_smith.roles[0].authority_uri, 'http://id.loc.gov/vocabulary/relators')
+        self.assertEqual(tom_smith.roles[0].value_uri, 'http://id.loc.gov/vocabulary/relators/cre')
 
         self.assertEqual(loaded.resource_type, 'text')
         self.assertEqual(loaded.genres[1].text, 'aat theses')
@@ -207,28 +208,28 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(s.authority, 'fast')
         self.assertEqual(s.authority_uri, 'http://fast.com')
         self.assertEqual(s.value_uri, 'http://fast.com/456')
-        self.assertEqual(loaded.notes[0].text, u'Thésis (Ph.D.)')
-        self.assertEqual(loaded.target_audiences[0].text, u'Target Audience')
-        self.assertEqual(loaded.target_audiences[0].authority, u'local')
-        self.assertEqual(loaded.physical_description.extent, u'viii, 208 p.')
-        self.assertEqual(loaded.physical_description.digital_origin, u'born digital')
-        self.assertEqual(loaded.physical_description.note, u'note 1')
-        self.assertEqual(loaded.classifications[0].text, u'Some classification')
-        self.assertEqual(loaded.classifications[0].label, u'Test classification')
-        self.assertEqual(loaded.classifications[0].authority, u'classauth')
-        self.assertEqual(loaded.classifications[0].authority_uri, u'http://classauth.com')
-        self.assertEqual(loaded.classifications[0].value_uri, u'http://classauth.com/some')
-        self.assertEqual(loaded.locations[0].physical.text, u'Random location')
-        self.assertEqual(loaded.locations[0].physical.authority, u'locauth')
-        self.assertEqual(loaded.locations[0].physical.authority_uri, u'http://locauth.com')
-        self.assertEqual(loaded.locations[0].physical.value_uri, u'http://locauth.com/random')
-        self.assertEqual(loaded.locations[0].holding_simple.copy_information[0].notes[0].text, u'location note')
-        self.assertEqual(loaded.related_items[1].label, u'location of original')
-        self.assertEqual(loaded.related_items[1].classifications[0].text, u'Classification')
+        self.assertEqual(loaded.notes[0].text, 'Thésis (Ph.D.)')
+        self.assertEqual(loaded.target_audiences[0].text, 'Target Audience')
+        self.assertEqual(loaded.target_audiences[0].authority, 'local')
+        self.assertEqual(loaded.physical_description.extent, 'viii, 208 p.')
+        self.assertEqual(loaded.physical_description.digital_origin, 'born digital')
+        self.assertEqual(loaded.physical_description.note, 'note 1')
+        self.assertEqual(loaded.classifications[0].text, 'Some classification')
+        self.assertEqual(loaded.classifications[0].label, 'Test classification')
+        self.assertEqual(loaded.classifications[0].authority, 'classauth')
+        self.assertEqual(loaded.classifications[0].authority_uri, 'http://classauth.com')
+        self.assertEqual(loaded.classifications[0].value_uri, 'http://classauth.com/some')
+        self.assertEqual(loaded.locations[0].physical.text, 'Random location')
+        self.assertEqual(loaded.locations[0].physical.authority, 'locauth')
+        self.assertEqual(loaded.locations[0].physical.authority_uri, 'http://locauth.com')
+        self.assertEqual(loaded.locations[0].physical.value_uri, 'http://locauth.com/random')
+        self.assertEqual(loaded.locations[0].holding_simple.copy_information[0].notes[0].text, 'location note')
+        self.assertEqual(loaded.related_items[1].label, 'location of original')
+        self.assertEqual(loaded.related_items[1].classifications[0].text, 'Classification')
 
     def test_create_mods(self):
-        self.mods.title = u'Poétry'
-        self.assertEqual(unicode(self.mods.serialize(pretty=True), 'utf-8'), CREATE_MODS)
+        self.mods.title = 'Poétry'
+        self.assertTrue(MODS_SNIPPET.encode('utf8') in self.mods.serialize(pretty=True))
 
     def test_round_trip(self):
         self.mods.title = "Sample title"

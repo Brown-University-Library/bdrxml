@@ -1,4 +1,5 @@
-# encoding=UTF-8
+# coding: utf-8
+from __future__ import unicode_literals
 import unittest
 from eulxml.xmlmap import load_xmlobject_from_string
 from bdrxml import darwincore
@@ -44,13 +45,16 @@ SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
 '''
 
 #validates
-CREATED_SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
-<sdr:SimpleDarwinRecordSet xmlns:dc="http://purl.org/dc/terms/" xmlns:dwc="http://rs.tdwg.org/dwc/terms/" xmlns:sdr="http://rs.tdwg.org/dwc/xsd/simpledarwincore/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://rs.tdwg.org/dwc/xsd/simpledarwincore/ http://rs.tdwg.org/dwc/xsd/tdwg_dwc_simple.xsd">
+SIMPLE_DARWIN_SNIPPET = '''
   <sdr:SimpleDarwinRecord>
     <dwc:catalogNumber>catalog number</dwc:catalogNumber>
   </sdr:SimpleDarwinRecord>
-</sdr:SimpleDarwinRecordSet>
 '''
+CREATED_SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
+<sdr:SimpleDarwinRecordSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dc="http://purl.org/dc/terms/" xmlns:dwc="http://rs.tdwg.org/dwc/terms/" xmlns:sdr="http://rs.tdwg.org/dwc/xsd/simpledarwincore/" xsi:schemaLocation="http://rs.tdwg.org/dwc/xsd/simpledarwincore/ http://rs.tdwg.org/dwc/xsd/tdwg_dwc_simple.xsd">
+%s
+</sdr:SimpleDarwinRecordSet>
+''' % SIMPLE_DARWIN_SNIPPET
 
 
 class SimpleDarwinRecordSetTestLoad(unittest.TestCase):
@@ -61,65 +65,66 @@ class SimpleDarwinRecordSetTestLoad(unittest.TestCase):
     def test_1(self):
         self.dwc.create_simple_darwin_record()
         self.dwc.simple_darwin_record.catalog_number = 'catalog number'
-        self.assertEqual(self.dwc.serializeDocument(pretty=True), CREATED_SIMPLE_DARWIN_SET_XML)
+        dwc_data = self.dwc.serializeDocument(pretty=True)
+        self.assertTrue(SIMPLE_DARWIN_SNIPPET.encode('utf8') in dwc_data)
 
 
 class SimpleDarwinRecordSetTest(unittest.TestCase):
 
     def setUp(self):
-        self.dwc = load_xmlobject_from_string(SIMPLE_DARWIN_SET_XML, darwincore.SimpleDarwinRecordSet)
+        self.dwc = load_xmlobject_from_string(SIMPLE_DARWIN_SET_XML.encode('utf8'), darwincore.SimpleDarwinRecordSet)
 
     def test_root(self):
-        self.assertEqual(self.dwc.ROOT_NAME, u'SimpleDarwinRecordSet')
-        self.assertEqual(self.dwc.simple_darwin_record.ROOT_NAME, u'SimpleDarwinRecord')
-        self.assertEqual(self.dwc.simple_darwin_record.type, u'Test')
-        self.assertEqual(self.dwc.simple_darwin_record.language, u'én')
-        self.assertEqual(self.dwc.simple_darwin_record.rights, u'Public')
-        self.assertEqual(self.dwc.simple_darwin_record.references, u'asdf')
-        self.assertEqual(self.dwc.simple_darwin_record.basis_of_record, u'Taxon')
-        self.assertEqual(self.dwc.simple_darwin_record.catalog_number, u'catalog number')
-        self.assertEqual(self.dwc.simple_darwin_record.recorded_by, u'recorded by')
-        self.assertEqual(self.dwc.simple_darwin_record.record_number, u'2')
-        self.assertEqual(self.dwc.simple_darwin_record.individual_id, u'individual id')
-        self.assertEqual(self.dwc.simple_darwin_record.scientific_name, u'Ctenomys sociabilis')
-        self.assertEqual(self.dwc.simple_darwin_record.higher_classification, u'Animalia; Chordata; Vertebrata; Mammalia; Theria; Eutheria; Rodentia; Hystricognatha; Hystricognathi; Ctenomyidae; Ctenomyini; Ctenomys')
-        self.assertEqual(self.dwc.simple_darwin_record.kingdom, u'Animalia')
-        self.assertEqual(self.dwc.simple_darwin_record.phylum, u'Chordata')
-        self.assertEqual(self.dwc.simple_darwin_record.class_, u'Mammalia')
-        self.assertEqual(self.dwc.simple_darwin_record.order, u'Rodentia')
-        self.assertEqual(self.dwc.simple_darwin_record.genus, u'Cténomys')
-        self.assertEqual(self.dwc.simple_darwin_record.accepted_name_usage, u'Ctenomys sociabilis Pearson and Christie, 1985')
-        self.assertEqual(self.dwc.simple_darwin_record.specific_epithet, u'sociabilis')
-        self.assertEqual(self.dwc.simple_darwin_record.infraspecific_epithet, u'sociabilis sub')
-        self.assertEqual(self.dwc.simple_darwin_record.taxon_rank, u'subspecies')
-        self.assertEqual(self.dwc.simple_darwin_record.scientific_name_authorship, u'Pearson and Christie, 1985')
-        self.assertEqual(self.dwc.simple_darwin_record.municipality, u'Some City')
-        self.assertEqual(self.dwc.simple_darwin_record.locality, u'Locality information')
+        self.assertEqual(self.dwc.ROOT_NAME, 'SimpleDarwinRecordSet')
+        self.assertEqual(self.dwc.simple_darwin_record.ROOT_NAME, 'SimpleDarwinRecord')
+        self.assertEqual(self.dwc.simple_darwin_record.type, 'Test')
+        self.assertEqual(self.dwc.simple_darwin_record.language, 'én')
+        self.assertEqual(self.dwc.simple_darwin_record.rights, 'Public')
+        self.assertEqual(self.dwc.simple_darwin_record.references, 'asdf')
+        self.assertEqual(self.dwc.simple_darwin_record.basis_of_record, 'Taxon')
+        self.assertEqual(self.dwc.simple_darwin_record.catalog_number, 'catalog number')
+        self.assertEqual(self.dwc.simple_darwin_record.recorded_by, 'recorded by')
+        self.assertEqual(self.dwc.simple_darwin_record.record_number, '2')
+        self.assertEqual(self.dwc.simple_darwin_record.individual_id, 'individual id')
+        self.assertEqual(self.dwc.simple_darwin_record.scientific_name, 'Ctenomys sociabilis')
+        self.assertEqual(self.dwc.simple_darwin_record.higher_classification, 'Animalia; Chordata; Vertebrata; Mammalia; Theria; Eutheria; Rodentia; Hystricognatha; Hystricognathi; Ctenomyidae; Ctenomyini; Ctenomys')
+        self.assertEqual(self.dwc.simple_darwin_record.kingdom, 'Animalia')
+        self.assertEqual(self.dwc.simple_darwin_record.phylum, 'Chordata')
+        self.assertEqual(self.dwc.simple_darwin_record.class_, 'Mammalia')
+        self.assertEqual(self.dwc.simple_darwin_record.order, 'Rodentia')
+        self.assertEqual(self.dwc.simple_darwin_record.genus, 'Cténomys')
+        self.assertEqual(self.dwc.simple_darwin_record.accepted_name_usage, 'Ctenomys sociabilis Pearson and Christie, 1985')
+        self.assertEqual(self.dwc.simple_darwin_record.specific_epithet, 'sociabilis')
+        self.assertEqual(self.dwc.simple_darwin_record.infraspecific_epithet, 'sociabilis sub')
+        self.assertEqual(self.dwc.simple_darwin_record.taxon_rank, 'subspecies')
+        self.assertEqual(self.dwc.simple_darwin_record.scientific_name_authorship, 'Pearson and Christie, 1985')
+        self.assertEqual(self.dwc.simple_darwin_record.municipality, 'Some City')
+        self.assertEqual(self.dwc.simple_darwin_record.locality, 'Locality information')
 
     def test_output(self):
-        self.assertEqual(self.dwc.serializeDocument(pretty=True), SIMPLE_DARWIN_SET_XML)
+        self.assertEqual(self.dwc.serializeDocument(pretty=True), SIMPLE_DARWIN_SET_XML.encode('utf8'))
 
 class SimpleDarwinRecordSetIndexerTest(unittest.TestCase):
 
     def setUp(self):
-        self.dwc = load_xmlobject_from_string(SIMPLE_DARWIN_SET_XML, darwincore.SimpleDarwinRecordSet)
+        self.dwc = load_xmlobject_from_string(SIMPLE_DARWIN_SET_XML.encode('utf8'), darwincore.SimpleDarwinRecordSet)
 
     def test_indexing(self):
         index_data = darwincore.SimpleDarwinRecordIndexer(self.dwc.simple_darwin_record).index_data()
-        self.assertEqual(index_data['dwc_recorded_by_ssi'], u'recorded by')
-        self.assertEqual(index_data['dwc_record_number_ssi'], u'2')
-        self.assertEqual(index_data['dwc_class_ssi'], u'Mammalia')
-        self.assertEqual(index_data['dwc_genus_ssi'], u'Cténomys')
-        self.assertEqual(index_data['dwc_identification_id_ssi'], u'én12345')
-        self.assertEqual(index_data['dwc_infraspecific_epithet_ssi'], u'sociabilis sub')
-        self.assertEqual(index_data['dwc_taxon_rank_ssi'], u'subspecies')
-        self.assertEqual(index_data['dwc_taxon_rank_abbr_ssi'], u'subsp.')
+        self.assertEqual(index_data['dwc_recorded_by_ssi'], 'recorded by')
+        self.assertEqual(index_data['dwc_record_number_ssi'], '2')
+        self.assertEqual(index_data['dwc_class_ssi'], 'Mammalia')
+        self.assertEqual(index_data['dwc_genus_ssi'], 'Cténomys')
+        self.assertEqual(index_data['dwc_identification_id_ssi'], 'én12345')
+        self.assertEqual(index_data['dwc_infraspecific_epithet_ssi'], 'sociabilis sub')
+        self.assertEqual(index_data['dwc_taxon_rank_ssi'], 'subspecies')
+        self.assertEqual(index_data['dwc_taxon_rank_abbr_ssi'], 'subsp.')
         self.assertTrue('dwc_family_ssi' not in index_data)
 
     def test_sparse_record(self):
-        dwc = load_xmlobject_from_string(CREATED_SIMPLE_DARWIN_SET_XML, darwincore.SimpleDarwinRecordSet)
+        dwc = load_xmlobject_from_string(CREATED_SIMPLE_DARWIN_SET_XML.encode('utf8'), darwincore.SimpleDarwinRecordSet)
         index_data = darwincore.SimpleDarwinRecordIndexer(dwc.simple_darwin_record).index_data()
-        self.assertEqual(index_data, {'dwc_catalog_number_ssi': u'catalog number'})
+        self.assertEqual(index_data, {'dwc_catalog_number_ssi': 'catalog number'})
 
     def test_taxon_rank_abbr(self):
         dwc = darwincore.make_simple_darwin_record_set()
@@ -127,9 +132,9 @@ class SimpleDarwinRecordSetIndexerTest(unittest.TestCase):
         indexer = darwincore.SimpleDarwinRecordIndexer(dwc.simple_darwin_record)
         self.assertEqual(indexer._get_taxon_rank_abbr(), '')
         dwc.simple_darwin_record.taxon_rank = 'variety'
-        self.assertEqual(indexer._get_taxon_rank_abbr(), u'var.')
+        self.assertEqual(indexer._get_taxon_rank_abbr(), 'var.')
         dwc.simple_darwin_record.taxon_rank = 'subspecies'
-        self.assertEqual(indexer._get_taxon_rank_abbr(), u'subsp.')
+        self.assertEqual(indexer._get_taxon_rank_abbr(), 'subsp.')
 
 
 def suite():

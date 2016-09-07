@@ -1,3 +1,5 @@
+# coding: utf-8
+from __future__ import unicode_literals
 import unittest
 from eulxml.xmlmap  import load_xmlobject_from_string
 from bdrxml.rights import (
@@ -33,7 +35,7 @@ class HydraRightsReadWrite(unittest.TestCase):
 </rightsMetadata>"""
 
     def setUp(self):
-        self.rights = load_xmlobject_from_string(self.FIXTURE, HydraRights)
+        self.rights = load_xmlobject_from_string(self.FIXTURE.encode('utf8'), HydraRights)
 
     def test_group_access(self):
         self.assertEqual( ['group3', 'group9', 'group8'], self.rights.read_access_group )
@@ -159,31 +161,27 @@ class RightsReadWrite(unittest.TestCase):
         }, self.rights.index_data_hydra())
 
 
-EMPTY_RIGHTS_XML = """<rights:RightsDeclarationMD xmlns:rights="http://cosimo.stanford.edu/sdr/metsrights/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cosimo.stanford.edu/sdr/rights http://cosimo.stanford.edu/sdr/metsrights.xsd"><rights:RightsHolder/></rights:RightsDeclarationMD>"""
-
-EMPTY_HYDRA_RIGHTS_XML = """<rightsMetadata xmlns:hydra="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1"/>"""
-
-RIGHTS_WITH_USERS = """<rights:RightsDeclarationMD xmlns:rights="http://cosimo.stanford.edu/sdr/metsrights/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cosimo.stanford.edu/sdr/rights http://cosimo.stanford.edu/sdr/metsrights.xsd">
-  <rights:RightsHolder CONTEXTIDS="rights000 rights001 rights002 rights003"/>
-  <rights:Context CONTEXTID="rights000">
+#remove the first line with the namespaces, because their order changes randomly
+JOHNNY_RIGHTS = """
     <rights:Permissions DELETE="false" DISCOVER="true" DISPLAY="true" MODIFY="false"/>
     <rights:UserName USERTYPE="INDIVIDUAL">johnny@brown.edu</rights:UserName>
   </rights:Context>
-  <rights:Context CONTEXTID="rights001">
+"""
+BROWN_GROUP_RIGHTS = """
     <rights:Permissions DELETE="false" DISCOVER="false" DISPLAY="true" MODIFY="false"/>
     <rights:UserName USERTYPE="GROUP">BROWN:GROUP</rights:UserName>
   </rights:Context>
-  <rights:Context CONTEXTID="rights002">
+"""
+JACK_RIGHTS = """
     <rights:Permissions DELETE="false" DISCOVER="false" DISPLAY="true" MODIFY="false"/>
     <rights:UserName USERTYPE="INDIVIDUAL">jack@brown.edu</rights:UserName>
   </rights:Context>
-  <rights:Context CONTEXTID="rights003">
+"""
+JIM_RIGHTS = """
     <rights:Permissions DELETE="false" DISCOVER="false" DISPLAY="false" MODIFY="true"/>
     <rights:UserName USERTYPE="INDIVIDUAL">jim@brown.edu</rights:UserName>
   </rights:Context>
-</rights:RightsDeclarationMD>
 """
-
 HYDRA_RIGHTS_WITH_USERS = """<rightsMetadata xmlns:hydra="http://hydra-collab.stanford.edu/schemas/rightsMetadata/v1">
   <hydra:access type="read">
     <hydra:machine>
@@ -206,23 +204,10 @@ HYDRA_RIGHTS_WITH_USERS = """<rightsMetadata xmlns:hydra="http://hydra-collab.st
 """
 
 class Builder(unittest.TestCase):
-    """Test for the rights builder"""
 
     def setUp(self):
         self.builder = RightsBuilder()
     
-    def test_empty_bdrBuild(self):
-        """If nothing has been added to the builder then the builder should serialize to the same as EMPTY_RIGHTS_XML"""
-        rights = self.builder.build()
-        rights_str = rights.serialize()
-        self.assertEqual(rights_str, EMPTY_RIGHTS_XML)
-
-    def test_empty_hydraBuild(self):
-        """If nothing has been added to the builder then the builder should serialize to the same as EMPTY_RIGHTS_XML"""
-        rights = self.builder.build_hydra()
-        rights_str = rights.serialize()
-        self.assertEqual(rights_str, EMPTY_HYDRA_RIGHTS_XML)
-
     def test_empty(self):
         """If no identities have been added then the result of all_identities should be an empty set"""
         self.assertEqual(set([]), self.builder.all_identities)
@@ -250,7 +235,10 @@ class Builder(unittest.TestCase):
         self.builder.addReader('johnny@brown.edu').addDiscoverer('johnny@brown.edu')
         rights = self.builder.build()
         rights_str = rights.serialize(pretty=True)
-        self.assertEqual(rights_str, RIGHTS_WITH_USERS)
+        self.assertTrue(JACK_RIGHTS.encode('utf8') in rights_str)
+        self.assertTrue(JOHNNY_RIGHTS.encode('utf8') in rights_str)
+        self.assertTrue(JIM_RIGHTS.encode('utf8') in rights_str)
+        self.assertTrue(BROWN_GROUP_RIGHTS.encode('utf8') in rights_str)
         
     def test_add_users_and_build_hydra(self):
         self.builder.addReader('jack@brown.edu').addReader('BROWN:GROUP')
@@ -259,7 +247,15 @@ class Builder(unittest.TestCase):
         self.builder.addReader('johnny@brown.edu').addDiscoverer('johnny@brown.edu')
         rights = self.builder.build_hydra()
         rights_str = rights.serialize(pretty=True)
-        self.assertEqual(rights_str, HYDRA_RIGHTS_WITH_USERS)
+        hydra_rights = load_xmlobject_from_string(rights_str, HydraRights)
+        self.assertEqual(hydra_rights.discover_access_group, [])
+        self.assertEqual(hydra_rights.discover_access_person, ['johnny@brown.edu'])
+        self.assertEqual(hydra_rights.read_access_group, ['BROWN:GROUP'])
+        self.assertEqual(sorted(hydra_rights.read_access_person), ['jack@brown.edu', 'johnny@brown.edu'])
+        self.assertEqual(hydra_rights.edit_access_group, [])
+        self.assertEqual(hydra_rights.edit_access_person, ['jim@brown.edu'])
+        self.assertEqual(hydra_rights.delete_access_group, [])
+        self.assertEqual(hydra_rights.delete_access_person, [])
 
     def test_getting_builder_back_from_bdr_rights(self):
         self.builder.addReader('jack@brown.edu').addReader('BROWN:GROUP')

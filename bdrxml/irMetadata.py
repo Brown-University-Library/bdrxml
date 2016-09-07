@@ -1,8 +1,5 @@
-"""
-Making irMetadata for the BDR.
-
-"""
-
+# coding: utf-8
+from __future__ import unicode_literals
 from eulxml import xmlmap
 from eulxml.xmlmap import XmlObject
 from eulxml.xmlmap import StringField as SF
