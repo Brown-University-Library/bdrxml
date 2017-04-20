@@ -99,6 +99,8 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
         self.assertEqual(self.dwc.simple_darwin_record.scientific_name_authorship, 'Pearson and Christie, 1985')
         self.assertEqual(self.dwc.simple_darwin_record.municipality, 'Some City')
         self.assertEqual(self.dwc.simple_darwin_record.locality, 'Locality information')
+        self.assertEqual(self.dwc.simple_darwin_record.license, 'http://creativecommons.org/licenses/by-sa/3.0/')
+        self.assertEqual(self.dwc.simple_darwin_record.identification_id, 'én12345')
 
     def test_output(self):
         self.assertEqual(self.dwc.serializeDocument(pretty=True), SIMPLE_DARWIN_SET_XML.encode('utf8'))

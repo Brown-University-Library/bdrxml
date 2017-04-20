@@ -20,6 +20,7 @@ class SimpleDarwinRecord(xmlmap.XmlObject):
     modified = xmlmap.StringField('dc:modified')
     language = xmlmap.StringField('dc:language')
     rights = xmlmap.StringField('dc:rights')
+    license = xmlmap.StringField('dc:license')
     rights_holder = xmlmap.StringField('dc:rightsHolder')
     bibliographic_citation = xmlmap.StringField('dc:bibliographicCitation')
     references = xmlmap.StringField('dc:references')
