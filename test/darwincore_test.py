@@ -54,6 +54,13 @@ CREATED_SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
 ''' % SIMPLE_DARWIN_SNIPPET
 
 
+class SimpleDarwinRecordTest(unittest.TestCase):
+
+    def test_1(self):
+        sdr = darwincore.make_simple_darwin_record()
+        self.assertTrue(sdr.is_valid())
+
+
 class SimpleDarwinRecordSetTestLoad(unittest.TestCase):
 
     def setUp(self):
@@ -108,6 +115,7 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
 
 def suite():
     suite = unittest.TestSuite()
+    suite.addTest(SimpleDarwinRecordTest('test_1'))
     suite.addTest(SimpleDarwinRecordSetTest('test_root'))
     suite.addTest(SimpleDarwinRecordSetTest('test_output'))
     suite.addTest(SimpleDarwinRecordSetTest('test_validate'))
