@@ -38,6 +38,15 @@ SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
     <dwc:nomenclaturalCode>ICZN</dwc:nomenclaturalCode>
     <dwc:namePublishedIn>Pearson O. P., and M. I. Christie. 1985. Historia Natural, 5(37):388</dwc:namePublishedIn>
     <dwc:dynamicProperties>iucnStatus=vulnerable; distribution=Neuquen, Argentina</dwc:dynamicProperties>
+    <dwc:collectionID>col 123</dwc:collectionID>
+    <dwc:collectionCode>col code</dwc:collectionCode>
+    <dwc:year>2002</dwc:year>
+    <dwc:month>--05</dwc:month>
+    <dwc:day>---02</dwc:day>
+    <dwc:startDayOfYear>234</dwc:startDayOfYear>
+    <dwc:endDayOfYear>237</dwc:endDayOfYear>
+    <dwc:occurrenceID>occ xyz</dwc:occurrenceID>
+    <dwc:institutionCode>BRU</dwc:institutionCode>
  </sdr:SimpleDarwinRecord>
 </sdr:SimpleDarwinRecordSet>
 '''
@@ -80,7 +89,7 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
 
     def test_validate(self):
         valid = self.dwc.is_valid()
-        self.assertTrue(valid)
+        self.assertTrue(valid, self.dwc.validation_errors())
 
     def test_root(self):
         self.assertEqual(self.dwc.ROOT_NAME, 'SimpleDarwinRecordSet')
@@ -108,6 +117,15 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
         self.assertEqual(self.dwc.simple_darwin_record.locality, 'Locality information')
         self.assertEqual(self.dwc.simple_darwin_record.license, 'http://creativecommons.org/licenses/by-sa/3.0/')
         self.assertEqual(self.dwc.simple_darwin_record.identification_id, 'én12345')
+        self.assertEqual(self.dwc.simple_darwin_record.collection_id, 'col 123')
+        self.assertEqual(self.dwc.simple_darwin_record.collection_code, 'col code')
+        self.assertEqual(self.dwc.simple_darwin_record.year, '2002')
+        self.assertEqual(self.dwc.simple_darwin_record.month, '--05')
+        self.assertEqual(self.dwc.simple_darwin_record.day, '---02')
+        self.assertEqual(self.dwc.simple_darwin_record.occurence_id, 'occ xyz')
+        self.assertEqual(self.dwc.simple_darwin_record.start_day_of_year, '234')
+        self.assertEqual(self.dwc.simple_darwin_record.end_day_of_year, '237')
+        self.assertEqual(self.dwc.simple_darwin_record.institution_code, 'BRU')
 
     def test_output(self):
         self.assertEqual(self.dwc.serializeDocument(pretty=True), SIMPLE_DARWIN_SET_XML.encode('utf8'))
