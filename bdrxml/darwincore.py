@@ -19,7 +19,7 @@ class SimpleDarwinRecord(xmlmap.XmlObject):
     type_ = xmlmap.StringField('dc:type')
     modified = xmlmap.StringField('dc:modified')
     language = xmlmap.StringField('dc:language')
-    rights = xmlmap.StringField('dc:rights')
+    rights = xmlmap.StringField('dc:rights') #deprecated - probably use license instead
     license = xmlmap.StringField('dc:license')
     rights_holder = xmlmap.StringField('dc:rightsHolder')
     bibliographic_citation = xmlmap.StringField('dc:bibliographicCitation')
@@ -50,6 +50,15 @@ class SimpleDarwinRecord(xmlmap.XmlObject):
     country = xmlmap.StringField('dwc:country')
     habitat = xmlmap.StringField('dwc:habitat')
     identification_id = xmlmap.StringField('dwc:identificationID')
+    collection_id = xmlmap.StringField('dwc:collectionID')
+    collection_code = xmlmap.StringField('dwc:collectionCode')
+    year = xmlmap.StringField('dwc:year')
+    month = xmlmap.StringField('dwc:month')
+    day = xmlmap.StringField('dwc:day')
+    occurence_id = xmlmap.StringField('dwc:occurrenceID')
+    start_day_of_year = xmlmap.StringField('dwc:startDayOfYear')
+    end_day_of_year = xmlmap.StringField('dwc:endDayOfYear')
+    institution_code = xmlmap.StringField('dwc:institutionCode')
 
 
 class SimpleDarwinRecordSet(xmlmap.XmlObject):
