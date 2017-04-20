@@ -16,10 +16,11 @@ class SimpleDarwinRecord(xmlmap.XmlObject):
     XSD_SCHEMA = None
     ROOT_NAMESPACES = {}
 
-    type = xmlmap.StringField('dc:type')
+    type_ = xmlmap.StringField('dc:type')
     modified = xmlmap.StringField('dc:modified')
     language = xmlmap.StringField('dc:language')
     rights = xmlmap.StringField('dc:rights')
+    license = xmlmap.StringField('dc:license')
     rights_holder = xmlmap.StringField('dc:rightsHolder')
     bibliographic_citation = xmlmap.StringField('dc:bibliographicCitation')
     references = xmlmap.StringField('dc:references')
@@ -27,7 +28,6 @@ class SimpleDarwinRecord(xmlmap.XmlObject):
     catalog_number = xmlmap.StringField('dwc:catalogNumber')
     recorded_by = xmlmap.StringField('dwc:recordedBy')
     record_number = xmlmap.StringField('dwc:recordNumber')
-    individual_id = xmlmap.StringField('dwc:individualID')
     event_date = xmlmap.StringField('dwc:eventDate')
     verbatim_event_date = xmlmap.StringField('dwc:verbatimEventDate')
     scientific_name = xmlmap.StringField('dwc:scientificName')
@@ -63,34 +63,6 @@ class SimpleDarwinRecordSet(xmlmap.XmlObject):
     xsi_schema_location = xmlmap.StringField('@xsi:schemaLocation')
 
     simple_darwin_record = xmlmap.NodeField('sdr:SimpleDarwinRecord', SimpleDarwinRecord)
-
-
-class SimpleDarwinRecordIndexer(object):
-
-    def __init__(self, dwc):
-        self.dwc = dwc
-
-    def _get_taxon_rank_abbr(self):
-        mapping = {'variety': 'var.', 'subspecies': 'subsp.'}
-        return mapping.get(self.dwc.taxon_rank, '')
-
-    def index_data(self):
-        fields = ['catalog_number', 'recorded_by', 'record_number', 'individual_id', 'event_date', 'verbatim_event_date',
-                'scientific_name', 'higher_classification', 'kingdom', 'phylum', 'class_', 'order',
-                'family', 'genus', 'specific_epithet', 'infraspecific_epithet', 'taxon_rank', 'accepted_name_usage',
-                'scientific_name_authorship', 'county', 'state_province', 'country', 'habitat', 'identification_id']
-        data = {}
-        for field in fields:
-            if getattr(self.dwc, field):
-                if field.endswith(u'_'):
-                    field_name = u'dwc_%sssi' % field
-                else:
-                    field_name = u'dwc_%s_ssi' % field
-                data[field_name] =  u'%s' % getattr(self.dwc, field)
-        taxon_rank_abbr = self._get_taxon_rank_abbr()
-        if taxon_rank_abbr:
-            data['dwc_taxon_rank_abbr_ssi'] = taxon_rank_abbr
-        return data
 
 
 def make_simple_darwin_record():
