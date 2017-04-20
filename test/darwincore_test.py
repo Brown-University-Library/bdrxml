@@ -78,7 +78,7 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
     def test_root(self):
         self.assertEqual(self.dwc.ROOT_NAME, 'SimpleDarwinRecordSet')
         self.assertEqual(self.dwc.simple_darwin_record.ROOT_NAME, 'SimpleDarwinRecord')
-        self.assertEqual(self.dwc.simple_darwin_record.type, 'Test')
+        self.assertEqual(self.dwc.simple_darwin_record.type_, 'Test')
         self.assertEqual(self.dwc.simple_darwin_record.language, 'én')
         self.assertEqual(self.dwc.simple_darwin_record.references, 'asdf')
         self.assertEqual(self.dwc.simple_darwin_record.basis_of_record, 'Taxon')
@@ -103,47 +103,12 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
     def test_output(self):
         self.assertEqual(self.dwc.serializeDocument(pretty=True), SIMPLE_DARWIN_SET_XML.encode('utf8'))
 
-class SimpleDarwinRecordSetIndexerTest(unittest.TestCase):
-
-    def setUp(self):
-        self.dwc = load_xmlobject_from_string(SIMPLE_DARWIN_SET_XML.encode('utf8'), darwincore.SimpleDarwinRecordSet)
-
-    def test_indexing(self):
-        index_data = darwincore.SimpleDarwinRecordIndexer(self.dwc.simple_darwin_record).index_data()
-        self.assertEqual(index_data['dwc_recorded_by_ssi'], 'recorded by')
-        self.assertEqual(index_data['dwc_record_number_ssi'], '2')
-        self.assertEqual(index_data['dwc_class_ssi'], 'Mammalia')
-        self.assertEqual(index_data['dwc_genus_ssi'], 'Cténomys')
-        self.assertEqual(index_data['dwc_identification_id_ssi'], 'én12345')
-        self.assertEqual(index_data['dwc_infraspecific_epithet_ssi'], 'sociabilis sub')
-        self.assertEqual(index_data['dwc_taxon_rank_ssi'], 'subspecies')
-        self.assertEqual(index_data['dwc_taxon_rank_abbr_ssi'], 'subsp.')
-        self.assertTrue('dwc_family_ssi' not in index_data)
-
-    def test_sparse_record(self):
-        dwc = load_xmlobject_from_string(CREATED_SIMPLE_DARWIN_SET_XML.encode('utf8'), darwincore.SimpleDarwinRecordSet)
-        index_data = darwincore.SimpleDarwinRecordIndexer(dwc.simple_darwin_record).index_data()
-        self.assertEqual(index_data, {'dwc_catalog_number_ssi': 'catalog number'})
-
-    def test_taxon_rank_abbr(self):
-        dwc = darwincore.make_simple_darwin_record_set()
-        dwc.create_simple_darwin_record()
-        indexer = darwincore.SimpleDarwinRecordIndexer(dwc.simple_darwin_record)
-        self.assertEqual(indexer._get_taxon_rank_abbr(), '')
-        dwc.simple_darwin_record.taxon_rank = 'variety'
-        self.assertEqual(indexer._get_taxon_rank_abbr(), 'var.')
-        dwc.simple_darwin_record.taxon_rank = 'subspecies'
-        self.assertEqual(indexer._get_taxon_rank_abbr(), 'subsp.')
-
 
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(SimpleDarwinRecordSetTest('test_root'))
     suite.addTest(SimpleDarwinRecordSetTest('test_output'))
     suite.addTest(SimpleDarwinRecordSetTest('test_validate'))
-    suite.addTest(SimpleDarwinRecordSetIndexerTest('test_indexing'))
-    suite.addTest(SimpleDarwinRecordSetIndexerTest('test_sparse_record'))
-    suite.addTest(SimpleDarwinRecordSetIndexerTest('test_taxon_rank_abbr'))
     suite.addTest(SimpleDarwinRecordSetTestLoad('test_1'))
     return suite
 
