@@ -1,6 +1,6 @@
 *.py[co]
 
-env
+env*
 tmp.py
 
 # Packages

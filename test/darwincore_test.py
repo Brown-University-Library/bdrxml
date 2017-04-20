@@ -5,14 +5,13 @@ from eulxml.xmlmap import load_xmlobject_from_string
 from bdrxml import darwincore
 
 
-#this dwc should validate, except for dc:rights and dwc:individualID fields
 SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
 <sdr:SimpleDarwinRecordSet xmlns:sdr="http://rs.tdwg.org/dwc/xsd/simpledarwincore/" xmlns:dc="http://purl.org/dc/terms/" xmlns:dwc="http://rs.tdwg.org/dwc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://rs.tdwg.org/dwc/xsd/simpledarwincore/ http://rs.tdwg.org/dwc/xsd/tdwg_dwc_simple.xsd">
   <sdr:SimpleDarwinRecord>
     <dc:type>Test</dc:type>
     <dc:modified>2009-02-12T12:43:31</dc:modified>
     <dc:language>én</dc:language>
-    <dc:rights>Public</dc:rights>
+    <dc:license>http://creativecommons.org/licenses/by-sa/3.0/</dc:license>
     <dc:rightsHolder>Someone</dc:rightsHolder>
     <dc:bibliographicCitation>xyz</dc:bibliographicCitation>
     <dc:references>asdf</dc:references>
@@ -21,7 +20,6 @@ SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
     <dwc:basisOfRecord>Taxon</dwc:basisOfRecord>
     <dwc:recordedBy>recorded by</dwc:recordedBy>
     <dwc:recordNumber>2</dwc:recordNumber>
-    <dwc:individualID>individual id</dwc:individualID>
     <dwc:scientificName>Ctenomys sociabilis</dwc:scientificName>
     <dwc:acceptedNameUsage>Ctenomys sociabilis Pearson and Christie, 1985</dwc:acceptedNameUsage>
     <dwc:parentNameUsage>Ctenomys Blainville, 1826</dwc:parentNameUsage>
@@ -44,7 +42,6 @@ SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
 </sdr:SimpleDarwinRecordSet>
 '''
 
-#validates
 SIMPLE_DARWIN_SNIPPET = '''
   <sdr:SimpleDarwinRecord>
     <dwc:catalogNumber>catalog number</dwc:catalogNumber>
@@ -74,18 +71,20 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
     def setUp(self):
         self.dwc = load_xmlobject_from_string(SIMPLE_DARWIN_SET_XML.encode('utf8'), darwincore.SimpleDarwinRecordSet)
 
+    def test_validate(self):
+        valid = self.dwc.is_valid()
+        self.assertTrue(valid)
+
     def test_root(self):
         self.assertEqual(self.dwc.ROOT_NAME, 'SimpleDarwinRecordSet')
         self.assertEqual(self.dwc.simple_darwin_record.ROOT_NAME, 'SimpleDarwinRecord')
         self.assertEqual(self.dwc.simple_darwin_record.type, 'Test')
         self.assertEqual(self.dwc.simple_darwin_record.language, 'én')
-        self.assertEqual(self.dwc.simple_darwin_record.rights, 'Public')
         self.assertEqual(self.dwc.simple_darwin_record.references, 'asdf')
         self.assertEqual(self.dwc.simple_darwin_record.basis_of_record, 'Taxon')
         self.assertEqual(self.dwc.simple_darwin_record.catalog_number, 'catalog number')
         self.assertEqual(self.dwc.simple_darwin_record.recorded_by, 'recorded by')
         self.assertEqual(self.dwc.simple_darwin_record.record_number, '2')
-        self.assertEqual(self.dwc.simple_darwin_record.individual_id, 'individual id')
         self.assertEqual(self.dwc.simple_darwin_record.scientific_name, 'Ctenomys sociabilis')
         self.assertEqual(self.dwc.simple_darwin_record.higher_classification, 'Animalia; Chordata; Vertebrata; Mammalia; Theria; Eutheria; Rodentia; Hystricognatha; Hystricognathi; Ctenomyidae; Ctenomyini; Ctenomys')
         self.assertEqual(self.dwc.simple_darwin_record.kingdom, 'Animalia')
@@ -141,6 +140,7 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(SimpleDarwinRecordSetTest('test_root'))
     suite.addTest(SimpleDarwinRecordSetTest('test_output'))
+    suite.addTest(SimpleDarwinRecordSetTest('test_validate'))
     suite.addTest(SimpleDarwinRecordSetIndexerTest('test_indexing'))
     suite.addTest(SimpleDarwinRecordSetIndexerTest('test_sparse_record'))
     suite.addTest(SimpleDarwinRecordSetIndexerTest('test_taxon_rank_abbr'))
