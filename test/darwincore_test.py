@@ -35,6 +35,7 @@ SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
     <dwc:infraspecificEpithet>sociabilis sub</dwc:infraspecificEpithet>
     <dwc:taxonRank>subspecies</dwc:taxonRank>
     <dwc:associatedTaxa>host: Quercus alba</dwc:associatedTaxa>
+    <dwc:sex>female</dwc:sex>
     <dwc:scientificNameAuthorship>Pearson and Christie, 1985</dwc:scientificNameAuthorship>
     <dwc:municipality>Some City</dwc:municipality>
     <dwc:locality>Locality information</dwc:locality>
@@ -168,6 +169,7 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
         self.assertEqual(self.dwc.simple_darwin_record.georeference_protocol, 'Georeferencing Quick Reference Guide')
         self.assertEqual(self.dwc.simple_darwin_record.georeference_remarks, 'assumed distance by road (Hwy. 101)')
         self.assertEqual(self.dwc.simple_darwin_record.georeference_verification_status, 'requires verification')
+        self.assertEqual(self.dwc.simple_darwin_record.sex, 'female')
 
     def test_output(self):
         self.assertEqual(self.dwc.serializeDocument(pretty=True), SIMPLE_DARWIN_SET_XML.encode('utf8'))

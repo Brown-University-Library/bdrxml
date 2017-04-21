@@ -79,6 +79,7 @@ class SimpleDarwinRecord(xmlmap.XmlObject):
     data_generalizations = xmlmap.StringField('dwc:dataGeneralizations')
     information_withheld = xmlmap.StringField('dwc:informationWithheld')
     reproductive_condition = xmlmap.StringField('dwc:reproductiveCondition')
+    sex = xmlmap.StringField('dwc:sex')
     life_stage = xmlmap.StringField('dwc:lifeStage')
     establishment_means = xmlmap.StringField('dwc:establishmentMeans')
 
