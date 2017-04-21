@@ -60,6 +60,8 @@ SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
     <dwc:dataGeneralizations>Coordinates generalized</dwc:dataGeneralizations>
     <dwc:informationWithheld>collector identities withheld</dwc:informationWithheld>
     <dwc:reproductiveCondition>in bloom</dwc:reproductiveCondition>
+    <dwc:lifeStage>egg</dwc:lifeStage>
+    <dwc:establishmentMeans>native</dwc:establishmentMeans>
  </sdr:SimpleDarwinRecord>
 </sdr:SimpleDarwinRecordSet>
 '''
@@ -152,6 +154,8 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
         self.assertEqual(self.dwc.simple_darwin_record.information_withheld, 'collector identities withheld')
         self.assertEqual(self.dwc.simple_darwin_record.associated_taxa, 'host: Quercus alba')
         self.assertEqual(self.dwc.simple_darwin_record.reproductive_condition, 'in bloom')
+        self.assertEqual(self.dwc.simple_darwin_record.life_stage, 'egg')
+        self.assertEqual(self.dwc.simple_darwin_record.establishment_means, 'native')
 
     def test_output(self):
         self.assertEqual(self.dwc.serializeDocument(pretty=True), SIMPLE_DARWIN_SET_XML.encode('utf8'))
