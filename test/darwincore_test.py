@@ -16,6 +16,7 @@ SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
     <dc:rightsHolder>Someone</dc:rightsHolder>
     <dc:bibliographicCitation>xyz</dc:bibliographicCitation>
     <dc:references>asdf</dc:references>
+    <dwc:typeStatus>holotype of Pinus abies | holotype of Picea abies</dwc:typeStatus>
     <dwc:identificationID>én12345</dwc:identificationID>
     <dwc:catalogNumber>catalog number</dwc:catalogNumber>
     <dwc:basisOfRecord>Taxon</dwc:basisOfRecord>
@@ -40,6 +41,8 @@ SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
     <dwc:geodeticDatum>NAD27</dwc:geodeticDatum>
     <dwc:decimalLatitude>-41.0983423</dwc:decimalLatitude>
     <dwc:decimalLongitude>-121.1761111</dwc:decimalLongitude>
+    <dwc:verbatimCoordinates>41 05 54S 121 05 34W</dwc:verbatimCoordinates>
+    <dwc:coordinateUncertaintyInMeters>30</dwc:coordinateUncertaintyInMeters>
     <dwc:nomenclaturalCode>ICZN</dwc:nomenclaturalCode>
     <dwc:namePublishedIn>Pearson O. P., and M. I. Christie. 1985. Historia Natural, 5(37):388</dwc:namePublishedIn>
     <dwc:dynamicProperties>iucnStatus=vulnerable; distribution=Neuquen, Argentina</dwc:dynamicProperties>
@@ -51,6 +54,7 @@ SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
     <dwc:startDayOfYear>234</dwc:startDayOfYear>
     <dwc:endDayOfYear>237</dwc:endDayOfYear>
     <dwc:occurrenceID>occ xyz</dwc:occurrenceID>
+    <dwc:occurrenceRemarks>found dead on road</dwc:occurrenceRemarks>
     <dwc:institutionCode>BRU</dwc:institutionCode>
  </sdr:SimpleDarwinRecord>
 </sdr:SimpleDarwinRecordSet>
@@ -124,15 +128,19 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
         self.assertEqual(self.dwc.simple_darwin_record.geodetic_datum, 'NAD27')
         self.assertEqual(self.dwc.simple_darwin_record.decimal_latitude, '-41.0983423')
         self.assertEqual(self.dwc.simple_darwin_record.decimal_longitude, '-121.1761111')
+        self.assertEqual(self.dwc.simple_darwin_record.coordinate_uncertainty_in_meters, '30')
+        self.assertEqual(self.dwc.simple_darwin_record.verbatim_coordinates, '41 05 54S 121 05 34W')
         self.assertEqual(self.dwc.simple_darwin_record.license, 'http://creativecommons.org/licenses/by-sa/3.0/')
         self.assertEqual(self.dwc.simple_darwin_record.access_rights, 'not-for-profit use only')
+        self.assertEqual(self.dwc.simple_darwin_record.type_status, 'holotype of Pinus abies | holotype of Picea abies')
         self.assertEqual(self.dwc.simple_darwin_record.identification_id, 'én12345')
         self.assertEqual(self.dwc.simple_darwin_record.collection_id, 'col 123')
         self.assertEqual(self.dwc.simple_darwin_record.collection_code, 'col code')
         self.assertEqual(self.dwc.simple_darwin_record.year, '2002')
         self.assertEqual(self.dwc.simple_darwin_record.month, '--05')
         self.assertEqual(self.dwc.simple_darwin_record.day, '---02')
-        self.assertEqual(self.dwc.simple_darwin_record.occurence_id, 'occ xyz')
+        self.assertEqual(self.dwc.simple_darwin_record.occurrence_id, 'occ xyz')
+        self.assertEqual(self.dwc.simple_darwin_record.occurrence_remarks, 'found dead on road')
         self.assertEqual(self.dwc.simple_darwin_record.start_day_of_year, '234')
         self.assertEqual(self.dwc.simple_darwin_record.end_day_of_year, '237')
         self.assertEqual(self.dwc.simple_darwin_record.institution_code, 'BRU')
