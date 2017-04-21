@@ -34,6 +34,7 @@ SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
     <dwc:specificEpithet>sociabilis</dwc:specificEpithet>
     <dwc:infraspecificEpithet>sociabilis sub</dwc:infraspecificEpithet>
     <dwc:taxonRank>subspecies</dwc:taxonRank>
+    <dwc:associatedTaxa>host: Quercus alba</dwc:associatedTaxa>
     <dwc:scientificNameAuthorship>Pearson and Christie, 1985</dwc:scientificNameAuthorship>
     <dwc:municipality>Some City</dwc:municipality>
     <dwc:locality>Locality information</dwc:locality>
@@ -56,6 +57,9 @@ SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
     <dwc:occurrenceID>occ xyz</dwc:occurrenceID>
     <dwc:occurrenceRemarks>found dead on road</dwc:occurrenceRemarks>
     <dwc:institutionCode>BRU</dwc:institutionCode>
+    <dwc:dataGeneralizations>Coordinates generalized</dwc:dataGeneralizations>
+    <dwc:informationWithheld>collector identities withheld</dwc:informationWithheld>
+    <dwc:reproductiveCondition>in bloom</dwc:reproductiveCondition>
  </sdr:SimpleDarwinRecord>
 </sdr:SimpleDarwinRecordSet>
 '''
@@ -144,6 +148,10 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
         self.assertEqual(self.dwc.simple_darwin_record.start_day_of_year, '234')
         self.assertEqual(self.dwc.simple_darwin_record.end_day_of_year, '237')
         self.assertEqual(self.dwc.simple_darwin_record.institution_code, 'BRU')
+        self.assertEqual(self.dwc.simple_darwin_record.data_generalizations, 'Coordinates generalized')
+        self.assertEqual(self.dwc.simple_darwin_record.information_withheld, 'collector identities withheld')
+        self.assertEqual(self.dwc.simple_darwin_record.associated_taxa, 'host: Quercus alba')
+        self.assertEqual(self.dwc.simple_darwin_record.reproductive_condition, 'in bloom')
 
     def test_output(self):
         self.assertEqual(self.dwc.serializeDocument(pretty=True), SIMPLE_DARWIN_SET_XML.encode('utf8'))
