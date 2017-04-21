@@ -43,6 +43,7 @@ class SimpleDarwinRecord(xmlmap.XmlObject):
     specific_epithet = xmlmap.StringField('dwc:specificEpithet')
     infraspecific_epithet = xmlmap.StringField('dwc:infraspecificEpithet')
     taxon_rank = xmlmap.StringField('dwc:taxonRank')
+    associated_taxa = xmlmap.StringField('dwc:associatedTaxa')
     accepted_name_usage = xmlmap.StringField('dwc:acceptedNameUsage')
     scientific_name_authorship = xmlmap.StringField('dwc:scientificNameAuthorship')
     locality = xmlmap.StringField('dwc:locality')
@@ -68,6 +69,10 @@ class SimpleDarwinRecord(xmlmap.XmlObject):
     start_day_of_year = xmlmap.StringField('dwc:startDayOfYear')
     end_day_of_year = xmlmap.StringField('dwc:endDayOfYear')
     institution_code = xmlmap.StringField('dwc:institutionCode')
+    dynamic_properties = xmlmap.StringField('dwc:dynamicProperties')
+    data_generalizations = xmlmap.StringField('dwc:dataGeneralizations')
+    information_withheld = xmlmap.StringField('dwc:informationWithheld')
+    reproductive_condition = xmlmap.StringField('dwc:reproductiveCondition')
 
 
 class SimpleDarwinRecordSet(xmlmap.XmlObject):
