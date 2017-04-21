@@ -40,6 +40,12 @@ SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
     <dwc:locality>Locality information</dwc:locality>
     <dwc:locationRemarks>under water since 2005</dwc:locationRemarks>
     <dwc:geodeticDatum>NAD27</dwc:geodeticDatum>
+    <dwc:georeferenceVerificationStatus>requires verification</dwc:georeferenceVerificationStatus>
+    <dwc:georeferenceSources>GeoLocate</dwc:georeferenceSources>
+    <dwc:georeferenceProtocol>Georeferencing Quick Reference Guide</dwc:georeferenceProtocol>
+    <dwc:georeferenceRemarks>assumed distance by road (Hwy. 101)</dwc:georeferenceRemarks>
+    <dwc:georeferencedBy>Brad Millen (ROM)</dwc:georeferencedBy>
+    <dwc:georeferencedDate>1963-03-08</dwc:georeferencedDate>
     <dwc:decimalLatitude>-41.0983423</dwc:decimalLatitude>
     <dwc:decimalLongitude>-121.1761111</dwc:decimalLongitude>
     <dwc:verbatimCoordinates>41 05 54S 121 05 34W</dwc:verbatimCoordinates>
@@ -156,6 +162,12 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
         self.assertEqual(self.dwc.simple_darwin_record.reproductive_condition, 'in bloom')
         self.assertEqual(self.dwc.simple_darwin_record.life_stage, 'egg')
         self.assertEqual(self.dwc.simple_darwin_record.establishment_means, 'native')
+        self.assertEqual(self.dwc.simple_darwin_record.georeferenced_by, 'Brad Millen (ROM)')
+        self.assertEqual(self.dwc.simple_darwin_record.georeferenced_date, '1963-03-08')
+        self.assertEqual(self.dwc.simple_darwin_record.georeference_sources, 'GeoLocate')
+        self.assertEqual(self.dwc.simple_darwin_record.georeference_protocol, 'Georeferencing Quick Reference Guide')
+        self.assertEqual(self.dwc.simple_darwin_record.georeference_remarks, 'assumed distance by road (Hwy. 101)')
+        self.assertEqual(self.dwc.simple_darwin_record.georeference_verification_status, 'requires verification')
 
     def test_output(self):
         self.assertEqual(self.dwc.serializeDocument(pretty=True), SIMPLE_DARWIN_SET_XML.encode('utf8'))
