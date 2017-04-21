@@ -12,6 +12,7 @@ SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
     <dc:modified>2009-02-12T12:43:31</dc:modified>
     <dc:language>én</dc:language>
     <dc:license>http://creativecommons.org/licenses/by-sa/3.0/</dc:license>
+    <dc:accessRights>not-for-profit use only</dc:accessRights>
     <dc:rightsHolder>Someone</dc:rightsHolder>
     <dc:bibliographicCitation>xyz</dc:bibliographicCitation>
     <dc:references>asdf</dc:references>
@@ -35,6 +36,10 @@ SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
     <dwc:scientificNameAuthorship>Pearson and Christie, 1985</dwc:scientificNameAuthorship>
     <dwc:municipality>Some City</dwc:municipality>
     <dwc:locality>Locality information</dwc:locality>
+    <dwc:locationRemarks>under water since 2005</dwc:locationRemarks>
+    <dwc:geodeticDatum>NAD27</dwc:geodeticDatum>
+    <dwc:decimalLatitude>-41.0983423</dwc:decimalLatitude>
+    <dwc:decimalLongitude>-121.1761111</dwc:decimalLongitude>
     <dwc:nomenclaturalCode>ICZN</dwc:nomenclaturalCode>
     <dwc:namePublishedIn>Pearson O. P., and M. I. Christie. 1985. Historia Natural, 5(37):388</dwc:namePublishedIn>
     <dwc:dynamicProperties>iucnStatus=vulnerable; distribution=Neuquen, Argentina</dwc:dynamicProperties>
@@ -115,7 +120,12 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
         self.assertEqual(self.dwc.simple_darwin_record.scientific_name_authorship, 'Pearson and Christie, 1985')
         self.assertEqual(self.dwc.simple_darwin_record.municipality, 'Some City')
         self.assertEqual(self.dwc.simple_darwin_record.locality, 'Locality information')
+        self.assertEqual(self.dwc.simple_darwin_record.location_remarks, 'under water since 2005')
+        self.assertEqual(self.dwc.simple_darwin_record.geodetic_datum, 'NAD27')
+        self.assertEqual(self.dwc.simple_darwin_record.decimal_latitude, '-41.0983423')
+        self.assertEqual(self.dwc.simple_darwin_record.decimal_longitude, '-121.1761111')
         self.assertEqual(self.dwc.simple_darwin_record.license, 'http://creativecommons.org/licenses/by-sa/3.0/')
+        self.assertEqual(self.dwc.simple_darwin_record.access_rights, 'not-for-profit use only')
         self.assertEqual(self.dwc.simple_darwin_record.identification_id, 'én12345')
         self.assertEqual(self.dwc.simple_darwin_record.collection_id, 'col 123')
         self.assertEqual(self.dwc.simple_darwin_record.collection_code, 'col code')
