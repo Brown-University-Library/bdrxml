@@ -51,6 +51,8 @@ SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
     <dwc:decimalLongitude>-121.1761111</dwc:decimalLongitude>
     <dwc:verbatimCoordinates>41 05 54S 121 05 34W</dwc:verbatimCoordinates>
     <dwc:coordinateUncertaintyInMeters>30</dwc:coordinateUncertaintyInMeters>
+    <dwc:minimumElevationInMeters>20</dwc:minimumElevationInMeters>
+    <dwc:minimumDepthInMeters>15</dwc:minimumDepthInMeters>
     <dwc:nomenclaturalCode>ICZN</dwc:nomenclaturalCode>
     <dwc:namePublishedIn>Pearson O. P., and M. I. Christie. 1985. Historia Natural, 5(37):388</dwc:namePublishedIn>
     <dwc:dynamicProperties>iucnStatus=vulnerable; distribution=Neuquen, Argentina</dwc:dynamicProperties>
@@ -169,6 +171,8 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
         self.assertEqual(self.dwc.simple_darwin_record.georeference_protocol, 'Georeferencing Quick Reference Guide')
         self.assertEqual(self.dwc.simple_darwin_record.georeference_remarks, 'assumed distance by road (Hwy. 101)')
         self.assertEqual(self.dwc.simple_darwin_record.georeference_verification_status, 'requires verification')
+        self.assertEqual(self.dwc.simple_darwin_record.minimum_elevation_in_meters, '20')
+        self.assertEqual(self.dwc.simple_darwin_record.minimum_depth_in_meters, '15')
         self.assertEqual(self.dwc.simple_darwin_record.sex, 'female')
 
     def test_output(self):
