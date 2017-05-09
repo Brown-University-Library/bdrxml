@@ -93,6 +93,13 @@ class SimpleDarwinRecordTest(unittest.TestCase):
         sdr = darwincore.make_simple_darwin_record()
         self.assertTrue(sdr.is_valid())
 
+    def test_attribute_name_from_term(self):
+        self.assertEqual(darwincore._get_attribute_name_from_term('dc:modified'), 'modified')
+        self.assertEqual(darwincore._get_attribute_name_from_term('dc:type'), 'type_')
+        self.assertEqual(darwincore._get_attribute_name_from_term('dwc:disposition'), 'disposition')
+        self.assertEqual(darwincore._get_attribute_name_from_term('dwc:eventID'), 'event_id')
+        self.assertEqual(darwincore._get_attribute_name_from_term('dwc:scientificNameAuthorship'), 'scientific_name_authorship')
+
 
 class SimpleDarwinRecordSetTestLoad(unittest.TestCase):
 
@@ -182,6 +189,7 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(SimpleDarwinRecordTest('test_1'))
+    suite.addTest(SimpleDarwinRecordTest('test_attribute_name_from_term'))
     suite.addTest(SimpleDarwinRecordSetTest('test_root'))
     suite.addTest(SimpleDarwinRecordSetTest('test_output'))
     suite.addTest(SimpleDarwinRecordSetTest('test_validate'))

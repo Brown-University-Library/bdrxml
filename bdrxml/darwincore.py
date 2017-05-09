@@ -11,106 +11,134 @@ XSINS = 'http://www.w3.org/2001/XMLSchema-instance'
 XSI_SCHEMA_LOCATION = 'http://rs.tdwg.org/dwc/xsd/simpledarwincore/ http://rs.tdwg.org/dwc/xsd/tdwg_dwc_simple.xsd'
 
 
-class SimpleDarwinRecord(xmlmap.XmlObject):
-    ROOT_NAME = 'SimpleDarwinRecord'
-    XSD_SCHEMA = None
+BASE_CLASS_MEMBERS = dict(
+    ROOT_NAME = 'SimpleDarwinRecord',
+    XSD_SCHEMA = None,
     ROOT_NAMESPACES = {}
+)
 
-    type_ = xmlmap.StringField('dc:type')
-    modified = xmlmap.StringField('dc:modified')
-    language = xmlmap.StringField('dc:language')
-    rights = xmlmap.StringField('dc:rights') #deprecated - probably use license instead
-    access_rights = xmlmap.StringField('dc:accessRights')
-    license = xmlmap.StringField('dc:license')
-    rights_holder = xmlmap.StringField('dc:rightsHolder')
-    bibliographic_citation = xmlmap.StringField('dc:bibliographicCitation')
-    references = xmlmap.StringField('dc:references')
-    type_status = xmlmap.StringField('dwc:typeStatus')
-    basis_of_record = xmlmap.StringField('dwc:basisOfRecord')
+DWC_TERMS = [
+    'dc:type',
+    'dc:modified',
+    'dc:language',
+    'dc:rights', #deprecated - probably use license instead
+    'dc:accessRights',
+    'dc:license',
+    'dc:rightsHolder',
+    'dc:bibliographicCitation',
+    'dc:references',
+    'dwc:typeStatus',
+    'dwc:basisOfRecord',
     #Event terms
-    event_id = xmlmap.StringField('dwc:eventID')
-    parent_event_id = xmlmap.StringField('dwc:parentEventID')
-    field_number = xmlmap.StringField('dwc:fieldNumber')
-    event_date = xmlmap.StringField('dwc:eventDate')
-    event_time = xmlmap.StringField('dwc:eventTime')
-    start_day_of_year = xmlmap.StringField('dwc:startDayOfYear')
-    end_day_of_year = xmlmap.StringField('dwc:endDayOfYear')
-    year = xmlmap.StringField('dwc:year')
-    month = xmlmap.StringField('dwc:month')
-    day = xmlmap.StringField('dwc:day')
-    verbatim_event_date = xmlmap.StringField('dwc:verbatimEventDate')
-    habitat = xmlmap.StringField('dwc:habitat')
-    sampling_protocol = xmlmap.StringField('dwc:samplingProtocol')
-    sampling_effort = xmlmap.StringField('dwc:samplingEffort')
-    sample_size_value = xmlmap.StringField('dwc:sampleSizeValue')
-    sample_size_unit = xmlmap.StringField('dwc:sampleSizeUnit')
-    field_notes = xmlmap.StringField('dwc:fieldNotes')
-    event_remarks = xmlmap.StringField('dwc:eventRemarks')
-    scientific_name = xmlmap.StringField('dwc:scientificName')
-    higher_classification = xmlmap.StringField('dwc:higherClassification')
-    kingdom = xmlmap.StringField('dwc:kingdom')
-    phylum = xmlmap.StringField('dwc:phylum')
-    class_ = xmlmap.StringField('dwc:class') #class_ because of class keyword
-    order = xmlmap.StringField('dwc:order')
-    family = xmlmap.StringField('dwc:family')
-    genus = xmlmap.StringField('dwc:genus')
-    specific_epithet = xmlmap.StringField('dwc:specificEpithet')
-    infraspecific_epithet = xmlmap.StringField('dwc:infraspecificEpithet')
-    taxon_rank = xmlmap.StringField('dwc:taxonRank')
-    accepted_name_usage = xmlmap.StringField('dwc:acceptedNameUsage')
-    scientific_name_authorship = xmlmap.StringField('dwc:scientificNameAuthorship')
-    locality = xmlmap.StringField('dwc:locality')
-    location_remarks = xmlmap.StringField('dwc:locationRemarks')
-    municipality = xmlmap.StringField('dwc:municipality')
-    county = xmlmap.StringField('dwc:county')
-    state_province = xmlmap.StringField('dwc:stateProvince')
-    country = xmlmap.StringField('dwc:country')
-    geodetic_datum = xmlmap.StringField('dwc:geodeticDatum')
-    georeferenced_by = xmlmap.StringField('dwc:georeferencedBy')
-    georeferenced_date = xmlmap.StringField('dwc:georeferencedDate')
-    georeference_sources = xmlmap.StringField('dwc:georeferenceSources')
-    georeference_protocol = xmlmap.StringField('dwc:georeferenceProtocol')
-    georeference_remarks = xmlmap.StringField('dwc:georeferenceRemarks')
-    georeference_verification_status = xmlmap.StringField('dwc:georeferenceVerificationStatus')
-    decimal_latitude = xmlmap.StringField('dwc:decimalLatitude')
-    decimal_longitude = xmlmap.StringField('dwc:decimalLongitude')
-    coordinate_uncertainty_in_meters = xmlmap.StringField('dwc:coordinateUncertaintyInMeters')
-    verbatim_coordinates = xmlmap.StringField('dwc:verbatimCoordinates')
-    minimum_elevation_in_meters = xmlmap.StringField('dwc:minimumElevationInMeters')
-    maximum_elevation_in_meters = xmlmap.StringField('dwc:maximumElevationInMeters')
-    verbatim_elevation = xmlmap.StringField('dwc:verbatimElevation')
-    minimum_depth_in_meters = xmlmap.StringField('dwc:minimumDepthInMeters')
-    maximum_depth_in_meters = xmlmap.StringField('dwc:maximumDepthInMeters')
-    verbatim_depth = xmlmap.StringField('dwc:verbatimDepth')
-    identification_id = xmlmap.StringField('dwc:identificationID')
-    collection_id = xmlmap.StringField('dwc:collectionID')
-    collection_code = xmlmap.StringField('dwc:collectionCode')
-    institution_code = xmlmap.StringField('dwc:institutionCode')
-    dynamic_properties = xmlmap.StringField('dwc:dynamicProperties')
-    data_generalizations = xmlmap.StringField('dwc:dataGeneralizations')
-    information_withheld = xmlmap.StringField('dwc:informationWithheld')
-    #Occurrence terms
-    occurrence_id = xmlmap.StringField('dwc:occurrenceID')
-    catalog_number = xmlmap.StringField('dwc:catalogNumber')
-    record_number = xmlmap.StringField('dwc:recordNumber')
-    recorded_by = xmlmap.StringField('dwc:recordedBy')
-    individual_count = xmlmap.StringField('dwc:individualCount')
-    organism_quantity = xmlmap.StringField('dwc:organismQuantity')
-    organism_quantity_type = xmlmap.StringField('dwc:organismQuantityType')
-    sex = xmlmap.StringField('dwc:sex')
-    life_stage = xmlmap.StringField('dwc:lifeStage')
-    reproductive_condition = xmlmap.StringField('dwc:reproductiveCondition')
-    behavior = xmlmap.StringField('dwc:behavior')
-    establishment_means = xmlmap.StringField('dwc:establishmentMeans')
-    occurrence_status = xmlmap.StringField('dwc:occurrenceStatus')
-    preparations = xmlmap.StringField('dwc:preparations')
-    disposition = xmlmap.StringField('dwc:disposition')
-    associated_media = xmlmap.StringField('dwc:associatedMedia')
-    associated_references = xmlmap.StringField('dwc:associatedReferences')
-    associated_sequences = xmlmap.StringField('dwc:associatedSequences')
-    associated_taxa = xmlmap.StringField('dwc:associatedTaxa')
-    other_catalog_numbers = xmlmap.StringField('dwc:otherCatalogNumbers')
-    occurrence_remarks = xmlmap.StringField('dwc:occurrenceRemarks')
+    'dwc:eventID',
+    'dwc:parentEventID',
+    'dwc:fieldNumber',
+    'dwc:eventDate',
+    'dwc:eventTime',
+    'dwc:startDayOfYear',
+    'dwc:endDayOfYear',
+    'dwc:year',
+    'dwc:month',
+    'dwc:day',
+    'dwc:verbatimEventDate',
+    'dwc:habitat',
+    'dwc:samplingProtocol',
+    'dwc:samplingEffort',
+    'dwc:sampleSizeValue',
+    'dwc:sampleSizeUnit',
+    'dwc:fieldNotes',
+    'dwc:eventRemarks',
+    'dwc:scientificName',
+    'dwc:higherClassification',
+    'dwc:kingdom',
+    'dwc:phylum',
+    'dwc:class',
+    'dwc:order',
+    'dwc:family',
+    'dwc:genus',
+    'dwc:specificEpithet',
+    'dwc:infraspecificEpithet',
+    'dwc:taxonRank',
+    'dwc:acceptedNameUsage',
+    'dwc:scientificNameAuthorship',
+    'dwc:locality',
+    'dwc:locationRemarks',
+    'dwc:municipality',
+    'dwc:county',
+    'dwc:stateProvince',
+    'dwc:country',
+    'dwc:geodeticDatum',
+    'dwc:georeferencedBy',
+    'dwc:georeferencedDate',
+    'dwc:georeferenceSources',
+    'dwc:georeferenceProtocol',
+    'dwc:georeferenceRemarks',
+    'dwc:georeferenceVerificationStatus',
+    'dwc:decimalLatitude',
+    'dwc:decimalLongitude',
+    'dwc:coordinateUncertaintyInMeters',
+    'dwc:verbatimCoordinates',
+    'dwc:minimumElevationInMeters',
+    'dwc:maximumElevationInMeters',
+    'dwc:verbatimElevation',
+    'dwc:minimumDepthInMeters',
+    'dwc:maximumDepthInMeters',
+    'dwc:verbatimDepth',
+    'dwc:identificationID',
+    'dwc:collectionID',
+    'dwc:collectionCode',
+    'dwc:institutionCode',
+    'dwc:dynamicProperties',
+    'dwc:dataGeneralizations',
+    'dwc:informationWithheld',
+    'dwc:occurrenceID',
+    'dwc:catalogNumber',
+    'dwc:recordNumber',
+    'dwc:recordedBy',
+    'dwc:individualCount',
+    'dwc:organismQuantity',
+    'dwc:organismQuantityType',
+    'dwc:sex',
+    'dwc:lifeStage',
+    'dwc:reproductiveCondition',
+    'dwc:behavior',
+    'dwc:establishmentMeans',
+    'dwc:occurrenceStatus',
+    'dwc:preparations',
+    'dwc:disposition',
+    'dwc:associatedMedia',
+    'dwc:associatedReferences',
+    'dwc:associatedSequences',
+    'dwc:associatedTaxa',
+    'dwc:otherCatalogNumbers',
+    'dwc:occurrenceRemarks',
+]
+
+def _get_attribute_name_from_term(term):
+    term = term.replace('dwc:', '').replace('dc:', '')
+    attr = ''
+    for char in term:
+        if char.isupper():
+            if attr[-1] == 'i' and char == 'D':
+                attr = '%s%s' % (attr, char.lower())
+            else:
+                attr = '%s_%s' % (attr, char.lower())
+        else:
+            attr = '%s%s' % (attr, char)
+    if attr in ['type', 'class']:
+        attr = '%s_' % attr
+    return attr
+
+
+def _get_class_members():
+    class_members = BASE_CLASS_MEMBERS.copy()
+    for term in DWC_TERMS:
+        attr_name = _get_attribute_name_from_term(term)
+        class_members[attr_name] = xmlmap.StringField(term)
+    return class_members
+
+
+SimpleDarwinRecord = type('SimpleDarwinRecord', (xmlmap.XmlObject,), _get_class_members())
 
 
 class SimpleDarwinRecordSet(xmlmap.XmlObject):
