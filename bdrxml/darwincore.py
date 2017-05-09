@@ -1,5 +1,6 @@
 # coding: utf-8
 from __future__ import unicode_literals
+import sys
 from eulxml import xmlmap
 from eulxml.xmlmap import dc
 
@@ -138,7 +139,10 @@ def _get_class_members():
     return class_members
 
 
-SimpleDarwinRecord = type('SimpleDarwinRecord', (xmlmap.XmlObject,), _get_class_members())
+class_name = 'SimpleDarwinRecord'
+if sys.version_info.major == 2:
+    class_name = class_name.encode('utf8')
+SimpleDarwinRecord = type(class_name, (xmlmap.XmlObject,), _get_class_members())
 
 
 class SimpleDarwinRecordSet(xmlmap.XmlObject):
