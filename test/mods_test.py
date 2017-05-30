@@ -155,6 +155,13 @@ SAMPLE_MODS = '''
   </mods:relatedItem>
 </mods:mods>
 '''
+MODS_35_XML = '''
+<mods:mods xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd" ID="id101" version="3.5">
+    <mods:titleInfo>
+        <mods:title>A Title</mods:title>
+    </mods:titleInfo>
+</mods:mods>
+'''
 MODS_SNIPPET = '''
   <mods:titleInfo>
     <mods:title>Poétry</mods:title>
@@ -162,7 +169,9 @@ MODS_SNIPPET = '''
 </mods:mods>
 '''
 
+
 class ModsReadWrite(unittest.TestCase):
+
     def setUp(self):
         #basic mods
         self.mods = mods.make_mods()
@@ -288,6 +297,10 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(subject.hierarchical_geographic.state, 'Louisiana')
         self.assertEqual(subject.hierarchical_geographic.city, 'New Orleans')
         self.assertEqual(subject.hierarchical_geographic.city_section, 'Lower Ninth Ward')
+
+    def test_validate_mods_35(self):
+        loaded = load_xmlobject_from_string(MODS_35_XML, mods.Mods)
+        self.assertTrue(loaded.is_valid())
 
 
 def suite():
