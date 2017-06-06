@@ -13,13 +13,19 @@ XSI_NAMESPACE = 'http://www.w3.org/2001/XMLSchema-instance'
 XSI_LOCATION = 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-4.xsd'
 MODSv35_SCHEMA = "http://www.loc.gov/standards/mods/v3/mods-3-5.xsd"
 
-class PlaceTerm(Common):
-    ROOT_NAME = 'placeTerm'
-    type = SF('@type')
+
+class CommonField(Common):
+    '''gives us common parts of an element like authority, authorityURI, valueURI, ...'''
     authority = SF('@authority')
     authority_uri = SF('@authorityURI')
     value_uri = SF('@valueURI')
     text = SF('text()')
+
+
+class PlaceTerm(CommonField):
+    ROOT_NAME = 'placeTerm'
+    type = SF('@type')
+
 
 class Place(Common):
     ROOT_NAME = 'place'
@@ -35,11 +41,10 @@ class Collection(RelatedItem):
     id = SF('mods:identifier[@type="COLID"]')
 
 
-class PhysicalDescriptionForm(Common):
+class PhysicalDescriptionForm(CommonField):
     ROOT_NAME = 'form'
-    authority = SF('@authority')
     type = SF('@type')
-    text = SF('text()')
+
 
 class PhysicalDescription(PhysicalDescription):
     digital_origin = SF('mods:digitalOrigin')
@@ -47,12 +52,8 @@ class PhysicalDescription(PhysicalDescription):
     forms = NodeListField('mods:form', PhysicalDescriptionForm)
 
 
-class PhysicalLocation(Common):
+class PhysicalLocation(CommonField):
     ROOT_NAME = 'physicalLocation'
-    authority = SF('@authority')
-    authority_uri = SF('@authorityURI')
-    value_uri = SF('@valueURI')
-    text = SF('text()')
 
 
 class CopyInformation(Common):
@@ -91,10 +92,8 @@ class Temporal(Common):
     text = SF('text()')
 
 
-class Topic(Common):
+class Topic(CommonField):
     ROOT_NAME = 'topic'
-    authority = SF('@authority')
-    text = SF('text()')
 
 
 class Subject(Subject):
@@ -112,13 +111,9 @@ class RecordIdentifier(Common):
     text = SF('text()')
 
 
-class Classification(Common):
+class Classification(CommonField):
     ROOT_NAME = 'classification'
     label = SF('@displayLabel')
-    authority = SF('@authority')
-    authority_uri = SF('@authorityURI')
-    value_uri = SF('@valueURI')
-    text = SF('text()')
 
 
 class Genre(Genre):
@@ -132,8 +127,18 @@ class TargetAudience(Common):
     text = SF('text()')
 
 
+class RecordCreationDate(Date):
+    ROOT_NAME = 'recordCreationDate'
+
+
+class RecordContentSource(CommonField):
+    ROOT_NAME = 'recordContentSource'
+
+
 class RecordInfo(RecordInfo):
     record_identifier_list = NodeListField('mods:recordIdentifier', RecordIdentifier)
+    record_creation_date = NodeField('mods:recordCreationDate', RecordCreationDate)
+    record_content_source = NodeField('mods:recordContentSource', RecordContentSource)
 
 
 class Role(Role):

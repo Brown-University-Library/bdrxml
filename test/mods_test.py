@@ -233,6 +233,12 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(loaded.locations[0].physical.authority_uri, 'http://locauth.com')
         self.assertEqual(loaded.locations[0].physical.value_uri, 'http://locauth.com/random')
         self.assertEqual(loaded.locations[0].holding_simple.copy_information[0].notes[0].text, 'location note')
+        self.assertEqual(loaded.record_info_list[0].record_identifier_list[0].source, 'RPB')
+        self.assertEqual(loaded.record_info_list[0].record_identifier_list[0].text, 'a1234567')
+        self.assertEqual(loaded.record_info_list[0].record_creation_date.date, '20091218')
+        self.assertEqual(loaded.record_info_list[0].record_creation_date.encoding, 'iso8601')
+        self.assertEqual(loaded.record_info_list[0].record_content_source.text, 'RPB')
+        self.assertEqual(loaded.record_info_list[0].record_content_source.authority, 'marcorg')
         self.assertEqual(loaded.related_items[1].label, 'location of original')
         self.assertEqual(loaded.related_items[1].classifications[0].text, 'Classification')
 
