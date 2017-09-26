@@ -168,9 +168,22 @@ MODS_SNIPPET = '''
   </mods:titleInfo>
 </mods:mods>
 '''
+MODS_TEMPLATE = u'''
+      <mods:mods ID="id101"
+         xmlns:mods="http://www.loc.gov/mods/v3"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-4.xsd">
+         {inserted_mods}
+      </mods:mods>
+'''
 
 
 class ModsReadWrite(unittest.TestCase):
+
+    def mods_from_partial(self, mods_partial):
+        sample_mods = MODS_TEMPLATE.format(inserted_mods=mods_partial)
+        return load_xmlobject_from_string(sample_mods, mods.Mods)
 
     def setUp(self):
         #basic mods
@@ -303,6 +316,25 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(subject.hierarchical_geographic.state, 'Louisiana')
         self.assertEqual(subject.hierarchical_geographic.city, 'New Orleans')
         self.assertEqual(subject.hierarchical_geographic.city_section, 'Lower Ninth Ward')
+
+    def test_parts(self):
+        sample_mods = u'''
+           <mods:part>
+               <mods:detail type="issue">
+                   <mods:number>11</mods:number>
+                   <mods:caption>no.</mods:caption>
+               </mods:detail>
+               <mods:extent unit="pages">
+                   <mods:start>735</mods:start>
+                   <mods:end>743</mods:end>
+                   <mods:total>8</mods:total>
+               </mods:extent>
+           </mods:part>
+        '''
+        loaded = self.mods_from_partial(sample_mods)
+        part = loaded.parts[0]
+        self.assertEqual(part.details[0].number, '11')
+        self.assertEqual(part.details[0].caption, 'no.')
 
     def test_validate_mods_35(self):
         loaded = load_xmlobject_from_string(MODS_35_XML, mods.Mods)
