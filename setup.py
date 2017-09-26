@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='bdrxml',
-    version='1.0a1',
+    version='0.8.1',
     packages=find_packages(),
     package_data={'bdrxml': ['test/data/*.*',
                              'templates/*.*']},

@@ -22,6 +22,12 @@ class CommonField(Common):
     text = SF('text()')
 
 
+class PartDetail(PartDetail):
+    caption = SF('mods:caption')
+
+class Part(Part):
+    details = NodeListField('mods:detail', PartDetail)
+
 class PlaceTerm(CommonField):
     ROOT_NAME = 'placeTerm'
     type = SF('@type')
@@ -164,6 +170,7 @@ class BaseMods(BaseMods):
     target_audiences = NodeListField('mods:targetAudience', TargetAudience)
     record_info_list = NodeListField('mods:recordInfo', RecordInfo)
     names = xmlmap.NodeListField('mods:name', Name)
+    parts = xmlmap.NodeListField('mods:part', Part)
 
 
 class RelatedItem(BaseMods):
