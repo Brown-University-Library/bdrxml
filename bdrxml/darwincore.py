@@ -60,6 +60,7 @@ DWC_TERMS = [
     'dwc:specificEpithet',
     'dwc:infraspecificEpithet',
     'dwc:taxonRank',
+    'dwc:taxonID',
     'dwc:acceptedNameUsage',
     'dwc:scientificNameAuthorship',
     'dwc:locality',

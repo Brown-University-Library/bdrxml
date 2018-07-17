@@ -34,6 +34,7 @@ SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
     <dwc:specificEpithet>sociabilis</dwc:specificEpithet>
     <dwc:infraspecificEpithet>sociabilis sub</dwc:infraspecificEpithet>
     <dwc:taxonRank>subspecies</dwc:taxonRank>
+    <dwc:taxonID>abcd</dwc:taxonID>
     <dwc:associatedTaxa>host: Quercus alba</dwc:associatedTaxa>
     <dwc:sex>female</dwc:sex>
     <dwc:scientificNameAuthorship>Pearson and Christie, 1985</dwc:scientificNameAuthorship>
@@ -143,6 +144,7 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
         self.assertEqual(self.dwc.simple_darwin_record.specific_epithet, 'sociabilis')
         self.assertEqual(self.dwc.simple_darwin_record.infraspecific_epithet, 'sociabilis sub')
         self.assertEqual(self.dwc.simple_darwin_record.taxon_rank, 'subspecies')
+        self.assertEqual(self.dwc.simple_darwin_record.taxon_id, 'abcd')
         self.assertEqual(self.dwc.simple_darwin_record.scientific_name_authorship, 'Pearson and Christie, 1985')
         self.assertEqual(self.dwc.simple_darwin_record.municipality, 'Some City')
         self.assertEqual(self.dwc.simple_darwin_record.locality, 'Locality information')
