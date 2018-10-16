@@ -81,16 +81,19 @@ SIMPLE_DARWIN_SNIPPET = '''
     <dwc:catalogNumber>catalog number</dwc:catalogNumber>
   </sdr:SimpleDarwinRecord>
 '''
-CREATED_SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
+
+INVALID_SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
 <sdr:SimpleDarwinRecordSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dc="http://purl.org/dc/terms/" xmlns:dwc="http://rs.tdwg.org/dwc/terms/" xmlns:sdr="http://rs.tdwg.org/dwc/xsd/simpledarwincore/" xsi:schemaLocation="http://rs.tdwg.org/dwc/xsd/simpledarwincore/ http://rs.tdwg.org/dwc/xsd/tdwg_dwc_simple.xsd">
-%s
+  <sdr:SimpleDarwinRecord>
+    <dwc:random_something>catalog number</dwc:random_something>
+  </sdr:SimpleDarwinRecord>
 </sdr:SimpleDarwinRecordSet>
-''' % SIMPLE_DARWIN_SNIPPET
+'''
 
 
 class SimpleDarwinRecordTest(unittest.TestCase):
 
-    def test_1(self):
+    def test_valid(self):
         sdr = darwincore.make_simple_darwin_record()
         self.assertTrue(sdr.is_valid())
 
@@ -121,7 +124,14 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
 
     def test_validate(self):
         valid = self.dwc.is_valid()
-        self.assertTrue(valid, self.dwc.validation_errors())
+        self.assertTrue(valid)
+
+    def test_invalid(self):
+        invalid_dwc = load_xmlobject_from_string(INVALID_SIMPLE_DARWIN_SET_XML.encode('utf8'), darwincore.SimpleDarwinRecordSet)
+        valid = invalid_dwc.is_valid()
+        self.assertFalse(valid)
+        err_str = "<string>:4:0:ERROR:SCHEMASV:SCHEMAV_ELEMENT_CONTENT: Element '{http://rs.tdwg.org/dwc/terms/}random_something': This element is not expected."
+        self.assertEqual(str(invalid_dwc.validation_errors()), err_str)
 
     def test_root(self):
         self.assertEqual(self.dwc.ROOT_NAME, 'SimpleDarwinRecordSet')
@@ -190,11 +200,12 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(SimpleDarwinRecordTest('test_1'))
+    suite.addTest(SimpleDarwinRecordTest('test_valid'))
     suite.addTest(SimpleDarwinRecordTest('test_attribute_name_from_term'))
     suite.addTest(SimpleDarwinRecordSetTest('test_root'))
     suite.addTest(SimpleDarwinRecordSetTest('test_output'))
     suite.addTest(SimpleDarwinRecordSetTest('test_validate'))
+    suite.addTest(SimpleDarwinRecordSetTest('test_invalid'))
     suite.addTest(SimpleDarwinRecordSetTestLoad('test_1'))
     return suite
 

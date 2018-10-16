@@ -1,6 +1,8 @@
 # coding: utf-8
 from __future__ import unicode_literals
+import os
 import sys
+from lxml import etree
 from eulxml import xmlmap
 from eulxml.xmlmap import dc
 
@@ -10,6 +12,8 @@ DCNS = 'http://purl.org/dc/terms/'
 DWCNS = 'http://rs.tdwg.org/dwc/terms/'
 XSINS = 'http://www.w3.org/2001/XMLSchema-instance'
 XSI_SCHEMA_LOCATION = 'http://rs.tdwg.org/dwc/xsd/simpledarwincore/ http://rs.tdwg.org/dwc/xsd/tdwg_dwc_simple.xsd'
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+SCHEMA_DIR = os.path.join(os.path.dirname(CURRENT_DIR), 'schemas')
 
 
 BASE_CLASS_MEMBERS = dict(
@@ -158,6 +162,19 @@ class SimpleDarwinRecordSet(xmlmap.XmlObject):
 
     simple_darwin_record = xmlmap.NodeField('sdr:SimpleDarwinRecord', SimpleDarwinRecord)
 
+    def validation_errors(self):
+        '''Use local validation so we're not dependent on HTTP calls and xsd docs staying at the same URL.
+        Note: XmlObject.is_valid() looks like this:
+                return self.validation_errors() == []
+            So, we just need to override validation_errors().
+        '''
+        with open(os.path.join(SCHEMA_DIR, 'tdwg_dwc_simple.xsd'), 'rb') as f:
+            xmlschema = etree.XMLSchema(etree.parse(f))
+            if xmlschema.validate(self.node):
+                return []
+            else:
+                return xmlschema.error_log
+
 
 def make_simple_darwin_record():
     sdr = SimpleDarwinRecord()
@@ -169,3 +186,4 @@ def make_simple_darwin_record_set():
     sdrs = SimpleDarwinRecordSet()
     sdrs.xsi_schema_location = XSI_SCHEMA_LOCATION
     return sdrs
+
