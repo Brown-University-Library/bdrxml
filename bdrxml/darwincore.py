@@ -16,6 +16,15 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 SCHEMA_DIR = os.path.join(os.path.dirname(CURRENT_DIR), 'schemas')
 
 
+def get_schema_validation_errors(schema_name, lxml_node):
+    with open(os.path.join(SCHEMA_DIR, schema_name), 'rb') as f:
+        xmlschema = etree.XMLSchema(etree.parse(f))
+        if xmlschema.validate(lxml_node):
+            return []
+        else:
+            return xmlschema.error_log
+
+
 BASE_CLASS_MEMBERS = dict(
     ROOT_NAME = 'SimpleDarwinRecord',
     XSD_SCHEMA = None,
@@ -168,12 +177,7 @@ class SimpleDarwinRecordSet(xmlmap.XmlObject):
                 return self.validation_errors() == []
             So, we just need to override validation_errors().
         '''
-        with open(os.path.join(SCHEMA_DIR, 'tdwg_dwc_simple.xsd'), 'rb') as f:
-            xmlschema = etree.XMLSchema(etree.parse(f))
-            if xmlschema.validate(self.node):
-                return []
-            else:
-                return xmlschema.error_log
+        return get_schema_validation_errors(schema_name='tdwg_dwc_simple.xsd', lxml_node=self.node)
 
 
 def make_simple_darwin_record():

@@ -7,11 +7,13 @@ from eulxml.xmlmap import NodeListField, NodeField
 #import everything from eulxml.xmlmap.mods because clients have to use a lot of
 #   those classes, and we're just overriding a few of them here.
 from eulxml.xmlmap.mods import *
+from .darwincore import get_schema_validation_errors
 
 XLINK_NAMESPACE = 'http://www.w3.org/1999/xlink'
 XSI_NAMESPACE = 'http://www.w3.org/2001/XMLSchema-instance'
-XSI_LOCATION = 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-4.xsd'
+XSI_LOCATION = 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd'
 MODSv35_SCHEMA = "http://www.loc.gov/standards/mods/v3/mods-3-5.xsd"
+MODSv37_SCHEMA = "http://www.loc.gov/standards/mods/v3/mods-3-7.xsd"
 
 
 class CommonField(Common):
@@ -180,12 +182,12 @@ class RelatedItem(BaseMods):
 
 
 class Mods(BaseMods):
-    """Map mods fields - just where we override MODSv34
+    """Map mods fields - just where we override MODSv34 from eulxml
     Fields documented at:
     http://www.loc.gov/standards/mods/mods-outline.html
     """
     ROOT_NAME = 'mods'
-    XSD_SCHEMA = MODSv35_SCHEMA
+    XSD_SCHEMA = MODSv37_SCHEMA
     Common.ROOT_NAMESPACES['xlink'] = XLINK_NAMESPACE
     Common.ROOT_NAMESPACES['xsi'] = XSI_NAMESPACE
     xsi_schema_location = SF('@xsi:schemaLocation')
@@ -195,6 +197,10 @@ class Mods(BaseMods):
     #Add a commonly used related item
     collection = NodeField('mods:relatedItem[@displayLabel="Collection"]', Collection)
     related_items = xmlmap.NodeListField('mods:relatedItem', RelatedItem)
+
+    def validation_errors(self):
+        '''see notes on SimpleDarwinRecordSet.validation_errors()'''
+        return get_schema_validation_errors(schema_name='mods-3-7.xsd', lxml_node=self.node)
 
 
 def make_mods():
