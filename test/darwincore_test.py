@@ -93,10 +93,6 @@ INVALID_SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
 
 class SimpleDarwinRecordTest(unittest.TestCase):
 
-    def test_valid(self):
-        sdr = darwincore.make_simple_darwin_record()
-        self.assertTrue(sdr.is_valid())
-
     def test_attribute_name_from_term(self):
         self.assertEqual(darwincore._get_attribute_name_from_term('dc:modified'), 'modified')
         self.assertEqual(darwincore._get_attribute_name_from_term('dc:type'), 'type_')
@@ -200,7 +196,6 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(SimpleDarwinRecordTest('test_valid'))
     suite.addTest(SimpleDarwinRecordTest('test_attribute_name_from_term'))
     suite.addTest(SimpleDarwinRecordSetTest('test_root'))
     suite.addTest(SimpleDarwinRecordSetTest('test_output'))
