@@ -13,7 +13,7 @@ DWCNS = 'http://rs.tdwg.org/dwc/terms/'
 XSINS = 'http://www.w3.org/2001/XMLSchema-instance'
 XSI_SCHEMA_LOCATION = 'http://rs.tdwg.org/dwc/xsd/simpledarwincore/ http://rs.tdwg.org/dwc/xsd/tdwg_dwc_simple.xsd'
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-SCHEMA_DIR = os.path.join(os.path.dirname(CURRENT_DIR), 'schemas')
+SCHEMA_DIR = os.path.join(CURRENT_DIR, 'schemas')
 
 
 def get_schema_validation_errors(schema_name, lxml_node):
