@@ -1,19 +1,29 @@
+dist: xenial
 language: python
+
 before_install:
 - sudo apt-get install -qq libxml2-dev libxslt-dev
+
 env:
 - CFLAGS="-O0"
+
 python:
 - 2.7
 - 3.5
 - 3.6
+- 3.7
+
 install:
 - pip install --upgrade pip
 - pip install coveralls
 - pip install .
+
 script:
 - coverage run --source=bdrxml test.py
+
 after_success: coveralls
+
 notifications:
   slack:
     secure: UGlOzX64hQQ5MGUpK3iN8sQJ1Lk4xmd2Y3/e8RCttCetnEwEEJ+LkUHWloDtYWQvcjO/EfJVHKj+XKvi2wfSB48j26hfSYGm4xe4lwqmrlX+oRB8oVucS6p4Fj1fi1+lJnn7vhe36NkU8woVKC1+8Hj9jxvUunrbTQLg4VR9Izk=
+
