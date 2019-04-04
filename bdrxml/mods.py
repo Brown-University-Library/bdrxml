@@ -53,7 +53,7 @@ class LanguageTerm(LanguageTerm):
     authority_uri = SF('@authorityURI')
     value_uri = SF('@valueURI')
 
-class Language(Common):
+class Language(Language):
     terms = xmlmap.NodeListField('mods:languageTerm', LanguageTerm)
 
 

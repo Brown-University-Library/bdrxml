@@ -350,6 +350,12 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(part.details[0].number, '11')
         self.assertEqual(part.details[0].caption, 'no.')
 
+    def test_create_language(self):
+        lang = mods.Language()
+        lang.terms.append(mods.LanguageTerm(text='English'))
+        self.mods.languages.append(lang)
+        self.assertTrue(self.mods.is_valid())
+
     def test_validate_mods_35(self):
         loaded = load_xmlobject_from_string(MODS_35_XML, mods.Mods)
         self.assertTrue(loaded.is_valid())
