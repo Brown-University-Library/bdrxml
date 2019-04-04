@@ -49,6 +49,14 @@ class Collection(RelatedItem):
     id = SF('mods:identifier[@type="COLID"]')
 
 
+class LanguageTerm(LanguageTerm):
+    authority_uri = SF('@authorityURI')
+    value_uri = SF('@valueURI')
+
+class Language(Common):
+    terms = xmlmap.NodeListField('mods:languageTerm', LanguageTerm)
+
+
 class PhysicalDescriptionForm(CommonField):
     ROOT_NAME = 'form'
     type = SF('@type')
@@ -167,6 +175,7 @@ class BaseMods(BaseMods):
     #override eulxml subjects so we can add hierarchical_geographic to subject
     subjects = NodeListField('mods:subject', Subject)
     physical_description = NodeField('mods:physicalDescription', PhysicalDescription)
+    languages = xmlmap.NodeListField('mods:language', Language)
     locations = NodeListField('mods:location', Location)
     genres = NodeListField('mods:genre', Genre)
     target_audiences = NodeListField('mods:targetAudience', TargetAudience)
