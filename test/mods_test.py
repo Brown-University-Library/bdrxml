@@ -79,6 +79,9 @@ SAMPLE_MODS = '''
     </mods:role>
   </mods:name>
   <mods:typeOfResource>text</mods:typeOfResource>
+  <mods:language>
+    <mods:languageTerm authority="iso639-2b" authorityURI="http://id.loc.gov/vocabulary/iso639-2.html" valueURI="http://id.loc.gov/vocabulary/iso639-2/eng">English</mods:languageTerm>
+  </mods:language>
   <mods:genre authority="aat"></mods:genre>
   <mods:genre authority="aat">aat theses</mods:genre>
   <mods:genre authority="bdr">bdr theses</mods:genre>
@@ -243,6 +246,9 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(loaded.physical_description.extent, 'viii, 208 p.')
         self.assertEqual(loaded.physical_description.digital_origin, 'born digital')
         self.assertEqual(loaded.physical_description.note, 'note 1')
+        self.assertEqual(loaded.languages[0].terms[0].authority, 'iso639-2b')
+        self.assertEqual(loaded.languages[0].terms[0].authority_uri, 'http://id.loc.gov/vocabulary/iso639-2.html')
+        self.assertEqual(loaded.languages[0].terms[0].value_uri, 'http://id.loc.gov/vocabulary/iso639-2/eng')
         self.assertEqual(loaded.classifications[0].text, 'Some classification')
         self.assertEqual(loaded.classifications[0].label, 'Test classification')
         self.assertEqual(loaded.classifications[0].authority, 'classauth')
