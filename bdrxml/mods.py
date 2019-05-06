@@ -14,6 +14,7 @@ XSI_NAMESPACE = 'http://www.w3.org/2001/XMLSchema-instance'
 XSI_LOCATION = 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd'
 MODSv35_SCHEMA = "http://www.loc.gov/standards/mods/v3/mods-3-5.xsd"
 MODSv37_SCHEMA = "http://www.loc.gov/standards/mods/v3/mods-3-7.xsd"
+FAST = 'http://id.worldcat.org/fast'
 
 
 class CommonField(Common):
@@ -217,4 +218,18 @@ def make_mods():
     m = Mods()
     m.xsi_schema_location = XSI_LOCATION
     return m
+
+
+def add_topic(mods_obj, topic, label=None, fast_uri=None):
+    existing_topics = [subject.topic for subject in mods_obj.subjects if subject.topic]
+    if topic in existing_topics:
+        raise Exception('mods object already has topic %s' % topic)
+    s = Subject(topic=topic)
+    if label:
+        s.label = label
+    if fast_uri:
+        s.authority = 'fast'
+        s.authority_uri = FAST
+        s.value_uri = fast_uri
+    mods_obj.subjects.append(s)
 
