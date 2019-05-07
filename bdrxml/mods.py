@@ -221,15 +221,24 @@ def make_mods():
 
 
 def add_topic(mods_obj, topic, label=None, fast_uri=None):
-    existing_topics = [subject.topic for subject in mods_obj.subjects if subject.topic]
-    if topic in existing_topics:
-        raise Exception('mods object already has topic %s' % topic)
-    s = Subject(topic=topic)
-    if label:
+    #find or create subject we're working with
+    s = None
+    for subject in mods_obj.subjects:
+        if subject.topic == topic:
+            if (subject.label and subject.label != label)\
+                    or (subject.value_uri and subject.value_uri != fast_uri):
+                #existing subject is incompatible with what we're trying to add
+                raise Exception('mods object already has topic "%s"' % topic)
+            else:
+                s = subject
+    if not s:
+        s = Subject(topic=topic)
+        mods_obj.subjects.append(s)
+    #now set any missing info on the subject
+    if label and not s.label:
         s.label = label
-    if fast_uri:
+    if fast_uri and not s.value_uri:
         s.authority = 'fast'
         s.authority_uri = FAST
         s.value_uri = fast_uri
-    mods_obj.subjects.append(s)
 
