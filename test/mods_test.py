@@ -385,11 +385,36 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(mods_obj.subjects[0].authority, 'fast')
 
     def test_mods_add_topic_already_exists(self):
+        #if the topic already exists, just return and don't do anything
         mods_obj = mods.make_mods()
         mods_obj.title = 'title'
         mods_obj.subjects.append(mods.Subject(topic='random'))
-        with self.assertRaises(Exception):
-            mods.add_topic(mods_obj, 'random')
+        mods.add_topic(mods_obj, 'random')
+        self.assertEqual(len(mods_obj.subjects), 1)
+        self.assertEqual(mods_obj.subjects[0].topic, 'random')
+
+    def test_mods_add_topic_incompatible(self):
+        #if topic is there, but with different label or authority info, raise an exception
+        mods_obj = mods.make_mods()
+        mods_obj.title = 'title'
+        mods_obj.subjects.append(mods.Subject(topic='random', label='label1'))
+        with self.assertRaises(Exception) as cm:
+            mods.add_topic(mods_obj, 'random', label='label2')
+        self.assertEqual(str(cm.exception), 'mods object already has topic "random"')
+
+    def test_mods_add_topic_partial(self):
+        #if topic is partially there, finish adding whatever's missing
+        mods_obj = mods.make_mods()
+        mods_obj.title = 'title'
+        mods_obj.subjects.append(mods.Subject(topic='random', label='label1'))
+        mods.add_topic(mods_obj, 'random', label='label1', fast_uri='http://id.worldcat.org/fast/902025')
+        self.assertEqual(len(mods_obj.subjects), 1)
+        s = mods_obj.subjects[0]
+        self.assertEqual(s.topic, 'random')
+        self.assertEqual(s.label, 'label1')
+        self.assertEqual(s.authority, 'fast')
+        self.assertEqual(s.authority_uri, 'http://id.worldcat.org/fast')
+        self.assertEqual(s.value_uri, 'http://id.worldcat.org/fast/902025')
 
 
 def suite():
