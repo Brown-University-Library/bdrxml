@@ -368,6 +368,29 @@ class ModsReadWrite(unittest.TestCase):
         loaded = load_xmlobject_from_string(INVALID_MODS_XML, mods.Mods)
         self.assertFalse(loaded.is_valid())
 
+    def test_mods_add_topic(self):
+        mods_obj = mods.make_mods()
+        mods_obj.title = 'title'
+        mods.add_topic(mods_obj, 'random')
+        self.assertEqual(mods_obj.subjects[0].topic, 'random')
+
+    def test_mods_add_topic_label_and_fast(self):
+        mods_obj = mods.make_mods()
+        mods_obj.title = 'title'
+        mods.add_topic(mods_obj, 'random', label='Label:', fast_uri='http://id.worldcat.org/fast/902025')
+        self.assertEqual(mods_obj.subjects[0].topic, 'random')
+        self.assertEqual(mods_obj.subjects[0].label, 'Label:')
+        self.assertEqual(mods_obj.subjects[0].value_uri, 'http://id.worldcat.org/fast/902025')
+        self.assertEqual(mods_obj.subjects[0].authority_uri, 'http://id.worldcat.org/fast')
+        self.assertEqual(mods_obj.subjects[0].authority, 'fast')
+
+    def test_mods_add_topic_already_exists(self):
+        mods_obj = mods.make_mods()
+        mods_obj.title = 'title'
+        mods_obj.subjects.append(mods.Subject(topic='random'))
+        with self.assertRaises(Exception):
+            mods.add_topic(mods_obj, 'random')
+
 
 def suite():
     suite = unittest.makeSuite(ModsReadWrite, 'test')
