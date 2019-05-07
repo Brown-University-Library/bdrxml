@@ -220,13 +220,23 @@ def make_mods():
     return m
 
 
+def _fast_uris_equal(uri1, uri2):
+    if uri1 == uri2:
+        return True
+    root1, value1 = uri1.rsplit('/', maxsplit=1)
+    root2, value2 = uri2.rsplit('/', maxsplit=1)
+    if root1 == root2 and int(value1) == int(value2):
+        return True
+    return False
+
+
 def add_topic(mods_obj, topic, label=None, fast_uri=None):
     #find or create subject we're working with
     s = None
     for subject in mods_obj.subjects:
         if subject.topic == topic:
             if (subject.label and subject.label != label)\
-                    or (subject.value_uri and subject.value_uri != fast_uri):
+                    or (subject.value_uri and not _fast_uris_equal(subject.value_uri, fast_uri)):
                 #existing subject is incompatible with what we're trying to add
                 raise Exception('mods object already has topic "%s"' % topic)
             else:

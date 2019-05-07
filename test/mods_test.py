@@ -416,6 +416,11 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(s.authority_uri, 'http://id.worldcat.org/fast')
         self.assertEqual(s.value_uri, 'http://id.worldcat.org/fast/902025')
 
+    def test_fast_uri_equality(self):
+        self.assertTrue(mods._fast_uris_equal('http://id.worldcat.org/fast/902025', 'http://id.worldcat.org/fast/902025'))
+        self.assertFalse(mods._fast_uris_equal('http://id.worldcat.org/fast/902025', 'http://id.worldcat.org/fast/902026'))
+        self.assertTrue(mods._fast_uris_equal('http://id.worldcat.org/fast/00902025', 'http://id.worldcat.org/fast/902025'))
+
 
 def suite():
     suite = unittest.makeSuite(ModsReadWrite, 'test')
