@@ -223,6 +223,8 @@ def make_mods():
 def _fast_uris_equal(uri1, uri2):
     if uri1 == uri2:
         return True
+    uri1 = uri1.rstrip('/')
+    uri2 = uri2.rstrip('/')
     root1, value1 = uri1.rsplit('/', maxsplit=1)
     root2, value2 = uri2.rsplit('/', maxsplit=1)
     if root1 == root2 and int(value1) == int(value2):

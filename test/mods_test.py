@@ -420,6 +420,9 @@ class ModsReadWrite(unittest.TestCase):
         self.assertTrue(mods._fast_uris_equal('http://id.worldcat.org/fast/902025', 'http://id.worldcat.org/fast/902025'))
         self.assertFalse(mods._fast_uris_equal('http://id.worldcat.org/fast/902025', 'http://id.worldcat.org/fast/902026'))
         self.assertTrue(mods._fast_uris_equal('http://id.worldcat.org/fast/00902025', 'http://id.worldcat.org/fast/902025'))
+        self.assertTrue(mods._fast_uris_equal('http://id.worldcat.org/fast/00902025/', 'http://id.worldcat.org/fast/902025/'))
+        self.assertTrue(mods._fast_uris_equal('http://id.worldcat.org/fast/902025/', 'http://id.worldcat.org/fast/902025/'))
+        self.assertFalse(mods._fast_uris_equal('http://id.worldcat.org/fast/902025/', 'http://id.worldcat.org/fast/902026/'))
 
 
 def suite():
