@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='bdrxml',
-    version='1.0a1',
+    version='1.0b1',
     packages=find_packages(),
     package_data={'bdrxml': ['schemas/*.*']},
     install_requires=[
