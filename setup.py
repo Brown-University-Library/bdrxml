@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='bdrxml',
-    version='1.0',
+    version='1.1a1',
     url='https://github.com/Brown-University-Library/bdrxml',
     author='Brown University Library',
     author_email='bdr@brown.edu',
