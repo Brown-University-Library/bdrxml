@@ -27,6 +27,8 @@ jobs:
         pip install coveralls
         pip install .
     - name: Run tests with coverage
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         coverage run --source=bdrxml test.py
         coveralls
