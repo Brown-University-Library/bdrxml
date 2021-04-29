@@ -87,6 +87,7 @@ SAMPLE_MODS = '''
   <mods:genre authority="bdr">bdr theses</mods:genre>
   <mods:genre authority="local">local theses</mods:genre>
   <mods:genre authority="fast" authorityURI="http://fast.com" valueURI="http://fast.com/123">123</mods:genre>
+  <mods:genre type="object type" authority="aat">sherd</mods:genre>
   <mods:abstract>Poétry description...</mods:abstract>
   <mods:subject displayLabel="Display Labél!">
     <mods:topic>modernism</mods:topic>
@@ -136,6 +137,7 @@ SAMPLE_MODS = '''
     <mods:holdingSimple>
       <mods:copyInformation>
         <mods:note>location note</mods:note>
+        <mods:subLocation>Bishop Collection</mods:subLocation>
       </mods:copyInformation>
     </mods:holdingSimple>
   </mods:location>
@@ -236,6 +238,8 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(loaded.genres[4].authority, 'fast')
         self.assertEqual(loaded.genres[4].authority_uri, 'http://fast.com')
         self.assertEqual(loaded.genres[4].value_uri, 'http://fast.com/123')
+        self.assertEqual(loaded.genres[5].text, 'sherd')
+        self.assertEqual(loaded.genres[5].type, 'object type')
         s = [s for s in loaded.subjects if s.topic == '456'][0]
         self.assertEqual(s.authority, 'fast')
         self.assertEqual(s.authority_uri, 'http://fast.com')
@@ -259,6 +263,7 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(loaded.locations[0].physical.authority_uri, 'http://locauth.com')
         self.assertEqual(loaded.locations[0].physical.value_uri, 'http://locauth.com/random')
         self.assertEqual(loaded.locations[0].holding_simple.copy_information[0].notes[0].text, 'location note')
+        self.assertEqual(loaded.locations[0].holding_simple.copy_information[0].sublocations[0].text, 'Bishop Collection')
         self.assertEqual(loaded.record_info_list[0].record_identifier_list[0].source, 'RPB')
         self.assertEqual(loaded.record_info_list[0].record_identifier_list[0].text, 'a1234567')
         self.assertEqual(loaded.record_info_list[0].record_creation_date.date, '20091218')
