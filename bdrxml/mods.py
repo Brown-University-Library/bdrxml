@@ -136,6 +136,7 @@ class Classification(CommonField):
 class Genre(Genre):
     authority_uri = SF('@authorityURI')
     value_uri = SF('@valueURI')
+    type = SF('@type')
 
 
 class TargetAudience(Common):
