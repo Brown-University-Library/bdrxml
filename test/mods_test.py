@@ -137,6 +137,7 @@ SAMPLE_MODS = '''
     <mods:holdingSimple>
       <mods:copyInformation>
         <mods:note>location note</mods:note>
+        <mods:subLocation>Bishop Collection</mods:subLocation>
       </mods:copyInformation>
     </mods:holdingSimple>
   </mods:location>
@@ -262,6 +263,7 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(loaded.locations[0].physical.authority_uri, 'http://locauth.com')
         self.assertEqual(loaded.locations[0].physical.value_uri, 'http://locauth.com/random')
         self.assertEqual(loaded.locations[0].holding_simple.copy_information[0].notes[0].text, 'location note')
+        self.assertEqual(loaded.locations[0].holding_simple.copy_information[0].sublocations[0].text, 'Bishop Collection')
         self.assertEqual(loaded.record_info_list[0].record_identifier_list[0].source, 'RPB')
         self.assertEqual(loaded.record_info_list[0].record_identifier_list[0].text, 'a1234567')
         self.assertEqual(loaded.record_info_list[0].record_creation_date.date, '20091218')

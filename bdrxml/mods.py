@@ -73,10 +73,16 @@ class PhysicalLocation(CommonField):
     ROOT_NAME = 'physicalLocation'
 
 
+class SubLocation(Common):
+    text = SF('text()')
+    lang = SF('@lang')
+    script = SF('@script')
+    transliteration = SF('@transliteration')
+
 class CopyInformation(Common):
     ROOT_NAME = 'copyInformation'
     notes = NodeListField('mods:note', Note)
-
+    sublocations = NodeListField('mods:subLocation', SubLocation)
 
 class HoldingSimple(Common):
     ROOT_NAME = 'holdingSimple'
