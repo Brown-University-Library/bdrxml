@@ -10,6 +10,7 @@ setup(name='bdrxml',
     install_requires=[
         'eulxml==1.1.3',
         'ply==3.8',
+        'rdflib'
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
