@@ -1,7 +1,6 @@
 import re
 import unicodedata
-from eulxml.xmlmap import StringField as SF
-from eulxml.xmlmap import NodeListField, NodeField
+from eulxml.xmlmap import StringField as SF, SchemaField, NodeListField, NodeField
 #import everything from eulxml.xmlmap.mods because clients have to use a lot of
 #   those classes, and we're just overriding a few of them here.
 from eulxml.xmlmap.mods import *
@@ -53,7 +52,7 @@ class LanguageTerm(LanguageTerm):
     value_uri = SF('@valueURI')
 
 class Language(Language):
-    terms = xmlmap.NodeListField('mods:languageTerm', LanguageTerm)
+    terms = NodeListField('mods:languageTerm', LanguageTerm)
 
 
 class PhysicalDescriptionForm(CommonField):
@@ -169,31 +168,40 @@ class Role(Role):
 
 
 class Name(Name):
-    roles = xmlmap.NodeListField('mods:role', Role)
+    roles = NodeListField('mods:role', Role)
     authority_uri = SF('@authorityURI')
     value_uri = SF('@valueURI')
 
 
+class ResourceType(Common):
+    ROOT_NAME = 'typeOfResource'
+    authority = SF('@authority')
+    authority_uri = SF('@authorityURI')
+    value_uri = SF('@valueURI')
+    label = SF('@displayLabel')
+    text = SF('text()')
+
+
 class BaseMods(BaseMods):
     classifications = NodeListField('mods:classification', Classification)
-    #override eulxml origin_info, because we add a displayLabel
     origin_info = NodeField('mods:originInfo', OriginInfo)
-    #override eulxml subjects so we can add hierarchical_geographic to subject
     subjects = NodeListField('mods:subject', Subject)
     physical_description = NodeField('mods:physicalDescription', PhysicalDescription)
-    languages = xmlmap.NodeListField('mods:language', Language)
+    languages = NodeListField('mods:language', Language)
     locations = NodeListField('mods:location', Location)
     genres = NodeListField('mods:genre', Genre)
     target_audiences = NodeListField('mods:targetAudience', TargetAudience)
     record_info_list = NodeListField('mods:recordInfo', RecordInfo)
-    names = xmlmap.NodeListField('mods:name', Name)
-    parts = xmlmap.NodeListField('mods:part', Part)
+    names = NodeListField('mods:name', Name)
+    parts = NodeListField('mods:part', Part)
+    resource_type = NodeField('mods:typeOfResource', ResourceType)
+    resource_types = NodeListField('mods:typeOfResource', ResourceType)
 
 
 class RelatedItem(BaseMods):
     ROOT_NAME = 'relatedItem'
-    type = xmlmap.SchemaField("@type", 'relatedItemTypeAttributeDefinition')
-    label = xmlmap.StringField('@displayLabel')
+    type = SchemaField("@type", 'relatedItemTypeAttributeDefinition')
+    label = SF('@displayLabel')
 
 
 class Mods(BaseMods):

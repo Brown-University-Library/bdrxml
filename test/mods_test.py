@@ -76,7 +76,7 @@ SAMPLE_MODS = '''
       <mods:roleTerm type="text">distribution place</mods:roleTerm>
     </mods:role>
   </mods:name>
-  <mods:typeOfResource>text</mods:typeOfResource>
+  <mods:typeOfResource authority="primo" authorityURI="https://knowledge.exlibrisgroup.com/Primo">databases</mods:typeOfResource>
   <mods:language>
     <mods:languageTerm authority="iso639-2b" authorityURI="http://id.loc.gov/vocabulary/iso639-2.html" valueURI="http://id.loc.gov/vocabulary/iso639-2/eng">English</mods:languageTerm>
   </mods:language>
@@ -230,7 +230,10 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(tom_smith.roles[0].authority_uri, 'http://id.loc.gov/vocabulary/relators')
         self.assertEqual(tom_smith.roles[0].value_uri, 'http://id.loc.gov/vocabulary/relators/cre')
 
-        self.assertEqual(loaded.resource_type, 'text')
+        self.assertEqual(loaded.resource_type.authority, 'primo')
+        self.assertEqual(loaded.resource_type.authority_uri, 'https://knowledge.exlibrisgroup.com/Primo')
+        self.assertEqual(loaded.resource_type.text, 'databases')
+        self.assertEqual(loaded.resource_types[0].text, 'databases')
         self.assertEqual(loaded.genres[1].text, 'aat theses')
         self.assertEqual(loaded.genres[4].text, '123')
         self.assertEqual(loaded.genres[4].authority, 'fast')
