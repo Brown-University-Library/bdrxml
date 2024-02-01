@@ -373,11 +373,9 @@ class ModsReadWrite(unittest.TestCase):
         loaded = load_xmlobject_from_string(MODS_35_XML, mods.Mods)
         self.assertTrue(loaded.is_valid())
 
-
     def test_validate_mods_38(self):
         loaded = load_xmlobject_from_string(MODS_38_XML, mods.Mods)
         self.assertTrue(loaded.is_valid())
-
 
     def test_validate_created_mods(self):
         self.mods.title = 'Poétry'
