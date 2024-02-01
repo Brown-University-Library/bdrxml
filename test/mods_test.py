@@ -1,5 +1,5 @@
 import unittest
-from eulxml.xmlmap  import load_xmlobject_from_string
+from eulxml.xmlmap import load_xmlobject_from_string
 from bdrxml import mods
 
 SAMPLE_MODS = '''
@@ -160,6 +160,13 @@ SAMPLE_MODS = '''
 '''
 MODS_35_XML = '''
 <mods:mods xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd" ID="id101" version="3.5">
+    <mods:titleInfo>
+        <mods:title>A Title</mods:title>
+    </mods:titleInfo>
+</mods:mods>
+'''
+MODS_38_XML = '''
+<mods:mods xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-8.xsd" ID="id101" version="3.8">
     <mods:titleInfo>
         <mods:title>A Title</mods:title>
     </mods:titleInfo>
@@ -365,6 +372,12 @@ class ModsReadWrite(unittest.TestCase):
     def test_validate_mods_35(self):
         loaded = load_xmlobject_from_string(MODS_35_XML, mods.Mods)
         self.assertTrue(loaded.is_valid())
+
+
+    def test_validate_mods_38(self):
+        loaded = load_xmlobject_from_string(MODS_38_XML, mods.Mods)
+        self.assertTrue(loaded.is_valid())
+
 
     def test_validate_created_mods(self):
         self.mods.title = 'Poétry'
