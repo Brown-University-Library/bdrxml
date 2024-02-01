@@ -1,6 +1,12 @@
 ## TEMP -- for development
 
 ## from setup.py
-'eulxml==1.1.3',
-'ply==3.8',
-'rdflib'
+eulxml==1.1.3
+ply==3.8
+# rdflib
+
+## actual version used by workshop in production
+rdflib==6.0.0
+
+## actual version used by workshop in production -- newest version fails on some code
+lxml==4.7.1
