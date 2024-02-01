@@ -43,11 +43,11 @@ MODS: Metadata Object Description Schema. See http://www.loc.gov/standards/mods/
 6. Attribute @IDref added to any element that has the @ID attribute; 
    attributes @ID and @idref added to top-level elements that have neither.
 
-7. Element <nameIdentifier> element added, subelement of <place>    .
+7. Element <nameIdentifier> element added, subelement of <place>.
 
 8. Element <cartographics> added, subelement of <place>.
 
-9. Attribute @stateType added, subelement of <subject><hierarchicalGeographic><state> .
+9. Attribute @stateType added, subelement of <subject><hierarchicalGeographic><state>.
 
 10.  Element <displayDate> added, subelement of <originInfo>.
 
