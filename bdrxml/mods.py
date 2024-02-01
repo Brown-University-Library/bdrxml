@@ -11,6 +11,7 @@ XSI_NAMESPACE = 'http://www.w3.org/2001/XMLSchema-instance'
 XSI_LOCATION = 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd'
 MODSv35_SCHEMA = "http://www.loc.gov/standards/mods/v3/mods-3-5.xsd"
 MODSv37_SCHEMA = "http://www.loc.gov/standards/mods/v3/mods-3-7.xsd"
+MODSv38_SCHEMA = "http://www.loc.gov/standards/mods/v3/mods-3-8.xsd"
 FAST = 'http://id.worldcat.org/fast'
 
 
@@ -210,7 +211,8 @@ class Mods(BaseMods):
     http://www.loc.gov/standards/mods/mods-outline.html
     """
     ROOT_NAME = 'mods'
-    XSD_SCHEMA = MODSv37_SCHEMA
+    # XSD_SCHEMA = MODSv37_SCHEMA
+    XSD_SCHEMA = MODSv38_SCHEMA
     Common.ROOT_NAMESPACES['xlink'] = XLINK_NAMESPACE
     Common.ROOT_NAMESPACES['xsi'] = XSI_NAMESPACE
     xsi_schema_location = SF('@xsi:schemaLocation')
