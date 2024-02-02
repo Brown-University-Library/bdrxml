@@ -1,19 +1,27 @@
 import re
 import unicodedata
+
+from .darwincore import get_schema_validation_errors
+from eulxml import xmlmap
 from eulxml.xmlmap import StringField as SF, SchemaField, NodeListField, NodeField
+
 #import everything from eulxml.xmlmap.mods because clients have to use a lot of
 #   those classes, and we're just overriding a few of them here.
-# from eulxml.xmlmap.mods import *
-from .darwincore import get_schema_validation_errors
-from eulxml.xmlmap.mods import Common
-from eulxml.xmlmap.mods import PartDetail as EulXmlPartDetail
-from eulxml.xmlmap.mods import OriginInfo as EulXmlOriginInfo
-from eulxml.xmlmap.mods import RelatedItem as EulXmlRelatedItem
-from eulxml.xmlmap.mods import LanguageTerm as EulXmlLanguageTerm
+from eulxml.xmlmap.mods import *
+from eulxml.xmlmap.mods import BaseMods as EulXmlBaseMods
+from eulxml.xmlmap.mods import Common, Date, Note, TitleInfo
+from eulxml.xmlmap.mods import Genre as EulXmlGenre
 from eulxml.xmlmap.mods import Language as EulXmlLanguage
-from eulxml.xmlmap.mods import PhysicalDescription as EulXmlPhysicalDescription
-from eulxml.xmlmap.mods import Note
+from eulxml.xmlmap.mods import LanguageTerm as EulXmlLanguageTerm
 from eulxml.xmlmap.mods import Location as EulXmlLocation
+from eulxml.xmlmap.mods import Name as EulXmlName
+from eulxml.xmlmap.mods import OriginInfo as EulXmlOriginInfo
+from eulxml.xmlmap.mods import PartDetail as EulXmlPartDetail
+from eulxml.xmlmap.mods import PhysicalDescription as EulXmlPhysicalDescription
+from eulxml.xmlmap.mods import RecordInfo as EulXmlRecordInfo
+from eulxml.xmlmap.mods import RelatedItem as EulXmlRelatedItem
+from eulxml.xmlmap.mods import Role as EulXmlRole
+from eulxml.xmlmap.mods import Subject as EulXmlSubject
 
 
 XLINK_NAMESPACE = 'http://www.w3.org/1999/xlink'
@@ -140,7 +148,7 @@ class Topic(CommonField):
     ROOT_NAME = 'topic'
 
 
-class Subject(Subject):
+class Subject(EulXmlSubject):
     label = SF('@displayLabel')
     authority_uri = SF('@authorityURI')
     value_uri = SF('@valueURI')
@@ -160,7 +168,7 @@ class Classification(CommonField):
     label = SF('@displayLabel')
 
 
-class Genre(Genre):
+class Genre(EulXmlGenre):
     authority_uri = SF('@authorityURI')
     value_uri = SF('@valueURI')
     type = SF('@type')
@@ -180,18 +188,18 @@ class RecordContentSource(CommonField):
     ROOT_NAME = 'recordContentSource'
 
 
-class RecordInfo(RecordInfo):
+class RecordInfo(EulXmlRecordInfo):
     record_identifier_list = NodeListField('mods:recordIdentifier', RecordIdentifier)
     record_creation_date = NodeField('mods:recordCreationDate', RecordCreationDate)
     record_content_source = NodeField('mods:recordContentSource', RecordContentSource)
 
 
-class Role(Role):
+class Role(EulXmlRole):
     authority_uri = SF('mods:roleTerm/@authorityURI')
     value_uri = SF('mods:roleTerm/@valueURI')
 
 
-class Name(Name):
+class Name(EulXmlName):
     roles = NodeListField('mods:role', Role)
     authority_uri = SF('@authorityURI')
     value_uri = SF('@valueURI')
@@ -206,7 +214,7 @@ class ResourceType(Common):
     text = SF('text()')
 
 
-class BaseMods(BaseMods):
+class BaseMods(EulXmlBaseMods):
     classifications = NodeListField('mods:classification', Classification)
     origin_info = NodeField('mods:originInfo', OriginInfo)
     subjects = NodeListField('mods:subject', Subject)
@@ -244,6 +252,7 @@ class Mods(BaseMods):
     title_info = NodeListField('mods:titleInfo', TitleInfo)
     #Add a commonly used related item
     collection = NodeField('mods:relatedItem[@displayLabel="Collection"]', Collection)
+    # related_items = xmlmap.NodeListField('mods:relatedItem', RelatedItem)
     related_items = xmlmap.NodeListField('mods:relatedItem', RelatedItem)
 
     def validation_errors(self):
@@ -251,7 +260,6 @@ class Mods(BaseMods):
         #return get_schema_validation_errors(schema_name='mods-3-7.xsd', lxml_node=self.node)
         return get_schema_validation_errors(schema_name='mods-3-8.xsd', lxml_node=self.node)
     
-
 
 def make_mods():
     """Helper that returns Mods object."""
