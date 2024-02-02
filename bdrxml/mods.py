@@ -8,8 +8,8 @@ from .darwincore import get_schema_validation_errors
 
 XLINK_NAMESPACE = 'http://www.w3.org/1999/xlink'
 XSI_NAMESPACE = 'http://www.w3.org/2001/XMLSchema-instance'
-XSI_LOCATION = 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd'
-#XSI_LOCATION = 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-8.xsd'
+# XSI_LOCATION = 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd'
+XSI_LOCATION = 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-8.xsd'
 MODSv35_SCHEMA = "http://www.loc.gov/standards/mods/v3/mods-3-5.xsd"
 MODSv37_SCHEMA = "http://www.loc.gov/standards/mods/v3/mods-3-7.xsd"
 MODSv38_SCHEMA = "http://www.loc.gov/standards/mods/v3/mods-3-8.xsd"
