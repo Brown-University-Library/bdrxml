@@ -3,8 +3,18 @@ import unicodedata
 from eulxml.xmlmap import StringField as SF, SchemaField, NodeListField, NodeField
 #import everything from eulxml.xmlmap.mods because clients have to use a lot of
 #   those classes, and we're just overriding a few of them here.
-from eulxml.xmlmap.mods import *
+# from eulxml.xmlmap.mods import *
 from .darwincore import get_schema_validation_errors
+from eulxml.xmlmap.mods import Common
+from eulxml.xmlmap.mods import PartDetail as EulXmlPartDetail
+from eulxml.xmlmap.mods import OriginInfo as EulXmlOriginInfo
+from eulxml.xmlmap.mods import RelatedItem as EulXmlRelatedItem
+from eulxml.xmlmap.mods import LanguageTerm as EulXmlLanguageTerm
+from eulxml.xmlmap.mods import Language as EulXmlLanguage
+from eulxml.xmlmap.mods import PhysicalDescription as EulXmlPhysicalDescription
+from eulxml.xmlmap.mods import Note
+from eulxml.xmlmap.mods import Location as EulXmlLocation
+
 
 XLINK_NAMESPACE = 'http://www.w3.org/1999/xlink'
 XSI_NAMESPACE = 'http://www.w3.org/2001/XMLSchema-instance'
@@ -24,11 +34,19 @@ class CommonField(Common):
     text = SF('text()')
 
 
-class PartDetail(PartDetail):
+# class PartDetail(PartDetail):
+#     caption = SF('mods:caption')
+
+class PartDetail(EulXmlPartDetail):
     caption = SF('mods:caption')
 
-class Part(Part):
+
+# class Part(Part):
+#     details = NodeListField('mods:detail', PartDetail)
+
+class Part(EulXmlPartDetail):
     details = NodeListField('mods:detail', PartDetail)
+
 
 class PlaceTerm(CommonField):
     ROOT_NAME = 'placeTerm'
@@ -39,21 +57,23 @@ class Place(Common):
     ROOT_NAME = 'place'
     place_terms = NodeListField('mods:placeTerm', PlaceTerm)
 
-class OriginInfo(OriginInfo):
+
+class OriginInfo(EulXmlOriginInfo):
     label = SF('@displayLabel')
     places = NodeListField('mods:place', Place)
 
 
-class Collection(RelatedItem):
+class Collection(EulXmlRelatedItem):
     name = SF('mods:titleInfo/mods:title')
     id = SF('mods:identifier[@type="COLID"]')
 
 
-class LanguageTerm(LanguageTerm):
+class LanguageTerm(EulXmlLanguageTerm):
     authority_uri = SF('@authorityURI')
     value_uri = SF('@valueURI')
 
-class Language(Language):
+
+class Language(EulXmlLanguage):
     terms = NodeListField('mods:languageTerm', LanguageTerm)
 
 
@@ -62,7 +82,7 @@ class PhysicalDescriptionForm(CommonField):
     type = SF('@type')
 
 
-class PhysicalDescription(PhysicalDescription):
+class PhysicalDescription(EulXmlPhysicalDescription):
     digital_origin = SF('mods:digitalOrigin')
     note = SF('mods:note')
     forms = NodeListField('mods:form', PhysicalDescriptionForm)
@@ -78,17 +98,19 @@ class SubLocation(Common):
     script = SF('@script')
     transliteration = SF('@transliteration')
 
+
 class CopyInformation(Common):
     ROOT_NAME = 'copyInformation'
     notes = NodeListField('mods:note', Note)
     sublocations = NodeListField('mods:subLocation', SubLocation)
+
 
 class HoldingSimple(Common):
     ROOT_NAME = 'holdingSimple'
     copy_information = NodeListField('mods:copyInformation', CopyInformation)
 
 
-class Location(Location):
+class Location(EulXmlLocation):
     physical = NodeField('mods:physicalLocation', PhysicalLocation)
     holding_simple = NodeField('mods:holdingSimple', HoldingSimple)
 
