@@ -42,15 +42,9 @@ class CommonField(Common):
     text = SF('text()')
 
 
-# class PartDetail(PartDetail):
-#     caption = SF('mods:caption')
-
 class PartDetail(EulXmlPartDetail):
     caption = SF('mods:caption')
 
-
-# class Part(Part):
-#     details = NodeListField('mods:detail', PartDetail)
 
 class Part(EulXmlPartDetail):
     details = NodeListField('mods:detail', PartDetail)
@@ -252,7 +246,6 @@ class Mods(BaseMods):
     title_info = NodeListField('mods:titleInfo', TitleInfo)
     #Add a commonly used related item
     collection = NodeField('mods:relatedItem[@displayLabel="Collection"]', Collection)
-    # related_items = xmlmap.NodeListField('mods:relatedItem', RelatedItem)
     related_items = xmlmap.NodeListField('mods:relatedItem', RelatedItem)
 
     def validation_errors(self):
