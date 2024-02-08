@@ -1,16 +1,36 @@
 import re
 import unicodedata
+
+from .darwincore import get_schema_validation_errors
+from eulxml import xmlmap
 from eulxml.xmlmap import StringField as SF, SchemaField, NodeListField, NodeField
+
 #import everything from eulxml.xmlmap.mods because clients have to use a lot of
 #   those classes, and we're just overriding a few of them here.
 from eulxml.xmlmap.mods import *
-from .darwincore import get_schema_validation_errors
+from eulxml.xmlmap.mods import BaseMods as EulXmlBaseMods
+from eulxml.xmlmap.mods import Common, Date, Note, TitleInfo
+from eulxml.xmlmap.mods import Genre as EulXmlGenre
+from eulxml.xmlmap.mods import Language as EulXmlLanguage
+from eulxml.xmlmap.mods import LanguageTerm as EulXmlLanguageTerm
+from eulxml.xmlmap.mods import Location as EulXmlLocation
+from eulxml.xmlmap.mods import Name as EulXmlName
+from eulxml.xmlmap.mods import OriginInfo as EulXmlOriginInfo
+from eulxml.xmlmap.mods import PartDetail as EulXmlPartDetail
+from eulxml.xmlmap.mods import PhysicalDescription as EulXmlPhysicalDescription
+from eulxml.xmlmap.mods import RecordInfo as EulXmlRecordInfo
+from eulxml.xmlmap.mods import RelatedItem as EulXmlRelatedItem
+from eulxml.xmlmap.mods import Role as EulXmlRole
+from eulxml.xmlmap.mods import Subject as EulXmlSubject
+
 
 XLINK_NAMESPACE = 'http://www.w3.org/1999/xlink'
 XSI_NAMESPACE = 'http://www.w3.org/2001/XMLSchema-instance'
-XSI_LOCATION = 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd'
+# XSI_LOCATION = 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd'
+XSI_LOCATION = 'http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-8.xsd'
 MODSv35_SCHEMA = "http://www.loc.gov/standards/mods/v3/mods-3-5.xsd"
 MODSv37_SCHEMA = "http://www.loc.gov/standards/mods/v3/mods-3-7.xsd"
+MODSv38_SCHEMA = "http://www.loc.gov/standards/mods/v3/mods-3-8.xsd"
 FAST = 'http://id.worldcat.org/fast'
 
 
@@ -22,11 +42,13 @@ class CommonField(Common):
     text = SF('text()')
 
 
-class PartDetail(PartDetail):
+class PartDetail(EulXmlPartDetail):
     caption = SF('mods:caption')
 
-class Part(Part):
+
+class Part(EulXmlPartDetail):
     details = NodeListField('mods:detail', PartDetail)
+
 
 class PlaceTerm(CommonField):
     ROOT_NAME = 'placeTerm'
@@ -37,21 +59,23 @@ class Place(Common):
     ROOT_NAME = 'place'
     place_terms = NodeListField('mods:placeTerm', PlaceTerm)
 
-class OriginInfo(OriginInfo):
+
+class OriginInfo(EulXmlOriginInfo):
     label = SF('@displayLabel')
     places = NodeListField('mods:place', Place)
 
 
-class Collection(RelatedItem):
+class Collection(EulXmlRelatedItem):
     name = SF('mods:titleInfo/mods:title')
     id = SF('mods:identifier[@type="COLID"]')
 
 
-class LanguageTerm(LanguageTerm):
+class LanguageTerm(EulXmlLanguageTerm):
     authority_uri = SF('@authorityURI')
     value_uri = SF('@valueURI')
 
-class Language(Language):
+
+class Language(EulXmlLanguage):
     terms = NodeListField('mods:languageTerm', LanguageTerm)
 
 
@@ -60,7 +84,7 @@ class PhysicalDescriptionForm(CommonField):
     type = SF('@type')
 
 
-class PhysicalDescription(PhysicalDescription):
+class PhysicalDescription(EulXmlPhysicalDescription):
     digital_origin = SF('mods:digitalOrigin')
     note = SF('mods:note')
     forms = NodeListField('mods:form', PhysicalDescriptionForm)
@@ -76,17 +100,19 @@ class SubLocation(Common):
     script = SF('@script')
     transliteration = SF('@transliteration')
 
+
 class CopyInformation(Common):
     ROOT_NAME = 'copyInformation'
     notes = NodeListField('mods:note', Note)
     sublocations = NodeListField('mods:subLocation', SubLocation)
+
 
 class HoldingSimple(Common):
     ROOT_NAME = 'holdingSimple'
     copy_information = NodeListField('mods:copyInformation', CopyInformation)
 
 
-class Location(Location):
+class Location(EulXmlLocation):
     physical = NodeField('mods:physicalLocation', PhysicalLocation)
     holding_simple = NodeField('mods:holdingSimple', HoldingSimple)
 
@@ -116,7 +142,7 @@ class Topic(CommonField):
     ROOT_NAME = 'topic'
 
 
-class Subject(Subject):
+class Subject(EulXmlSubject):
     label = SF('@displayLabel')
     authority_uri = SF('@authorityURI')
     value_uri = SF('@valueURI')
@@ -136,7 +162,7 @@ class Classification(CommonField):
     label = SF('@displayLabel')
 
 
-class Genre(Genre):
+class Genre(EulXmlGenre):
     authority_uri = SF('@authorityURI')
     value_uri = SF('@valueURI')
     type = SF('@type')
@@ -156,18 +182,18 @@ class RecordContentSource(CommonField):
     ROOT_NAME = 'recordContentSource'
 
 
-class RecordInfo(RecordInfo):
+class RecordInfo(EulXmlRecordInfo):
     record_identifier_list = NodeListField('mods:recordIdentifier', RecordIdentifier)
     record_creation_date = NodeField('mods:recordCreationDate', RecordCreationDate)
     record_content_source = NodeField('mods:recordContentSource', RecordContentSource)
 
 
-class Role(Role):
+class Role(EulXmlRole):
     authority_uri = SF('mods:roleTerm/@authorityURI')
     value_uri = SF('mods:roleTerm/@valueURI')
 
 
-class Name(Name):
+class Name(EulXmlName):
     roles = NodeListField('mods:role', Role)
     authority_uri = SF('@authorityURI')
     value_uri = SF('@valueURI')
@@ -182,7 +208,7 @@ class ResourceType(Common):
     text = SF('text()')
 
 
-class BaseMods(BaseMods):
+class BaseMods(EulXmlBaseMods):
     classifications = NodeListField('mods:classification', Classification)
     origin_info = NodeField('mods:originInfo', OriginInfo)
     subjects = NodeListField('mods:subject', Subject)
@@ -210,7 +236,8 @@ class Mods(BaseMods):
     http://www.loc.gov/standards/mods/mods-outline.html
     """
     ROOT_NAME = 'mods'
-    XSD_SCHEMA = MODSv37_SCHEMA
+    # XSD_SCHEMA = MODSv37_SCHEMA
+    XSD_SCHEMA = MODSv38_SCHEMA
     Common.ROOT_NAMESPACES['xlink'] = XLINK_NAMESPACE
     Common.ROOT_NAMESPACES['xsi'] = XSI_NAMESPACE
     xsi_schema_location = SF('@xsi:schemaLocation')
@@ -223,8 +250,9 @@ class Mods(BaseMods):
 
     def validation_errors(self):
         '''see notes on SimpleDarwinRecordSet.validation_errors()'''
-        return get_schema_validation_errors(schema_name='mods-3-7.xsd', lxml_node=self.node)
-
+        #return get_schema_validation_errors(schema_name='mods-3-7.xsd', lxml_node=self.node)
+        return get_schema_validation_errors(schema_name='mods-3-8.xsd', lxml_node=self.node)
+    
 
 def make_mods():
     """Helper that returns Mods object."""
