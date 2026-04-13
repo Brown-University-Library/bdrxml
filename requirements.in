@@ -9,4 +9,4 @@ ply==3.8
 rdflib==6.0.0
 
 ## actual version used by workshop in production -- newest version fails on some code
-lxml==4.7.1
+lxml==4.9.1
