@@ -16,6 +16,10 @@ service process; downstream BDR apps import it for metadata construction,
 validation, packaging, rights handling, indexing support, and Fedora-era
 relationship data.
 
+MODS and Simple Darwin Core validation use schema files bundled in this package.
+`bdrxml` also resolves eulxml's import-time MODS 3.4 schema lookup locally, so
+importing `bdrxml.mods` does not depend on live access to LOC schema URLs.
+
 Installation
 ------------
 

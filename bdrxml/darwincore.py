@@ -1,8 +1,12 @@
-import os
 import sys
-from lxml import etree
 from eulxml import xmlmap
 from eulxml.xmlmap import dc
+
+from .schema_resolver import (
+    CURRENT_DIR,
+    SCHEMA_DIR,
+    get_schema_validation_errors,
+)
 
 
 XMLNS = 'http://rs.tdwg.org/dwc/xsd/simpledarwincore/'
@@ -10,17 +14,6 @@ DCNS = 'http://purl.org/dc/terms/'
 DWCNS = 'http://rs.tdwg.org/dwc/terms/'
 XSINS = 'http://www.w3.org/2001/XMLSchema-instance'
 XSI_SCHEMA_LOCATION = 'http://rs.tdwg.org/dwc/xsd/simpledarwincore/ http://rs.tdwg.org/dwc/xsd/tdwg_dwc_simple.xsd'
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-SCHEMA_DIR = os.path.join(CURRENT_DIR, 'schemas')
-
-
-def get_schema_validation_errors(schema_name, lxml_node):
-    with open(os.path.join(SCHEMA_DIR, schema_name), 'rb') as f:
-        xmlschema = etree.XMLSchema(etree.parse(f))
-        if xmlschema.validate(lxml_node):
-            return []
-        else:
-            return xmlschema.error_log
 
 
 BASE_CLASS_MEMBERS = dict(
@@ -188,4 +181,3 @@ def make_simple_darwin_record_set():
     sdrs = SimpleDarwinRecordSet()
     sdrs.xsi_schema_location = XSI_SCHEMA_LOCATION
     return sdrs
-

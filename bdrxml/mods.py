@@ -1,9 +1,14 @@
 import re
 import unicodedata
 
-from .darwincore import get_schema_validation_errors
+from .schema_resolver import (
+    get_schema_validation_errors,
+    install_eulxml_schema_resolver,
+)
 from eulxml import xmlmap
 from eulxml.xmlmap import StringField as SF, SchemaField, NodeListField, NodeField
+
+install_eulxml_schema_resolver()
 
 #import everything from eulxml.xmlmap.mods because clients have to use a lot of
 #   those classes, and we're just overriding a few of them here.
@@ -294,4 +299,3 @@ def add_topic(mods_obj, topic, label=None, fast_uri=None):
         s.authority = 'fast'
         s.authority_uri = FAST
         s.value_uri = fast_uri
-
