@@ -4,6 +4,18 @@ bdrxml
 
 Reading and writing XML for the Fedora-based BDR.
 
+Overview
+--------
+
+`bdrxml` is a small shared Python package for creating, parsing, and inspecting
+XML structures used across Brown Digital Repository projects. It provides
+`eulxml.xmlmap` object mappings and helper builders for MODS, Simple Darwin
+Core, BDR METS, BDR and Hydra rights metadata, IR/deposit metadata, Fedora
+FOXML, RELS-EXT, and RELS-INT. It is a library, not a web application or
+service process; downstream BDR apps import it for metadata construction,
+validation, packaging, rights handling, indexing support, and Fedora-era
+relationship data.
+
 Installation
 ------------
 
