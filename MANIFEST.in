@@ -1,0 +1,1 @@
+recursive-include bdrxml/schemas *.xsd
