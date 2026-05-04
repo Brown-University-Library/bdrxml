@@ -1,4 +1,6 @@
+import os
 import unittest
+from lxml import etree
 from eulxml.xmlmap import load_xmlobject_from_string
 from bdrxml import mods
 
@@ -376,6 +378,12 @@ class ModsReadWrite(unittest.TestCase):
     def test_validate_mods_38(self):
         loaded = load_xmlobject_from_string(MODS_38_XML, mods.Mods)
         self.assertTrue(loaded.is_valid())
+
+    def test_mods_38_schema_compiles_with_xml_namespace_schema(self):
+        schema_dir = os.path.join(os.path.dirname(mods.__file__), 'schemas')
+        self.assertTrue(os.path.exists(os.path.join(schema_dir, 'xml.xsd')))
+        schema_path = os.path.join(schema_dir, 'mods-3-8.xsd')
+        etree.XMLSchema(etree.parse(schema_path))
 
     def test_validate_created_mods(self):
         self.mods.title = 'Poétry'
