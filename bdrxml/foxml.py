@@ -35,19 +35,17 @@ FOX = """
 </foxml:digitalObject>
 """
 
-from eulxml import xmlmap
-from eulxml.xmlmap.dc import DublinCore
-from eulxml.xmlmap import load_xmlobject_from_file
-from eulxml.xmlmap  import load_xmlobject_from_string
-from eulxml.xmlmap import StringField as SF
-from eulxml.xmlmap import NodeField, NodeListField
+from neuxml import xmlmap
+from neuxml.xmlmap import NodeField, NodeListField, load_xmlobject_from_file, load_xmlobject_from_string
+from neuxml.xmlmap import StringField as SF
+from neuxml.xmlmap.dc import DublinCore
 
-#Local xml maps
-from .mets import BDRMets, METS_NAMESPACE
-from .rels import RelsExt, RelsInt
-from .rights import Rights, RIGHTS_NAMESPACE
 from .irMetadata import IR, IR_NAMESPACE
 
+#Local xml maps
+from .mets import METS_NAMESPACE, BDRMets
+from .rels import RelsExt, RelsInt
+from .rights import RIGHTS_NAMESPACE, Rights
 
 FOXNS = 'info:fedora/fedora-system:def/foxml#'
 RDFNS = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'

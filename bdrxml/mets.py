@@ -1,10 +1,11 @@
-from eulxml import xmlmap
-from eulxml.xmlmap import StringField as SF
+from typing import TYPE_CHECKING
 
-from . import mods
-from . import darwincore
-from .rights import Rights, RIGHTS_NAMESPACE
+from neuxml import xmlmap
+from neuxml.xmlmap import StringField as SF
+
+from . import darwincore, mods
 from .irMetadata import IR, IR_NAMESPACE
+from .rights import RIGHTS_NAMESPACE, Rights
 
 METS_NAMESPACE = 'http://www.loc.gov/METS/'
 XLINK_NAMESPACE = 'http://www.w3.org/1999/xlink'
@@ -65,7 +66,14 @@ class BDRMets(Common):
     rights = xmlmap.NodeField('METS:amdSec/METS:rightsMD[@ID="RMD1"]/METS:mdWrap[@LABEL="RIGHTSMD"][@MDTYPE="OTHER"]/METS:xmlData/rights:RightsDeclarationMD', Rights)
     filesec = xmlmap.NodeField('METS:fileSec', FileSec)
     structmap = xmlmap.NodeField( 'METS:structMap/METS:div', StructMap )  # not used but required for valid mets
-    schema_location = SF('@xsi:schemaLocation', 'self')
+    schema_location = SF('@xsi:schemaLocation', normalize=True)
+
+    if TYPE_CHECKING:
+        def create_mods(self) -> None: ...
+        def create_dwc(self) -> None: ...
+        def create_ir(self) -> None: ...
+        def create_filesec(self) -> None: ...
+        def create_structmap(self) -> None: ...
 
 def make_mets():
     """

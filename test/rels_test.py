@@ -1,6 +1,9 @@
 import unittest
+
 from lxml import etree
+
 from bdrxml import foxml, rels
+
 
 class RelsTest(unittest.TestCase):
     
@@ -48,7 +51,7 @@ class RelsTest(unittest.TestCase):
     
 
 def suite():
-    suite = unittest.makeSuite(RelsTest, 'test')
+    suite = unittest.defaultTestLoader.loadTestsFromTestCase(RelsTest)
     return suite
 
 if __name__ == '__main__':

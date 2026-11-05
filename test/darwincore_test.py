@@ -1,7 +1,8 @@
 import unittest
-from eulxml.xmlmap import load_xmlobject_from_string
-from bdrxml import darwincore
 
+from neuxml.xmlmap import load_xmlobject_from_string
+
+from bdrxml import darwincore
 
 SIMPLE_DARWIN_SET_XML = '''<?xml version='1.0' encoding='UTF-8'?>
 <sdr:SimpleDarwinRecordSet xmlns:sdr="http://rs.tdwg.org/dwc/xsd/simpledarwincore/" xmlns:dc="http://purl.org/dc/terms/" xmlns:dwc="http://rs.tdwg.org/dwc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://rs.tdwg.org/dwc/xsd/simpledarwincore/ http://rs.tdwg.org/dwc/xsd/tdwg_dwc_simple.xsd">
@@ -106,6 +107,7 @@ class SimpleDarwinRecordSetTestLoad(unittest.TestCase):
 
     def test_1(self):
         self.dwc.create_simple_darwin_record()
+        assert self.dwc.simple_darwin_record is not None
         self.dwc.simple_darwin_record.catalog_number = 'catalog number'
         dwc_data = self.dwc.serializeDocument(pretty=True)
         self.assertTrue(SIMPLE_DARWIN_SNIPPET.encode('utf8') in dwc_data)
@@ -129,6 +131,7 @@ class SimpleDarwinRecordSetTest(unittest.TestCase):
 
     def test_root(self):
         self.assertEqual(self.dwc.ROOT_NAME, 'SimpleDarwinRecordSet')
+        assert self.dwc.simple_darwin_record is not None
         self.assertEqual(self.dwc.simple_darwin_record.ROOT_NAME, 'SimpleDarwinRecord')
         self.assertEqual(self.dwc.simple_darwin_record.type_, 'Test')
         self.assertEqual(self.dwc.simple_darwin_record.language, 'én')
