@@ -1,12 +1,15 @@
 import unittest
-from eulxml.xmlmap  import load_xmlobject_from_string
+
+from neuxml.xmlmap import load_xmlobject_from_string
+
 from bdrxml.rights import (
-    Rights, 
     HydraRights,
-    make_rights,
-    make_context,
+    Rights,
     RightsBuilder,
+    make_context,
+    make_rights,
 )
+
 
 class HydraRightsReadWrite(unittest.TestCase):
     FIXTURE = """<?xml version="1.0" encoding="UTF-8"?>
@@ -41,7 +44,7 @@ class HydraRightsReadWrite(unittest.TestCase):
     def test_person_access(self):
         self.assertEqual( ['bob1', 'sally2'], self.rights.edit_access_person )
     
-    #Additional testing on reading and assigning to string lists covered in eulxml
+    #Additional testing on reading and assigning to string lists covered in neuxml
     
     def test_index_data(self):
         self.assertEqual({
@@ -70,6 +73,7 @@ class RightsReadWrite(unittest.TestCase):
         self.rights = make_rights()
 
     def init_holder(self):
+        assert self.rights.holder is not None
         self.rights.holder.name="Johnny"
     
     def init_context(self, ctx_name, username="johnny@brown.edu"):
@@ -78,16 +82,29 @@ class RightsReadWrite(unittest.TestCase):
         my_context.usertype = "GROUP"
         my_context.username =username
         my_context.id = ctx_name
-        my_context.delete = 'y'
-        my_context.modify = 'true' 
+        my_context.delete = True
+        my_context.modify = True
         self.rights.add_ctext(my_context)
     
     def test_holder(self):
         self.init_holder()
         rights_str = self.rights.serialize(pretty=True)
         loaded = load_xmlobject_from_string(rights_str, Rights)
+        assert loaded.holder is not None
         self.assertEqual(loaded.holder.name, 'Johnny')
         #self.assertEqual(loaded.holder.context_ids, 'rights1')
+
+    def test_context_without_username_does_not_add_an_identity(self) -> None:
+        """
+        Checks an incomplete context contributes no identity to the rights index.
+        """
+        context = make_context()
+        context.discover = True
+        context.display = True
+        context.modify = True
+        context.delete = True
+        self.rights.add_ctext(context)
+        self.assertEqual(self.rights.index_data(), {'discover': [], 'display': [], 'modify': [], 'delete': []})
 
     def test_contextNumber(self):
         self.init_context("rights1")
@@ -109,6 +126,7 @@ class RightsReadWrite(unittest.TestCase):
         rights_str = self.rights.serialize(pretty=True)
         loaded = load_xmlobject_from_string(rights_str, Rights)
         self.assertEqual(len(loaded.ctext), 3)
+        assert loaded.holder is not None
         self.assertEqual(loaded.holder.context_ids, 'rights1 rights2 rights3')
 
     def test_get_context_exception(self):
@@ -275,9 +293,9 @@ class Builder(unittest.TestCase):
 
 
 def suite():
-    suite1 = unittest.makeSuite(RightsReadWrite, 'test')
-    suite2 = unittest.makeSuite(Builder, 'test')
-    suite3 = unittest.makeSuite(HydraRightsReadWrite, 'test')
+    suite1 = unittest.defaultTestLoader.loadTestsFromTestCase(RightsReadWrite)
+    suite2 = unittest.defaultTestLoader.loadTestsFromTestCase(Builder)
+    suite3 = unittest.defaultTestLoader.loadTestsFromTestCase(HydraRightsReadWrite)
     alltests = unittest.TestSuite((suite1, suite2, suite3))
     return alltests
 

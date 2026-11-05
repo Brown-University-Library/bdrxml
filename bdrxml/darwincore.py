@@ -1,9 +1,9 @@
 import os
-import sys
-from lxml import etree
-from eulxml import xmlmap
-from eulxml.xmlmap import dc
+from typing import TYPE_CHECKING
 
+from lxml import etree
+from neuxml import xmlmap
+from neuxml.xmlmap import dc
 
 XMLNS = 'http://rs.tdwg.org/dwc/xsd/simpledarwincore/'
 DCNS = 'http://purl.org/dc/terms/'
@@ -23,7 +23,7 @@ def get_schema_validation_errors(schema_name, lxml_node):
             return xmlschema.error_log
 
 
-BASE_CLASS_MEMBERS = dict(
+BASE_CLASS_MEMBERS: dict[str, object] = dict(
     ROOT_NAME = 'SimpleDarwinRecord',
     XSD_SCHEMA = None,
     ROOT_NAMESPACES = {}
@@ -152,9 +152,105 @@ def _get_class_members():
 
 
 class_name = 'SimpleDarwinRecord'
-if sys.version_info.major == 2:
-    class_name = class_name.encode('utf8')
-SimpleDarwinRecord = type(class_name, (xmlmap.XmlObject,), _get_class_members())
+if TYPE_CHECKING:
+    class SimpleDarwinRecord(xmlmap.XmlObject):
+        type_: str | None
+        modified: str | None
+        language: str | None
+        rights: str | None
+        access_rights: str | None
+        license: str | None
+        rights_holder: str | None
+        bibliographic_citation: str | None
+        references: str | None
+        type_status: str | None
+        basis_of_record: str | None
+        event_id: str | None
+        parent_event_id: str | None
+        field_number: str | None
+        event_date: str | None
+        event_time: str | None
+        start_day_of_year: str | None
+        end_day_of_year: str | None
+        year: str | None
+        month: str | None
+        day: str | None
+        verbatim_event_date: str | None
+        habitat: str | None
+        sampling_protocol: str | None
+        sampling_effort: str | None
+        sample_size_value: str | None
+        sample_size_unit: str | None
+        field_notes: str | None
+        event_remarks: str | None
+        scientific_name: str | None
+        higher_classification: str | None
+        kingdom: str | None
+        phylum: str | None
+        class_: str | None
+        order: str | None
+        family: str | None
+        genus: str | None
+        specific_epithet: str | None
+        infraspecific_epithet: str | None
+        taxon_rank: str | None
+        taxon_id: str | None
+        accepted_name_usage: str | None
+        scientific_name_authorship: str | None
+        locality: str | None
+        location_remarks: str | None
+        municipality: str | None
+        county: str | None
+        state_province: str | None
+        country: str | None
+        geodetic_datum: str | None
+        georeferenced_by: str | None
+        georeferenced_date: str | None
+        georeference_sources: str | None
+        georeference_protocol: str | None
+        georeference_remarks: str | None
+        georeference_verification_status: str | None
+        decimal_latitude: str | None
+        decimal_longitude: str | None
+        coordinate_uncertainty_in_meters: str | None
+        verbatim_coordinates: str | None
+        minimum_elevation_in_meters: str | None
+        maximum_elevation_in_meters: str | None
+        verbatim_elevation: str | None
+        minimum_depth_in_meters: str | None
+        maximum_depth_in_meters: str | None
+        verbatim_depth: str | None
+        identification_id: str | None
+        collection_id: str | None
+        collection_code: str | None
+        institution_code: str | None
+        dynamic_properties: str | None
+        data_generalizations: str | None
+        information_withheld: str | None
+        occurrence_id: str | None
+        catalog_number: str | None
+        record_number: str | None
+        recorded_by: str | None
+        individual_count: str | None
+        organism_quantity: str | None
+        organism_quantity_type: str | None
+        sex: str | None
+        life_stage: str | None
+        reproductive_condition: str | None
+        behavior: str | None
+        establishment_means: str | None
+        occurrence_status: str | None
+        preparations: str | None
+        disposition: str | None
+        associated_media: str | None
+        associated_references: str | None
+        associated_sequences: str | None
+        associated_taxa: str | None
+        other_catalog_numbers: str | None
+        occurrence_remarks: str | None
+        xsi_schema_location: str
+else:
+    SimpleDarwinRecord = type(class_name, (xmlmap.XmlObject,), _get_class_members())
 
 
 class SimpleDarwinRecordSet(xmlmap.XmlObject):
@@ -177,6 +273,9 @@ class SimpleDarwinRecordSet(xmlmap.XmlObject):
         '''
         return get_schema_validation_errors(schema_name='tdwg_dwc_simple.xsd', lxml_node=self.node)
 
+
+    if TYPE_CHECKING:
+        def create_simple_darwin_record(self) -> None: ...
 
 def make_simple_darwin_record():
     sdr = SimpleDarwinRecord()

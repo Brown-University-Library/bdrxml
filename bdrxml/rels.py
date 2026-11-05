@@ -1,8 +1,6 @@
-from eulxml import xmlmap
-from eulxml.xmlmap import StringField as SF
-from eulxml.xmlmap import NodeListField
-from eulxml.xmlmap import XmlObject
-
+from neuxml import xmlmap
+from neuxml.xmlmap import NodeListField, XmlObject
+from neuxml.xmlmap import StringField as SF
 
 XMLNS = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'
 

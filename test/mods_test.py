@@ -1,7 +1,9 @@
 import os
 import unittest
+
 from lxml import etree
-from eulxml.xmlmap import load_xmlobject_from_string
+from neuxml.xmlmap import load_xmlobject_from_string
+
 from bdrxml import mods
 
 SAMPLE_MODS = '''
@@ -216,6 +218,7 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(loaded.title_info[2].title, 'alternative title')
         self.assertEqual(loaded.title_info[2].type, 'alternative')
         self.assertEqual(loaded.title_info[2].label, 'First line')
+        assert loaded.origin_info is not None
         self.assertEqual(loaded.origin_info.label, 'date added')
         self.assertEqual(loaded.origin_info.places[0].place_terms[0].text, 'USA')
         self.assertEqual(loaded.origin_info.places[0].place_terms[0].authority, 'auth')
@@ -239,6 +242,7 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(tom_smith.roles[0].authority_uri, 'http://id.loc.gov/vocabulary/relators')
         self.assertEqual(tom_smith.roles[0].value_uri, 'http://id.loc.gov/vocabulary/relators/cre')
 
+        assert loaded.resource_type is not None
         self.assertEqual(loaded.resource_type.authority, 'primo')
         self.assertEqual(loaded.resource_type.authority_uri, 'https://knowledge.exlibrisgroup.com/Primo')
         self.assertEqual(loaded.resource_type.text, 'databases')
@@ -257,6 +261,7 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(loaded.notes[0].text, 'Thésis (Ph.D.)')
         self.assertEqual(loaded.target_audiences[0].text, 'Target Audience')
         self.assertEqual(loaded.target_audiences[0].authority, 'local')
+        assert loaded.physical_description is not None
         self.assertEqual(loaded.physical_description.extent, 'viii, 208 p.')
         self.assertEqual(loaded.physical_description.digital_origin, 'born digital')
         self.assertEqual(loaded.physical_description.note, 'note 1')
@@ -268,16 +273,20 @@ class ModsReadWrite(unittest.TestCase):
         self.assertEqual(loaded.classifications[0].authority, 'classauth')
         self.assertEqual(loaded.classifications[0].authority_uri, 'http://classauth.com')
         self.assertEqual(loaded.classifications[0].value_uri, 'http://classauth.com/some')
+        assert loaded.locations[0].physical is not None
         self.assertEqual(loaded.locations[0].physical.text, 'Random location')
         self.assertEqual(loaded.locations[0].physical.authority, 'locauth')
         self.assertEqual(loaded.locations[0].physical.authority_uri, 'http://locauth.com')
         self.assertEqual(loaded.locations[0].physical.value_uri, 'http://locauth.com/random')
+        assert loaded.locations[0].holding_simple is not None
         self.assertEqual(loaded.locations[0].holding_simple.copy_information[0].notes[0].text, 'location note')
         self.assertEqual(loaded.locations[0].holding_simple.copy_information[0].sublocations[0].text, 'Bishop Collection')
         self.assertEqual(loaded.record_info_list[0].record_identifier_list[0].source, 'RPB')
         self.assertEqual(loaded.record_info_list[0].record_identifier_list[0].text, 'a1234567')
+        assert loaded.record_info_list[0].record_creation_date is not None
         self.assertEqual(loaded.record_info_list[0].record_creation_date.date, '20091218')
         self.assertEqual(loaded.record_info_list[0].record_creation_date.encoding, 'iso8601')
+        assert loaded.record_info_list[0].record_content_source is not None
         self.assertEqual(loaded.record_info_list[0].record_content_source.text, 'RPB')
         self.assertEqual(loaded.record_info_list[0].record_content_source.authority, 'marcorg')
         self.assertEqual(loaded.related_items[1].label, 'location of original')
@@ -288,13 +297,44 @@ class ModsReadWrite(unittest.TestCase):
         self.assertTrue(MODS_SNIPPET.encode('utf8') in self.mods.serialize(pretty=True))
         self.assertTrue(self.mods.is_valid())
 
+    def test_default_schema_remains_mods_38(self) -> None:
+        """
+        Checks the default record declares and validates against bundled MODS 3.8.
+        """
+        record = mods.make_mods()
+        record.title = 'Example title'
+        self.assertEqual(record.XSD_SCHEMA, mods.MODSv38_SCHEMA)
+        self.assertEqual(record.xsi_schema_location, mods.XSI_LOCATION)
+        self.assertEqual(record.validation_errors(), [])
+
+    def test_explicit_mods_37_uses_matching_bundled_schema(self) -> None:
+        """
+        Checks callers can retain MODS 3.7 through serialization and validation.
+        """
+        record = mods.make_mods(schema_version='3.7')
+        record.title = 'Earlier schema'
+        loaded = load_xmlobject_from_string(record.serialize(), mods.Mods37)
+        self.assertEqual(loaded.title, 'Earlier schema')
+        self.assertEqual(loaded.XSD_SCHEMA, mods.MODSv37_SCHEMA)
+        self.assertEqual(loaded.xsi_schema_location, f'http://www.loc.gov/mods/v3 {mods.MODSv37_SCHEMA}')
+        self.assertEqual(loaded.validation_errors(), [])
+
+    def test_unsupported_schema_is_rejected(self) -> None:
+        """
+        Checks unsupported schema versions cannot silently select a different schema.
+        """
+        with self.assertRaisesRegex(ValueError, 'Unsupported MODS schema version'):
+            mods.make_mods(schema_version='9.9')
+
     def test_round_trip(self):
         self.mods.title = "Sample title"
         self.mods.create_origin_info()
+        assert self.mods.origin_info is not None
         self.mods.origin_info.publisher = "BUL"
         mods_str = self.mods.serialize(pretty=False)
         loaded = load_xmlobject_from_string(mods_str, mods.Mods)
         self.assertEqual(loaded.title, 'Sample title')
+        assert loaded.origin_info is not None
         self.assertEqual(loaded.origin_info.publisher, 'BUL')
 
     def test_setting_xlink_href(self):
@@ -333,6 +373,7 @@ class ModsReadWrite(unittest.TestCase):
                 city='New Orleans',
                 city_section='Lower Ninth Ward')
         subject = mods.Subject(authority='local', hierarchical_geographic=hg)
+        assert subject.hierarchical_geographic is not None
         self.assertEqual(subject.hierarchical_geographic.country, 'United States')
         self.assertEqual(subject.hierarchical_geographic.state, 'Louisiana')
         self.assertEqual(subject.hierarchical_geographic.city, 'New Orleans')
@@ -341,6 +382,7 @@ class ModsReadWrite(unittest.TestCase):
     def test_geographic_subjects(self):
         loaded = load_xmlobject_from_string(SAMPLE_MODS, mods.Mods)
         subject = [s for s in loaded.subjects if s.hierarchical_geographic][0]
+        assert subject.hierarchical_geographic is not None
         self.assertEqual(subject.hierarchical_geographic.country, 'United States')
         self.assertEqual(subject.hierarchical_geographic.state, 'Louisiana')
         self.assertEqual(subject.hierarchical_geographic.city, 'New Orleans')
@@ -451,7 +493,7 @@ class ModsReadWrite(unittest.TestCase):
 
 
 def suite():
-    suite = unittest.makeSuite(ModsReadWrite, 'test')
+    suite = unittest.defaultTestLoader.loadTestsFromTestCase(ModsReadWrite)
     return suite
 
 

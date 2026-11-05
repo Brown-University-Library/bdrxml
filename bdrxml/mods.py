@@ -1,28 +1,52 @@
 import re
 import unicodedata
+from typing import TYPE_CHECKING
+
+from neuxml import xmlmap
+from neuxml.xmlmap import NodeField, NodeListField, SchemaField
+from neuxml.xmlmap import StringField as SF
+
+#import everything from neuxml.xmlmap.mods because clients have to use a lot of
+#   those classes, and we're just overriding a few of them here.
+from neuxml.xmlmap.mods import (
+    MODS,
+    MODS_NAMESPACE,
+    MODS_SCHEMA,
+    Abstract,
+    AccessCondition,
+    Common,
+    CopyrightDate,
+    Date,
+    DateCaptured,
+    DateCreated,
+    DateIssued,
+    DateModified,
+    DateOther,
+    DateValid,
+    Identifier,
+    MODSv34,
+    MODSv34_SCHEMA,
+    NamePart,
+    Note,
+    PartExtent,
+    TitleInfo,
+    TypedNote,
+)
+from neuxml.xmlmap.mods import BaseMods as NeuXmlBaseMods
+from neuxml.xmlmap.mods import Genre as NeuXmlGenre
+from neuxml.xmlmap.mods import Language as NeuXmlLanguage
+from neuxml.xmlmap.mods import LanguageTerm as NeuXmlLanguageTerm
+from neuxml.xmlmap.mods import Location as NeuXmlLocation
+from neuxml.xmlmap.mods import Name as NeuXmlName
+from neuxml.xmlmap.mods import OriginInfo as NeuXmlOriginInfo
+from neuxml.xmlmap.mods import PartDetail as NeuXmlPartDetail
+from neuxml.xmlmap.mods import PhysicalDescription as NeuXmlPhysicalDescription
+from neuxml.xmlmap.mods import RecordInfo as NeuXmlRecordInfo
+from neuxml.xmlmap.mods import RelatedItem as NeuXmlRelatedItem
+from neuxml.xmlmap.mods import Role as NeuXmlRole
+from neuxml.xmlmap.mods import Subject as NeuXmlSubject
 
 from .darwincore import get_schema_validation_errors
-from eulxml import xmlmap
-from eulxml.xmlmap import StringField as SF, SchemaField, NodeListField, NodeField
-
-#import everything from eulxml.xmlmap.mods because clients have to use a lot of
-#   those classes, and we're just overriding a few of them here.
-from eulxml.xmlmap.mods import *
-from eulxml.xmlmap.mods import BaseMods as EulXmlBaseMods
-from eulxml.xmlmap.mods import Common, Date, Note, TitleInfo
-from eulxml.xmlmap.mods import Genre as EulXmlGenre
-from eulxml.xmlmap.mods import Language as EulXmlLanguage
-from eulxml.xmlmap.mods import LanguageTerm as EulXmlLanguageTerm
-from eulxml.xmlmap.mods import Location as EulXmlLocation
-from eulxml.xmlmap.mods import Name as EulXmlName
-from eulxml.xmlmap.mods import OriginInfo as EulXmlOriginInfo
-from eulxml.xmlmap.mods import PartDetail as EulXmlPartDetail
-from eulxml.xmlmap.mods import PhysicalDescription as EulXmlPhysicalDescription
-from eulxml.xmlmap.mods import RecordInfo as EulXmlRecordInfo
-from eulxml.xmlmap.mods import RelatedItem as EulXmlRelatedItem
-from eulxml.xmlmap.mods import Role as EulXmlRole
-from eulxml.xmlmap.mods import Subject as EulXmlSubject
-
 
 XLINK_NAMESPACE = 'http://www.w3.org/1999/xlink'
 XSI_NAMESPACE = 'http://www.w3.org/2001/XMLSchema-instance'
@@ -33,6 +57,18 @@ MODSv37_SCHEMA = "http://www.loc.gov/standards/mods/v3/mods-3-7.xsd"
 MODSv38_SCHEMA = "http://www.loc.gov/standards/mods/v3/mods-3-8.xsd"
 FAST = 'http://id.worldcat.org/fast'
 
+__all__ = [
+    'FAST', 'MODS', 'MODS_NAMESPACE', 'MODS_SCHEMA', 'XLINK_NAMESPACE', 'XSI_LOCATION', 'XSI_NAMESPACE', 'Abstract',
+    'AccessCondition', 'BaseMods', 'Classification', 'Collection', 'Common', 'CommonField', 'CopyInformation',
+    'CopyrightDate', 'Date', 'DateCaptured', 'DateCreated', 'DateIssued', 'DateModified', 'DateOther', 'DateValid',
+    'Genre', 'HierarchicalGeographic', 'HoldingSimple', 'Identifier', 'Language', 'LanguageTerm', 'Location', 'MODSv34',
+    'MODSv34_SCHEMA', 'MODSv35_SCHEMA', 'MODSv37_SCHEMA', 'MODSv38_SCHEMA', 'Mods', 'Mods37', 'Name', 'NamePart',
+    'Note', 'OriginInfo', 'Part', 'PartDetail', 'PartExtent', 'PhysicalDescription', 'PhysicalDescriptionForm',
+    'PhysicalLocation', 'Place', 'PlaceTerm', 'RecordContentSource', 'RecordCreationDate', 'RecordIdentifier',
+    'RecordInfo', 'RelatedItem', 'ResourceType', 'Role', 'SubLocation', 'Subject', 'TargetAudience', 'Temporal',
+    'TitleInfo', 'Topic', 'TypedNote', 'add_topic', 'make_mods', 'xmlmap',
+]
+
 
 class CommonField(Common):
     '''gives us common parts of an element like authority, authorityURI, valueURI, ...'''
@@ -42,11 +78,11 @@ class CommonField(Common):
     text = SF('text()')
 
 
-class PartDetail(EulXmlPartDetail):
+class PartDetail(NeuXmlPartDetail):
     caption = SF('mods:caption')
 
 
-class Part(EulXmlPartDetail):
+class Part(NeuXmlPartDetail):
     details = NodeListField('mods:detail', PartDetail)
 
 
@@ -60,22 +96,22 @@ class Place(Common):
     place_terms = NodeListField('mods:placeTerm', PlaceTerm)
 
 
-class OriginInfo(EulXmlOriginInfo):
+class OriginInfo(NeuXmlOriginInfo):
     label = SF('@displayLabel')
     places = NodeListField('mods:place', Place)
 
 
-class Collection(EulXmlRelatedItem):
+class Collection(NeuXmlRelatedItem):
     name = SF('mods:titleInfo/mods:title')
     id = SF('mods:identifier[@type="COLID"]')
 
 
-class LanguageTerm(EulXmlLanguageTerm):
+class LanguageTerm(NeuXmlLanguageTerm):
     authority_uri = SF('@authorityURI')
     value_uri = SF('@valueURI')
 
 
-class Language(EulXmlLanguage):
+class Language(NeuXmlLanguage):
     terms = NodeListField('mods:languageTerm', LanguageTerm)
 
 
@@ -84,7 +120,7 @@ class PhysicalDescriptionForm(CommonField):
     type = SF('@type')
 
 
-class PhysicalDescription(EulXmlPhysicalDescription):
+class PhysicalDescription(NeuXmlPhysicalDescription):
     digital_origin = SF('mods:digitalOrigin')
     note = SF('mods:note')
     forms = NodeListField('mods:form', PhysicalDescriptionForm)
@@ -112,7 +148,7 @@ class HoldingSimple(Common):
     copy_information = NodeListField('mods:copyInformation', CopyInformation)
 
 
-class Location(EulXmlLocation):
+class Location(NeuXmlLocation):
     physical = NodeField('mods:physicalLocation', PhysicalLocation)
     holding_simple = NodeField('mods:holdingSimple', HoldingSimple)
 
@@ -142,7 +178,7 @@ class Topic(CommonField):
     ROOT_NAME = 'topic'
 
 
-class Subject(EulXmlSubject):
+class Subject(NeuXmlSubject):
     label = SF('@displayLabel')
     authority_uri = SF('@authorityURI')
     value_uri = SF('@valueURI')
@@ -162,7 +198,7 @@ class Classification(CommonField):
     label = SF('@displayLabel')
 
 
-class Genre(EulXmlGenre):
+class Genre(NeuXmlGenre):
     authority_uri = SF('@authorityURI')
     value_uri = SF('@valueURI')
     type = SF('@type')
@@ -182,18 +218,18 @@ class RecordContentSource(CommonField):
     ROOT_NAME = 'recordContentSource'
 
 
-class RecordInfo(EulXmlRecordInfo):
+class RecordInfo(NeuXmlRecordInfo):
     record_identifier_list = NodeListField('mods:recordIdentifier', RecordIdentifier)
     record_creation_date = NodeField('mods:recordCreationDate', RecordCreationDate)
     record_content_source = NodeField('mods:recordContentSource', RecordContentSource)
 
 
-class Role(EulXmlRole):
+class Role(NeuXmlRole):
     authority_uri = SF('mods:roleTerm/@authorityURI')
     value_uri = SF('mods:roleTerm/@valueURI')
 
 
-class Name(EulXmlName):
+class Name(NeuXmlName):
     roles = NodeListField('mods:role', Role)
     authority_uri = SF('@authorityURI')
     value_uri = SF('@valueURI')
@@ -208,7 +244,7 @@ class ResourceType(Common):
     text = SF('text()')
 
 
-class BaseMods(EulXmlBaseMods):
+class BaseMods(NeuXmlBaseMods):
     classifications = NodeListField('mods:classification', Classification)
     origin_info = NodeField('mods:originInfo', OriginInfo)
     subjects = NodeListField('mods:subject', Subject)
@@ -231,18 +267,17 @@ class RelatedItem(BaseMods):
 
 
 class Mods(BaseMods):
-    """Map mods fields - just where we override MODSv34 from eulxml
+    """Map mods fields - just where we override MODSv34 from neuxml
     Fields documented at:
     http://www.loc.gov/standards/mods/mods-outline.html
     """
     ROOT_NAME = 'mods'
-    # XSD_SCHEMA = MODSv37_SCHEMA
     XSD_SCHEMA = MODSv38_SCHEMA
     Common.ROOT_NAMESPACES['xlink'] = XLINK_NAMESPACE
     Common.ROOT_NAMESPACES['xsi'] = XSI_NAMESPACE
     xsi_schema_location = SF('@xsi:schemaLocation')
 
-    #deprecated - should use title_info_list from eulxml instead
+    #deprecated - should use title_info_list from neuxml instead
     title_info = NodeListField('mods:titleInfo', TitleInfo)
     #Add a commonly used related item
     collection = NodeField('mods:relatedItem[@displayLabel="Collection"]', Collection)
@@ -250,14 +285,30 @@ class Mods(BaseMods):
 
     def validation_errors(self):
         '''see notes on SimpleDarwinRecordSet.validation_errors()'''
-        #return get_schema_validation_errors(schema_name='mods-3-7.xsd', lxml_node=self.node)
-        return get_schema_validation_errors(schema_name='mods-3-8.xsd', lxml_node=self.node)
+        schema_name = 'mods-3-7.xsd' if self.XSD_SCHEMA == MODSv37_SCHEMA else 'mods-3-8.xsd'
+        return get_schema_validation_errors(schema_name=schema_name, lxml_node=self.node)
     
 
-def make_mods():
-    """Helper that returns Mods object."""
-    m = Mods()
-    m.xsi_schema_location = XSI_LOCATION
+    if TYPE_CHECKING:
+        def create_origin_info(self) -> None: ...
+
+class Mods37(Mods):
+    """Retains MODS 3.7 for applications that require that schema version."""
+
+    XSD_SCHEMA = MODSv37_SCHEMA
+
+
+def make_mods(*, schema_version: str = '3.8') -> Mods:
+    """
+    Creates a MODS record for a supported bundled schema, defaulting to 3.8.
+    Called by: applications creating MODS records
+    """
+    if schema_version == '3.7':
+        m = Mods37(xsi_schema_location=f'http://www.loc.gov/mods/v3 {MODSv37_SCHEMA}')
+    elif schema_version == '3.8':
+        m = Mods(xsi_schema_location=XSI_LOCATION)
+    else:
+        raise ValueError(f'Unsupported MODS schema version: {schema_version}')
     return m
 
 

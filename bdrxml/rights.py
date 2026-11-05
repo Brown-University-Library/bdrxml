@@ -1,9 +1,11 @@
-from eulxml import xmlmap
-from eulxml.xmlmap import XmlObject
-from eulxml.xmlmap import StringField as SF
-from eulxml.xmlmap import StringListField as SFL
-from eulxml.xmlmap import SimpleBooleanField as BF
 from itertools import chain
+
+from neuxml import xmlmap
+from neuxml.xmlmap import SimpleBooleanField as BF
+from neuxml.xmlmap import StringField as SF
+from neuxml.xmlmap import StringListField as SFL
+from neuxml.xmlmap import XmlObject
+
 RIGHTS_NAMESPACE = 'http://cosimo.stanford.edu/sdr/metsrights/'
 XLINK_NAMESPACE = 'http://www.w3.org/1999/xlink'
 
@@ -92,7 +94,7 @@ class Holder(Common):
 class Rights(Common):
     ROOT_NAME = 'RightsDeclarationMD'
     XSD_SCHEMA = "http://cosimo.stanford.edu/sdr/rights http://cosimo.stanford.edu/sdr/metsrights.xsd"
-    schema_location = SF('@xsi:schemaLocation', 'self')
+    schema_location = SF('@xsi:schemaLocation', normalize=True)
 
     category = SF('@RIGHTSCATEGORY')
     holder = xmlmap.NodeField('rights:RightsHolder', Holder)
@@ -100,20 +102,24 @@ class Rights(Common):
     ctext = xmlmap.NodeListField('rights:Context', Context)
 
     def add_ctext(self, new_ctext):
-        self.create_holder()
+        if self.holder is None:
+            self.holder = Holder()
+        holder = self.holder
+        if holder is None:
+            raise ValueError('Could not create the rights holder.')
         self.ctext.append(new_ctext)
         ctext_list = [str(ctx.id) for ctx in self.ctext]
-        self.holder.context_ids = ' '.join(ctext_list)
+        holder.context_ids = ' '.join(ctext_list)
 
     def get_ctext_for(self, user_name):
         return next((ctx for ctx in self.ctext if ctx.username == user_name))
 
     def index_data(self):
         return {
-            'discover': sorted([ctx.username for ctx in self.ctext if ctx.discover]),
-            'display': sorted([ctx.username for ctx in self.ctext if ctx.display]),
-            'modify': sorted([ctx.username for ctx in self.ctext if ctx.modify]),
-            'delete': sorted([ctx.username for ctx in self.ctext if ctx.delete]),
+            'discover': sorted([ctx.username for ctx in self.ctext if ctx.discover and ctx.username is not None]),
+            'display': sorted([ctx.username for ctx in self.ctext if ctx.display and ctx.username is not None]),
+            'modify': sorted([ctx.username for ctx in self.ctext if ctx.modify and ctx.username is not None]),
+            'delete': sorted([ctx.username for ctx in self.ctext if ctx.delete and ctx.username is not None]),
         }
 
     def get_builder(self):
@@ -134,8 +140,7 @@ class Rights(Common):
 
 def make_rights():
     """Create a basic BDR rights object and instantiates a holder node."""
-    m = Rights()
-    m.create_holder()
+    m = Rights(holder=Holder())
     m.schema_location = Rights.XSD_SCHEMA
     return m
 

@@ -1,6 +1,9 @@
 import unittest
-from eulxml.xmlmap  import load_xmlobject_from_string
+
+from neuxml.xmlmap import load_xmlobject_from_string
+
 from bdrxml.irMetadata import IR, make_ir
+
 
 class IRReadWrite(unittest.TestCase):
     def setUp(self):
@@ -31,7 +34,7 @@ class IRReadWrite(unittest.TestCase):
         self.assertEqual(loaded.collection_list, ['598', '618'])
 
 def suite():
-    suite = unittest.makeSuite(IRReadWrite, 'test')
+    suite = unittest.defaultTestLoader.loadTestsFromTestCase(IRReadWrite)
     return suite
 
 if __name__ == '__main__':

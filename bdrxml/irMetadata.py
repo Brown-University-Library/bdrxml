@@ -1,7 +1,7 @@
-from eulxml import xmlmap
-from eulxml.xmlmap import XmlObject
-from eulxml.xmlmap import StringField as SF
-from eulxml.xmlmap import StringListField as SLF
+from neuxml import xmlmap
+from neuxml.xmlmap import StringField as SF
+from neuxml.xmlmap import StringListField as SLF
+from neuxml.xmlmap import XmlObject
 
 IR_NAMESPACE = 'http://dl.lib.brown.edu/md/irdata'
 XLINK_NAMESPACE = 'http://www.w3.org/1999/xlink'
@@ -14,7 +14,7 @@ class IR(XmlObject):
     ROOT_NS = IR_NAMESPACE
     ROOT_NAME = 'irData'
     XSD_SCHEMA = "http://dl.lib.brown.edu/md/irdata http://dl.lib.brown.edu/md/irdata/ir.xsd"
-    schema_location = SF('@xsi:schemaLocation', 'self')
+    schema_location = SF('@xsi:schemaLocation', normalize=True)
     #xmlschema = xmlmap.loadSchema(XSD_SCHEMA)
 
 

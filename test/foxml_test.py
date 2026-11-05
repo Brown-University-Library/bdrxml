@@ -1,9 +1,9 @@
 import unittest
 
-from eulxml.xmlmap import load_xmlobject_from_string
+from neuxml.xmlmap import load_xmlobject_from_string
 
 from bdrxml.foxml import Fox, make
-from bdrxml.rels import RelsExt, Cmodel, MemberOf
+from bdrxml.rels import Cmodel, MemberOf, RelsExt
 
 
 class BasicMakeTest(unittest.TestCase):
@@ -34,6 +34,7 @@ class BasicMakeTest(unittest.TestCase):
         r.model.append(m2)
         self.fox.rels_ext = r
         read_fox = load_xmlobject_from_string(self.fox.serialize(), Fox)
+        assert read_fox.rels_ext is not None
         self.assertTrue('info:fedora/bdr-cmodel:commonMetadata' in [m.name for m in read_fox.rels_ext.model])
         self.assertTrue('info:fedora/bdr-cmodel:masterImage' in [m.name for m in read_fox.rels_ext.model])
         
@@ -48,13 +49,14 @@ class BasicMakeTest(unittest.TestCase):
       self.fox.rels_ext = r
       ## test after round-trip
       fox_object = load_xmlobject_from_string( self.fox.serialize(), Fox )
+      assert fox_object.rels_ext is not None
       self.assertTrue( 'info:fedora/test:master' == fox_object.rels_ext.is_member_of[0].name )
       fox_data = fox_object.serialize()
       self.assertTrue( '<rel:isMemberOf rdf:resource="info:fedora/test:master"/>'.encode('utf8') in fox_data )
       
 
 def suite():
-    suite = unittest.makeSuite(BasicMakeTest, 'test')
+    suite = unittest.defaultTestLoader.loadTestsFromTestCase(BasicMakeTest)
     return suite
 
 
